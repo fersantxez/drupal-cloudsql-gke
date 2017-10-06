@@ -1,0 +1,8 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: drupal-sql
+spec:
+  backend:
+    serviceName: drupal-sql
+    servicePort: 80
