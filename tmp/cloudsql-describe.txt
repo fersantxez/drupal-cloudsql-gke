@@ -1,0 +1,71 @@
+backendType: SECOND_GEN
+connectionName: fersanchez-drupal-cloudsql:us-east1:drupal-sql
+databaseVersion: MYSQL_5_7
+etag: '"AX0XCS8cmlmWUsraAUQ8dEhn1gI/Mw"'
+failoverReplica:
+  available: true
+  name: drupal-sql-failover
+gceZone: us-east1-d
+instanceType: CLOUD_SQL_INSTANCE
+ipAddresses:
+- ipAddress: 35.196.167.172
+  type: PRIMARY
+kind: sql#instance
+name: drupal-sql
+project: fersanchez-drupal-cloudsql
+region: us-east1
+replicaNames:
+- drupal-sql-failover
+selfLink: https://www.googleapis.com/sql/v1beta4/projects/fersanchez-drupal-cloudsql/instances/drupal-sql
+serverCaCert:
+  cert: |-
+    -----BEGIN CERTIFICATE-----
+    MIIDITCCAgmgAwIBAgIBADANBgkqhkiG9w0BAQUFADBIMSMwIQYDVQQDExpHb29n
+    bGUgQ2xvdWQgU1FMIFNlcnZlciBDQTEUMBIGA1UEChMLR29vZ2xlLCBJbmMxCzAJ
+    BgNVBAYTAlVTMB4XDTE3MTAwNTAyNTU0OFoXDTE5MTAwNTAyNTY0OFowSDEjMCEG
+    A1UEAxMaR29vZ2xlIENsb3VkIFNRTCBTZXJ2ZXIgQ0ExFDASBgNVBAoTC0dvb2ds
+    ZSwgSW5jMQswCQYDVQQGEwJVUzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC
+    ggEBAM22cWnaWy1B3Nuu09ATjchWPrpN7c3DIok7tlUfjonCZRhzKQqNvRUe7mUO
+    SYUGloibJDQN+ZuRXcQvBHA32VuPzpJN3BEdUeyMZ7U6UXYCqoahQEoaAPgKIAFq
+    2XAzmAS2BK02Ab8lXzuoQ46FZx2t8g88KezqH3PTDgf60kSypPjVA92i6rru4HPj
+    P4mGF6Jv2uualYjHQWyj2mEl2O9XqNLuIPkKW+8Go+98pYius4RdT5EMGfICpMtP
+    R6hVPQ5CE+JBM0UxhIuT0KMQH/DOLTs9HpIiEnNh3h2mvmPcxgAgMlSZuSnAYdiz
+    maT12U2rXFmVyr6az+KEDvNlv3UCAwEAAaMWMBQwEgYDVR0TAQH/BAgwBgEB/wIB
+    ADANBgkqhkiG9w0BAQUFAAOCAQEAhTxsi8TAYN1g6VYBjPl3L9Ew64oHMEi94rRs
+    W82Iy0NQ5GmvV7ChE8B3yuC/9pmSfHOXC3WzQjd4Jq4yl+HsBmO8LrOq9+JQppmZ
+    FSr2AGIEMW+pRJk9C9KDTJH7jPdMhANG+b/dOiDWqs6ujSMPxqOw5tI6WLHm+hcP
+    hIOzOIzcnJhjIgxu8sF/n01X5ct7AA0s5Fd8FIb6Uww/1PqD3VqWm9zmVBFlcA4q
+    Zv4EtRxiyDIxCLRQIQx3mOCX8TUtE3j5ACoKiwvDqwLpB1k6ZYxRd+F7WuJUcptl
+    va4dphALTcQewiRBnfi3m86LoMS3qyaTYXpaoJ418G/g2VrW+Q==
+    -----END CERTIFICATE-----
+  certSerialNumber: '0'
+  commonName: C=US,O=Google\, Inc,CN=Google Cloud SQL Server CA
+  createTime: '2017-10-05T02:55:48.286000+00:00'
+  expirationTime: '2019-10-05T02:56:48.286000+00:00'
+  instance: drupal-sql
+  kind: sql#sslCert
+  sha1Fingerprint: e30a9b795a8f10d1311497f9e0bdc2ae6be9e3e7
+serviceAccountEmailAddress: d5momy7nuvainhfsizn5apkyhe@speckle-umbrella-11.iam.gserviceaccount.com
+settings:
+  activationPolicy: ALWAYS
+  backupConfiguration:
+    binaryLogEnabled: true
+    enabled: true
+    kind: sql#backupConfiguration
+    startTime: '19:00'
+  dataDiskSizeGb: '10'
+  dataDiskType: PD_SSD
+  ipConfiguration:
+    ipv4Enabled: true
+  kind: sql#settings
+  maintenanceWindow:
+    day: 0
+    hour: 0
+    kind: sql#maintenanceWindow
+  pricingPlan: PER_USE
+  replicationType: SYNCHRONOUS
+  settingsVersion: '3'
+  storageAutoResize: true
+  storageAutoResizeLimit: '0'
+  tier: db-n1-standard-1
+state: RUNNABLE

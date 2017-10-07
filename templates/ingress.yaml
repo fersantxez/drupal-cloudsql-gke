@@ -5,4 +5,4 @@ metadata:
 spec:
   backend:
     serviceName: __SERVICE_NAME__
-    servicePort: __SERVICE_PORT__
+    servicePort: __SERVICE_PORT_HTTP__

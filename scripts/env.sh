@@ -1,0 +1,61 @@
+#this project details
+export HOME_DIR="../"
+export CREDS_LOCATION=$HOME_DIR"credentials/"
+export SCRIPTS_LOCATION=$HOME_DIR"scripts/"
+export TEMPLATES_LOCATION=$HOME_DIR"templates/"
+export YAML_RUN_LOCATION=$HOME_DIR"yaml_run/"
+
+#GCP project details
+export PROJECT_NAME="fersanchez-drupal-cloudsql"
+export REGION="us-east1"
+export ZONE="us-east1-b"
+
+#GKE cluster details
+export GKE_CLUSTER_NAME="fersanchez-bbby-gke-3"
+export GKE_CLUSTER_VERSION="1.7.6-gke.1"
+export GKE_MACHINE_TYPE="n1-standard-1"
+export GKE_CLUSTER_SIZE="3"
+export GKE_SECONDARY
+
+## KUBERNETES FILES
+#k8s deployment template and file
+export DEPLOYMENT_TEMPLATE_FILE=$TEMPLATES_LOCATION"deployment_PERSVOL.yaml"
+export DEPLOYMENT_FILE=$YAML_RUN_LOCATION"deployment.yaml"
+#k8s ingress template and file
+export INGRESS_TEMPLATE_FILE=$TEMPLATES_LOCATION"drupal_cloudsqlproxy_ingress_template.yaml"
+export INGRESS_FILE=$YAML_RUN_LOCATIONN"ingress.yaml"
+#service name
+export SERVICE_NAME="bbby-cms" #LOWERCASE ONLY FOR VOLUME/DISK NAMES
+export SERVICE_PORT_HTTP="80"
+export SERVICE_PORT_HTTPS="443"
+
+#persistent volumes
+export GKE_VOLUME_QTY=2
+export GKE_VOLUME_1=$SERVICE_NAME"-drupal"
+export GKE_VOLUME_SIZE_1="10G"
+export GKE_VOLUME_2=$SERVICE_NAME"-apache"
+export GKE_VOLUME_SIZE_2="10G"
+
+export PV_TEMPLATE_FILE=$TEMPLATES_LOCATION"pv.yaml"
+export PVC_TEMPLATE_FILE=$TEMPLATES_LOCATION"pvc.yaml"
+
+#Cloud SQL parameters
+export CLOUDSQL_INSTANCE="drupal-sql4"
+export CLOUDSQL_USERNAME="root"
+export CLOUDSQL_TIER="db-n1-standard-1 "
+export CLOUDSQL_STORAGE_TYPE="SSD"
+export CLOUDSQL_DB_VERSION="MYSQL_5_7"
+export CLOUDSQL_BACKUP_START_TIME="09:00"
+
+#CloudSQL Proxy parameters
+export PROXY_KEY_FILE_PATH=$CREDS_LOCATION"fersanchez-drupal-cloudsql-212ef5bdd353.json"
+export PROXY_USER="proxyuser"
+#When using Unix socket files for connecting client and proxy, dedicated directory for the UNIX socket file
+export CLOUDSQL_DIR=$HOME_DIR"cloudsql"
+#When using TCP sockets, which port to use
+export CLOUDSQL_PORT="3306"
+#where to store the proxy binary
+export CLOUDSQL_BIN="/usr/local/bin/cloud_sql_proxy"
+
+
+
