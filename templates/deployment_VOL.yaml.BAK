@@ -56,9 +56,9 @@ spec:
             memory: 512Mi
             cpu: 300m
         volumeMounts:
-        - name: drupal-data
+        - name: __GKE_VOLUME_1__
           mountPath: "/bitnami/drupal"
-        - name: apache-data
+        - name: __GKE_VOLUME_2__
           mountPath: "/bitnami/apache"
       - name: cloudsql-proxy
         image: gcr.io/cloudsql-docker/gce-proxy:1.09
@@ -83,12 +83,20 @@ spec:
       - name: cloudsql
         emptyDir:
       - name: drupal-data
+        capacity:
+          storage: __GKE_VOLUME_SIZE_1__
+        accessModes:
+          - ReadWriteOnce
         gcePersistentDisk:
-          pdName: __GCE_DISK_1__
+          pdName: __GKE_VOLUME_1__
           fsType: ext4
       - name: apache-data
+        capacity:
+          storage: __GKE_VOLUME_SIZE_2__
+        accessModes:
+          - ReadWriteOnce
         gcePersistentDisk:
-          pdName: __GCE_DISK_2__
+          pdName: __GKE_VOLUME_2__
           fsType: ext4
    
 

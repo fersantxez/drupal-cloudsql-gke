@@ -8,7 +8,9 @@ source ./env.sh
 open https://pantheon.corp.google.com/apis/library/sqladmin.googleapis.com/?project=$PROJECT_NAME&debugUI=DEVELOPERS
 
 #create a SQL PROXY USER ACCOUNT
-gcloud sql users create $PROXY_USER cloudsqlproxy~% --instance=$CLOUDSQL_INSTANCE
+gcloud sql users create $PROXY_USER cloudsqlproxy~% --instance=$CLOUDSQL_INSTANCE && \
+gcloud sql instances list && \
+gcloud sql users list -i $CLOUDSQL_INSTANCE
 
 #find out instance connection name
 ## can not assume this, need to find through gcloud
@@ -22,11 +24,11 @@ echo "**DEBUG: CloudSQL Instance name detected as: "$INSTANCE_CONNECTION_NAME
 
 #create kubectl SECRETS for instance and DB
 kubectl create secret generic cloudsql-instance-credentials \
-                    --from-file="credentials.json"=$PROXY_KEY_FILE_PATH
+                    --from-file="credentials.json"=$PROXY_KEY_FILE_PATH && \
 kubectl create secret generic cloudsql-db-credentials \
 					--from-literal=username=$CLOUDSQL_USERNAME \
-					--from-literal=password=$CLOUDSQL_PASSWORD
-
+					--from-literal=password=$CLOUDSQL_PASSWORD && \
+kubectl get secrets
 ######
 ###### TEST CLOUDSQL PROXY ON LOCAL LAPTOP
 ######
@@ -74,6 +76,13 @@ kubectl create secret generic cloudsql-db-credentials \
 ###### check file $DEPLOYMENT_TEMPLATE_FILE for details - look for cloudsql-proxy container
 ######
 
+#create deployment from template
+rm -f $DEPLOYMENT_FILE
+cp $DEPLOYMENT_TEMPLATE_FILE $DEPLOYMENT_FILE
+#swap out values in DEPLOYMENT template file according to env variables
+sed -i '' "s,__INSTANCE_CONNECTION_NAME__,$INSTANCE_CONNECTION_NAME,g" $DEPLOYMENT_FILE
+sed -i '' "s,__SERVICE_NAME__,$SERVICE_NAME,g" $DEPLOYMENT_FILE
+
 #create persistent volumes
 #swap out in template for name of service
 for (( i=1; i<=$GKE_VOLUME_QTY; i++ )); do
@@ -85,15 +94,24 @@ for (( i=1; i<=$GKE_VOLUME_QTY; i++ )); do
 	SIZE="GKE_VOLUME_SIZE_"$i
 	SIZE=$(printf '%s\n' "${!SIZE}")
 	DISK=$VOLUME"-disk"
+	VOLUME=$VOLUME"-vol"
+
 	#variable indirection
 	echo "**DEBUG: variables will be used as: "$VOLUME", "$DISK" and "$SIZE
 
 	#CREATE DISK - add the "B" as gcloud is "GB" but k8s is "Gi"
-	gcloud compute disks create --size $SIZE"B" $DISK --zone=$ZONE
+	gcloud compute disks create --size $SIZE"B" $DISK --zone=$ZONE --source-snapshot=$SOURCE_SNAPSHOT
+	#use snapshot created with:
+	# mkfs.ext4 -m 0 -F -E lazy_itable_init=0,lazy_journal_init=0,discard /dev/sdb
+	# sudo mkdir -p /mnt/disk
+	# sudo mount -o discard,defaults /dev/sdb /mnt/disk
+	# sudo chmod a+w /mnt/disk
+	# UUID=$(sudo blkid /dev/sdb | grep -o '".*"' | sed 's/"//g' | awk '{print $1}')
 	#TODO:format disks and create filesystem if needed
 
+
 	#CREATE PERSISTENT VOLUME
-	PV_FILE=$TEMPLATES_LOCATION$VOLUME"-"$(basename $PV_TEMPLATE_FILE)
+	PV_FILE=$YAML_RUN_LOCATION$VOLUME"-"$(basename $PV_TEMPLATE_FILE)
 	echo "**DEBUG: PV_TEMPLATE_FILE will be: "$PV_TEMPLATE_FILE", PV_FILE will be: "$PV_FILE
 	rm -f $PV_FILE
 	cp $PV_TEMPLATE_FILE $PV_FILE
@@ -103,6 +121,7 @@ for (( i=1; i<=$GKE_VOLUME_QTY; i++ )); do
 	sed -i '' "s,__DISK_NAME__,$DISK,g" $PV_FILE
 	#create persistent volume claim in k8s
 	kubectl create -f $PV_FILE
+	kubectl get pvc
 
 	#CREATE PERSISTENT VOLUME CLAIM
 	CLAIM=$VOLUME"-claim"
@@ -115,22 +134,32 @@ for (( i=1; i<=$GKE_VOLUME_QTY; i++ )); do
 	sed -i '' "s,__VOLUME_SIZE__,$SIZE"i",g" $PVC_FILE
 	#create persistent volume claim in k8s
 	kubectl create -f $PVC_FILE
+	kubectl get pvc
 
+	#add DISK to deployment template to mount as volume
+	disk_temp="__GCE_DISK_"$i"__"
+	sed -i '' "s,$disk_temp,$DISK,g" $DEPLOYMENT_FILE
+	#echo "**DEBUG vol size temp is "$vol_size_temp
+	#sed -i '' "s,$vol_size_temp,$SIZE"i",g" $DEPLOYMENT_FILE	
+	#sed -i '' "s,__GKE_VOLUME_$i__,$VOLUME,g" $DEPLOYMENT_FILE	
+	#sed -i '' "s,__GKE_VOLUME_SIZE_$i__,$SIZE"i",g" $DEPLOYMENT_FILE
 
 done
 
-#create deployment from template
-rm -f $DEPLOYMENT_FILE
-cp $DEPLOYMENT_TEMPLATE_FILE $DEPLOYMENT_FILE
-#swap out values in DEPLOYMENT template file according to env variables
-sed -i '' "s,__INSTANCE_CONNECTION_NAME__,$INSTANCE_CONNECTION_NAME,g" $DEPLOYMENT_FILE
-sed -i '' "s,__SERVICE_NAME__,$SERVICE_NAME,g" $DEPLOYMENT_FILE
 
 #launch the deployment from file 
-kubectl create -f $DEPLOYMENT_FILE
+kubectl create -f $DEPLOYMENT_FILE && \
+kubectl get deployments 
 
-#expose the deployment
-kubectl expose deployment $SERVICE_NAME --target-port=$SERVICE_PORT_HTTP --type=NodePort
+#expose the deployment - either from kubectl:
+#kubectl expose deployment $SERVICE_NAME --target-port=$SERVICE_PORT_HTTP --type=NodePort
+#... or using a service file:
+rm -f $SERVICE_FILE
+cp $SERVICE_TEMPLATE_FILE $SERVICE_FILE
+#swap out values in DEPLOYMENT template file according to env variables
+sed -i '' "s,__SERVICE_NAME__,$SERVICE_NAME,g" $DEPLOYMENT_FILE
+sed -i '' "s,__SERVICE_PORT_HTTP__,$SERVICE_PORT_HTTP,g" $DEPLOYMENT_FILE
+sed -i '' "s,__SERVICE_PORT_HTTPS__,$SERVICE_PORT_HTTPS,g" $DEPLOYMENT_FILE
 
 #create INGRESS file from template
 rm -f $INGRESS_FILE

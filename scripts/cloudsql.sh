@@ -20,6 +20,9 @@ gcloud sql instances create $CLOUDSQL_INSTANCE \
 --storage-auto-increase \
 --backup-start-time=$CLOUDSQL_BACKUP_START_TIME \
 --enable-bin-log \
---tier=$CLOUDSQL_TIER 
+--tier=$CLOUDSQL_TIER && \
+gcloud sql users set-password root % --instance $CLOUDSQL_INSTANCE --password $CLOUDSQL_PASSWORD && \
+gcloud sql instances list && \
+gcloud sql users list -i $CLOUDSQL_INSTANCE
 
 

@@ -1,15 +1,16 @@
 apiVersion: extensions/v1beta1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: __SERVICE_NAME__
   labels:
-    app: drupal
+    app: __SERVICE_NAME__
 spec:
+  serviceName: __SERVICE_NAME__
   replicas: 1
   template:
     metadata:
       labels:
-        app: drupal-cloudsql-proxy
+        app: __SERVICE_NAME__
     spec:
       containers:
       - name: drupal
@@ -56,9 +57,9 @@ spec:
             memory: 512Mi
             cpu: 300m
         volumeMounts:
-        - name: drupal-data
+        - name: __GKE_VOLUME_1__
           mountPath: "/bitnami/drupal"
-        - name: apache-data
+        - name: __GKE_VOLUME_2__
           mountPath: "/bitnami/apache"
       - name: cloudsql-proxy
         image: gcr.io/cloudsql-docker/gce-proxy:1.09
@@ -82,13 +83,21 @@ spec:
           path: /etc/ssl/certs
       - name: cloudsql
         emptyDir:
-      - name: drupal-data
-        gcePersistentDisk:
-          pdName: __GCE_DISK_1__
-          fsType: ext4
-      - name: apache-data
-        gcePersistentDisk:
-          pdName: __GCE_DISK_2__
-          fsType: ext4
+      volumeClaimTemplates:
+      - metadata:
+          name: __GKE_VOLUME_1__
+        spec:
+          accessModes: [ "ReadWriteOnce" ]
+          resources:
+            requests:
+              storage: __GKE_VOLUME_SIZE_1__
+      - metadata:
+          name: __GKE_VOLUME_2__
+        spec:
+          accessModes: [ "ReadWriteOnce" ]
+          resources:
+            requests:
+              storage: __GKE_VOLUME_SIZE_2__
+
    
 
