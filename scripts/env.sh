@@ -47,11 +47,14 @@ export GKE_VOLUME_2=$SERVICE_NAME"-apache"
 export GKE_VOLUME_SIZE_2="50G"
 export PV_TEMPLATE_FILE=$TEMPLATES_LOCATION"pv.yaml"
 export PV_FILE=$YAML_RUN_LOCATION"pv.yaml"
-export PVC_TEMPLATE_FILE=$TEMPLATES_LOCATION"pvc.yaml"
+#export PVC_TEMPLATE_FILE=$TEMPLATES_LOCATION"pvc.yaml"
+export PVC_TEMPLATE_FILE=$TEMPLATES_LOCATION"pvc_unspecifiedVolume.yaml" #for statefulSet with dynamic unnamed volumes
 export PVC_FILE=$YAML_RUN_LOCATION"pvc.yaml"
 export STORAGECLASS_TEMPLATE_FILE=$TEMPLATES_LOCATION"storageClass.yaml"
 export STORAGECLASS_FILE=$YAML_RUN_LOCATION"storageClass.yaml"
 #k8s statefulset parameters
+export STATEFULSET_TEMPLATE_FILE=$TEMPLATES_LOCATION"statefulset_unspecifiedVolume.yaml"
+export STATEFULSET_FILE=$YAML_RUN_LOCATION"statefulSet.yaml"
 export GKE_STATEFULSET_NAME=$SERVICE_NAME"-statefulset"
 
 
