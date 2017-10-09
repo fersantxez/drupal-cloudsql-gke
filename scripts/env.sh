@@ -2,17 +2,17 @@
 export PROJECT_NAME="fersanchez-drupal-cloudsql"
 export REGION="us-east1"
 export ZONE="us-east1-b"
-export SOURCE_SNAPSHOT="fersanchez-10g-ext4"
+export SOURCE_SNAPSHOT="snap-blank-ext4-50g-us-east1-b"
 
 #GKE cluster details
-export GKE_CLUSTER_NAME="fersanchez-bbby-gke-5"
+export GKE_CLUSTER_NAME="fersanchez-bbby-gke-6"
 export GKE_CLUSTER_VERSION="1.7.6-gke.1"
 export GKE_MACHINE_TYPE="n1-standard-1"
 export GKE_CLUSTER_SIZE="3"
 export GKE_SECONDARY
 
 #Cloud SQL parameters
-export CLOUDSQL_INSTANCE="drupal-sql5"
+export CLOUDSQL_INSTANCE="drupal-sql6"
 export CLOUDSQL_USERNAME="root"
 export CLOUDSQL_TIER="db-n1-standard-1 "
 export CLOUDSQL_STORAGE_TYPE="SSD"
@@ -34,21 +34,23 @@ export SERVICE_PORT_HTTPS="443"
 export SERVICE_TEMPLATE_FILE=$TEMPLATES_LOCATION"service.yaml"
 export SERVICE_FILE=$YAML_RUN_LOCATION"service.yaml"
 #k8s deployment template and file
-export DEPLOYMENT_TEMPLATE_FILE=$TEMPLATES_LOCATION"deployment_VOL.yaml"
+export DEPLOYMENT_TEMPLATE_FILE=$TEMPLATES_LOCATION"deployment_claimVolume.yaml"
 export DEPLOYMENT_FILE=$YAML_RUN_LOCATION"deployment.yaml"
 #k8s ingress template and file
 export INGRESS_TEMPLATE_FILE=$TEMPLATES_LOCATION"ingress.yaml"
-export INGRESS_FILE=$YAML_RUN_LOCATIONN"ingress.yaml"
+export INGRESS_FILE=$YAML_RUN_LOCATION"ingress.yaml"
 #k8s persistent volumes
 export GKE_VOLUME_QTY=2
 export GKE_VOLUME_1=$SERVICE_NAME"-drupal"
-export GKE_VOLUME_SIZE_1="10G"
+export GKE_VOLUME_SIZE_1="50G"
 export GKE_VOLUME_2=$SERVICE_NAME"-apache"
-export GKE_VOLUME_SIZE_2="10G"
+export GKE_VOLUME_SIZE_2="50G"
 export PV_TEMPLATE_FILE=$TEMPLATES_LOCATION"pv.yaml"
 export PV_FILE=$YAML_RUN_LOCATION"pv.yaml"
 export PVC_TEMPLATE_FILE=$TEMPLATES_LOCATION"pvc.yaml"
 export PVC_FILE=$YAML_RUN_LOCATION"pvc.yaml"
+export STORAGECLASS_TEMPLATE_FILE=$TEMPLATES_LOCATION"storageClass.yaml"
+export STORAGECLASS_FILE=$YAML_RUN_LOCATION"storageClass.yaml"
 #k8s statefulset parameters
 export GKE_STATEFULSET_NAME=$SERVICE_NAME"-statefulset"
 

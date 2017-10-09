@@ -139,10 +139,6 @@ for (( i=1; i<=$GKE_VOLUME_QTY; i++ )); do
 	#add DISK to deployment template to mount as volume
 	disk_temp="__GCE_DISK_"$i"__"
 	sed -i '' "s,$disk_temp,$DISK,g" $DEPLOYMENT_FILE
-	#echo "**DEBUG vol size temp is "$vol_size_temp
-	#sed -i '' "s,$vol_size_temp,$SIZE"i",g" $DEPLOYMENT_FILE	
-	#sed -i '' "s,__GKE_VOLUME_$i__,$VOLUME,g" $DEPLOYMENT_FILE	
-	#sed -i '' "s,__GKE_VOLUME_SIZE_$i__,$SIZE"i",g" $DEPLOYMENT_FILE
 
 done
 
@@ -157,9 +153,12 @@ kubectl get deployments
 rm -f $SERVICE_FILE
 cp $SERVICE_TEMPLATE_FILE $SERVICE_FILE
 #swap out values in DEPLOYMENT template file according to env variables
-sed -i '' "s,__SERVICE_NAME__,$SERVICE_NAME,g" $DEPLOYMENT_FILE
-sed -i '' "s,__SERVICE_PORT_HTTP__,$SERVICE_PORT_HTTP,g" $DEPLOYMENT_FILE
-sed -i '' "s,__SERVICE_PORT_HTTPS__,$SERVICE_PORT_HTTPS,g" $DEPLOYMENT_FILE
+sed -i '' "s,__SERVICE_NAME__,$SERVICE_NAME,g" $SERVICE_FILE
+sed -i '' "s,__SERVICE_PORT_HTTP__,$SERVICE_PORT_HTTP,g" $SERVICE_FILE
+sed -i '' "s,__SERVICE_PORT_HTTPS__,$SERVICE_PORT_HTTPS,g" $SERVICE_FILE
+
+kubectl create -f $SERVICE_FILE
+kubectl get services 
 
 #create INGRESS file from template
 rm -f $INGRESS_FILE
@@ -170,6 +169,7 @@ sed -i '' "s,__SERVICE_PORT_HTTP__,$SERVICE_PORT_HTTP,g" $INGRESS_FILE
 sed -i '' "s,__SERVICE_PORT_HTTPS__,$SERVICE_PORT_HTTPS,g" $INGRESS_FILE
 #create the ingress
 kubectl apply -f $INGRESS_FILE
+kubectl get ingress
 
 ###
 ### REFERENCE
