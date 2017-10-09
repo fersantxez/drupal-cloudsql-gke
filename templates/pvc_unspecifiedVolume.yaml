@@ -8,5 +8,3 @@ spec:
   resources:
     requests:
       storage: __VOLUME_SIZE__
-  storageClassName: slow
-  volumeName: __VOLUME_NAME__

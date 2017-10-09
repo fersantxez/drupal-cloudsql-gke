@@ -1,15 +1,15 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: __SERVICE_NAME__
+  name: __SERVICE_NAME__-deployment
   labels:
-    app: drupal
+    app: __SERVICE_NAME__-app
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: drupal-cloudsql-proxy
+        app: __SERVICE_NAME__-app
     spec:
       containers:
       - name: drupal
@@ -83,20 +83,12 @@ spec:
       - name: cloudsql
         emptyDir:
       - name: drupal-data
-        capacity:
-          storage: 10Gi
-        accessModes:
-          - ReadWriteOnce
         gcePersistentDisk:
-          pdName: __SERVICE_NAME__-drupal
+          pdName: __GCE_DISK_1__
           fsType: ext4
       - name: apache-data
-        capacity:
-          storage: 10Gi
-        accessModes:
-          - ReadWriteOnce
         gcePersistentDisk:
-          pdName: __SERVICE_NAME__-apache
+          pdName: __GCE_DISK_2__
           fsType: ext4
    
 

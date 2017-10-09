@@ -1,16 +1,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: __SERVICE_NAME__
+  name: __SERVICE_NAME__-service
   labels:
-    app: __SERVICE_NAME__
+    app: __SERVICE_NAME__-app
 spec:
+  type: NodePort #request external IP - consider using "LoadBalancer"
   ports:
   - port: __SERVICE_PORT_HTTP__
     name: __SERVICE_NAME__-http
-  ports:
   - port: __SERVICE_PORT_HTTPS__
     name: __SERVICE_NAME__-https
-  clusterIP: None
   selector:
-    app: __SERVICE_NAME__
+    app: __SERVICE_NAME__-app
