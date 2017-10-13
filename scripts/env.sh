@@ -4,12 +4,19 @@ export REGION="us-east1"
 export ZONE="us-east1-b"
 export SOURCE_SNAPSHOT="snap-blank-ext4-50g-us-east1-b"
 
+#this project details
+export HOME_DIR="../"
+export CREDS_LOCATION=$HOME"/.ssh/cloudsql-credentials/"
+export SCRIPTS_LOCATION=$HOME_DIR"scripts/"
+export TEMPLATES_LOCATION=$HOME_DIR"templates/"
+export YAML_RUN_LOCATION=$HOME_DIR"yaml_run/"
+
 #GKE cluster details
 export GKE_CLUSTER_NAME="fersanchez-bbby-gke-6"
 export GKE_CLUSTER_VERSION="1.7.6-gke.1"
 export GKE_MACHINE_TYPE="n1-standard-1"
 export GKE_CLUSTER_SIZE="3"
-export GKE_SECONDARY
+export GKE_SECONDARY_ZONE=""
 
 #Cloud SQL parameters
 export CLOUDSQL_INSTANCE="drupal-sql6"
@@ -18,13 +25,19 @@ export CLOUDSQL_TIER="db-n1-standard-1 "
 export CLOUDSQL_STORAGE_TYPE="SSD"
 export CLOUDSQL_DB_VERSION="MYSQL_5_7"
 export CLOUDSQL_BACKUP_START_TIME="09:00"
-
-#this project details
-export HOME_DIR="../"
-export CREDS_LOCATION=$HOME_DIR"credentials/"
-export SCRIPTS_LOCATION=$HOME_DIR"scripts/"
-export TEMPLATES_LOCATION=$HOME_DIR"templates/"
-export YAML_RUN_LOCATION=$HOME_DIR"yaml_run/"
+#service account to use for CloudSQL proxy
+export SERVICE_ACCOUNT_NAME="cloudsql-svc-acct"
+export SERVICE_ACCOUNT_DESCRIPTION="Service account for CloudSQL proxy"
+export SERVICE_ACCOUNT_ROLE="roles/cloudsql.client"
+export SERVICE_ACCOUNT_KEY_PATH=${CREDS_LOCATION}${PROJECT_NAME}"-cloudsql-svc-acct-key.json"
+#CloudSQL Proxy parameters
+export CLOUDSQL_PROXY_USER="proxyuser"
+#When using Unix socket files for connecting client and proxy, dedicated directory for the UNIX socket file
+export CLOUDSQL_DIR=$HOME_DIR"cloudsql"
+#When using TCP sockets, which port to use
+export CLOUDSQL_PORT="3306"
+#where to store the cloudsql proxy binary upon downloading it
+export CLOUDSQL_BIN="/usr/local/bin/cloud_sql_proxy"
 
 ## KUBERNETES FILES
 #service name
@@ -58,15 +71,7 @@ export STATEFULSET_FILE=$YAML_RUN_LOCATION"statefulSet.yaml"
 export GKE_STATEFULSET_NAME=$SERVICE_NAME"-statefulset"
 
 
-#CloudSQL Proxy parameters
-export PROXY_KEY_FILE_PATH=$CREDS_LOCATION"fersanchez-drupal-cloudsql-212ef5bdd353.json"
-export PROXY_USER="proxyuser"
-#When using Unix socket files for connecting client and proxy, dedicated directory for the UNIX socket file
-export CLOUDSQL_DIR=$HOME_DIR"cloudsql"
-#When using TCP sockets, which port to use
-export CLOUDSQL_PORT="3306"
-#where to store the proxy binary
-export CLOUDSQL_BIN="/usr/local/bin/cloud_sql_proxy"
+
 
 
 

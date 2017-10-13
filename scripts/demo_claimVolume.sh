@@ -7,8 +7,22 @@ source ./env.sh
 #Enable Cloud SQL admin API -- in case this project does not have it enabled yet
 open https://pantheon.corp.google.com/apis/library/sqladmin.googleapis.com/?project=$PROJECT_NAME&debugUI=DEVELOPERS
 
+#create a service account to be used by CloudSQL
+gcloud iam service-accounts create $SERVICE_ACCOUNT_NAME \
+	--display-name "$SERVICE_ACCOUNT_DESCRIPTION"
+#enable the service account to access CloudSQL
+export SERVICE_ACCOUNT_EMAIL=${SERVICE_ACCOUNT_NAME}@${PROJECT_NAME}.iam.gserviceaccount.com
+gcloud projects add-iam-policy-binding $PROJECT_NAME \
+    --member serviceAccount:$SERVICE_ACCOUNT_EMAIL \
+    --role $SERVICE_ACCOUNT_ROLE
+#generate credential for CloudSQL proxy
+mkdir -p $CREDS_LOCATION #store credentials in safe space
+gcloud iam service-accounts keys create $SERVICE_ACCOUNT_KEY_PATH \
+	--iam-account=$SERVICE_ACCOUNT_EMAIL \
+	--key-file-type="json"
+
 #create a SQL PROXY USER ACCOUNT
-gcloud sql users create $PROXY_USER cloudsqlproxy~% --instance=$CLOUDSQL_INSTANCE && \
+gcloud sql users create $CLOUDSQL_PROXY_USER cloudsqlproxy~% --instance=$CLOUDSQL_INSTANCE && \
 gcloud sql instances list && \
 gcloud sql users list -i $CLOUDSQL_INSTANCE
 
