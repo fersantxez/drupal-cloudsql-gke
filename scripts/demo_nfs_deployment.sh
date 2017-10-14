@@ -4,7 +4,7 @@
 #get user variables
 source ./env.sh
 
-#Enable Cloud SQL admin API -- in case this project does not have it enabled yet
+#Enable Cloud SQL admin API
 open https://pantheon.corp.google.com/apis/library/sqladmin.googleapis.com/?project=$PROJECT_NAME&debugUI=DEVELOPERS
 
 #create a service account to be used by CloudSQL
