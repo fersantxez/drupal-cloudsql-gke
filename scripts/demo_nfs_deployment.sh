@@ -27,14 +27,8 @@ gcloud sql instances list && \
 gcloud sql users list -i $CLOUDSQL_INSTANCE
 
 #find out instance connection name
-## can not assume this, need to find through gcloud
-## export INSTANCE_CONNECTION_NAME=$PROJECT_NAME:$CLOUDSQL_REGION:$CLOUDSQL_INSTANCE
 export INSTANCE_CONNECTION_NAME=$(gcloud sql instances describe $CLOUDSQL_INSTANCE | grep 'connectionName' | awk {'print $2'})
 echo "**DEBUG: CloudSQL Instance name detected as: "$INSTANCE_CONNECTION_NAME
-
-#get kubectl credentials for terminal where this is running (laptop or remote VM/shell) so that kubectl works
-#this is done in gke.sh
-#gcloud container clusters get-credentials $GKE_CLUSTER_NAME --zone $ZONE
 
 #create kubectl SECRETS for instance and DB
 kubectl create secret generic cloudsql-instance-credentials \
@@ -49,7 +43,6 @@ kubectl get secrets
 #    --config $NFS_TEMPLATE_FILE
 #gcloud deployment-manager deployments describe $NFS_DEPLOYMENT_NAME
 
-
 #create deployment from template
 rm -f $DEPLOYMENT_FILE
 cp $DEPLOYMENT_TEMPLATE_FILE $DEPLOYMENT_FILE
@@ -63,30 +56,25 @@ cp $STORAGECLASS_TEMPLATE_FILE $STORAGECLASS_FILE
 #sed -i '' "s,__INSTANCE_CONNECTION_NAME__,$INSTANCE_CONNECTION_NAME,g" $DEPLOYMENT_FILE
 kubectl create -f $STORAGECLASS_FILE
 
-#create persistent volumes
+#create persistent volumes - as many ($GKE_VOLUME_QTY) as required for the app
 #swap out in template for name of service
 for (( i=1; i<=$GKE_VOLUME_QTY; i++ )); do
-	#create persistent volumes for drupal and apache
 
 	#trick to substitute to variable names
 	VOLUME="GKE_VOLUME_"$i
 	VOLUME=$(printf '%s\n' "${!VOLUME}")
 	SIZE="GKE_VOLUME_SIZE_"$i
 	SIZE=$(printf '%s\n' "${!SIZE}")
-	DISK=$VOLUME"-disk"
-	#VOLUME=$VOLUME"-vol" #remove the "-vol" so that it matches the NFS path
- 
-	#variable indirection
-	echo "**DEBUG: variables will be used as: "$VOLUME", "$DISK" and "$SIZE
 
-	#CREATE DISK - add the "B" as gcloud is "GB" but k8s is "Gi"
-	#TODO: create volumes and exports in NFS server
-	#need to use a volume name without "/", but need the path with it
-	NFS_PATH=${VOLUME}
-	VOLUME=$(echo $VOLUME | tr / 0) #swap out / for 0
+	#TODO: create volumes and exports in NFS server 
+	# CURRENTLY DONE MANUALLY OFFLINE!
+	#TODO: this should create each volume in the NFS server and return the IP://mount_path of each share
+	#
+	#for k8s volume naming, we need to use a volume name without "/"; but we also need the share path later
+	NFS_PATH=${VOLUME} 				#store the path with "/" for later use
+	VOLUME=$(echo $VOLUME | tr / 0) #swap out / for 0 ; use the path with "0" instead of "/" for volume name
 
-	#CREATE PERSISTENT VOLUME
-	#PV_FILE=$YAML_RUN_LOCATION$VOLUME"-"$(basename $PV_TEMPLATE_FILE)
+	#CREATE **PV** PERSISTENT VOLUME
 	echo "**DEBUG: PV_TEMPLATE_FILE will be: "$PV_TEMPLATE_FILE", PV_FILE will be: "$PV_FILE
 	rm -f $PV_FILE
 	cp $PV_TEMPLATE_FILE $PV_FILE
@@ -95,22 +83,20 @@ for (( i=1; i<=$GKE_VOLUME_QTY; i++ )); do
 	sed -i '' "s,__VOLUME_SIZE__,$SIZE"i",g" $PV_FILE
 	sed -i '' "s,__NFS_SERVER__,$NFS_SERVER,g" $PV_FILE
 	sed -i '' "s,__NFS_PATH__,$NFS_PATH,g" $PV_FILE
-
-	#create persistent volume claim in k8s
+	#create **PV** in k8s from file
 	kubectl create -f $PV_FILE
 	kubectl get pv
 
-	#CREATE PERSISTENT VOLUME CLAIM
+	#CREATE **PVC** PERSISTENT VOLUME CLAIM
 	CLAIM=$VOLUME"-claim"
-	#PVC_FILE=$YAML_RUN_LOCATION$VOLUME"-"$(basename $PVC_TEMPLATE_FILE)
 	echo "**DEBUG: PVC_TEMPLATE_FILE will be: "$PVC_TEMPLATE_FILE", PVC_FILE will be: "$PVC_FILE
 	rm -f $PVC_FILE
 	cp $PVC_TEMPLATE_FILE $PVC_FILE
-	#swap out values in PV file file according to env variables
+	#swap out values in PVC file file according to env variables
 	sed -i '' "s,__CLAIM_NAME__,$CLAIM,g" $PVC_FILE
 	sed -i '' "s,__VOLUME_SIZE__,$SIZE"i",g" $PVC_FILE
 	sed -i '' "s,__VOLUME_NAME__,$VOLUME,g" $PVC_FILE	
-	#create persistent volume claim in k8s
+	#create **PVC** in k8s from file
 	kubectl create -f $PVC_FILE
 	kubectl get pvc
 
@@ -124,9 +110,7 @@ done
 kubectl create -f $DEPLOYMENT_FILE && \
 kubectl get deployments 
 
-#expose the deployment - either from kubectl:
-#kubectl expose deployment $SERVICE_NAME --target-port=$SERVICE_PORT_HTTP --type=NodePort
-#... or using a service file:
+#expose the deployment - with a service file
 rm -f $SERVICE_FILE
 cp $SERVICE_TEMPLATE_FILE $SERVICE_FILE
 #swap out values in DEPLOYMENT template file according to env variables
@@ -148,9 +132,4 @@ sed -i '' "s,__SERVICE_PORT_HTTPS__,$SERVICE_PORT_HTTPS,g" $INGRESS_FILE
 kubectl apply -f $INGRESS_FILE
 kubectl get ingress
 
-###
-### REFERENCE
-###
-#For Cloud SQL proxy as docker container: 
-#from kayun this is the command I used in a customer demo a few months ago on the proxy.  in this case I ran docker locally as the proxy:
-#docker run -d -v /mnt/cloudsql:/cloudsql -v /Users/kayunlam/Code/default/sql/kyl-cloud-demo-sql-client-service-account.json:/config -p 127.0.0.1:3306:3306 gcr.io/cloudsql-docker/gce-proxy:1.09 /cloud_sql_proxy -instances=kyl-cloud-demo-project:us-east4:demo-mysql=tcp:0.0.0.0:3306 -credential_file=/config
+#EOF
