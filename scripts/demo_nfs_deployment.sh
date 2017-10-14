@@ -26,7 +26,7 @@ gcloud sql users create $CLOUDSQL_PROXY_USER cloudsqlproxy~% --instance=$CLOUDSQ
 gcloud sql instances list && \
 gcloud sql users list -i $CLOUDSQL_INSTANCE
 
-#find out instance connection name
+#find out CloudSQL instance connection name -- will be used by CloudSQL proxy to know how to connect to the database
 export INSTANCE_CONNECTION_NAME=$(gcloud sql instances describe $CLOUDSQL_INSTANCE | grep 'connectionName' | awk {'print $2'})
 echo "**DEBUG: CloudSQL Instance name detected as: "$INSTANCE_CONNECTION_NAME
 
