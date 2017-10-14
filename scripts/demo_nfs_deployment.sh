@@ -32,7 +32,7 @@ echo "**DEBUG: CloudSQL Instance name detected as: "$INSTANCE_CONNECTION_NAME
 
 #create kubectl SECRETS for instance and DB
 kubectl create secret generic cloudsql-instance-credentials \
-                    --from-file="credentials.json"=$PROXY_KEY_FILE_PATH && \
+                    --from-file="credentials.json"=$SERVICE_ACCOUNT_KEY_PATH && \
 kubectl create secret generic cloudsql-db-credentials \
 					--from-literal=username=$CLOUDSQL_USERNAME \
 					--from-literal=password=$CLOUDSQL_PASSWORD && \
