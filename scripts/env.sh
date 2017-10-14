@@ -15,8 +15,8 @@ export YAML_RUN_LOCATION=$HOME_DIR"yaml_run/"
 export GKE_CLUSTER_NAME="fersanchez-bbby-gke-6"
 export GKE_CLUSTER_VERSION="1.7.6-gke.1"
 export GKE_MACHINE_TYPE="n1-standard-1"
-export GKE_CLUSTER_SIZE="3"
-export GKE_SECONDARY_ZONE=""
+export GKE_CLUSTER_SIZE="5"
+export GKE_SECONDARY_ZONE="" #for multi-zone HA
 
 #Cloud SQL parameters
 export CLOUDSQL_INSTANCE="drupal-sql6"
@@ -47,30 +47,37 @@ export SERVICE_PORT_HTTPS="443"
 export SERVICE_TEMPLATE_FILE=$TEMPLATES_LOCATION"service.yaml"
 export SERVICE_FILE=$YAML_RUN_LOCATION"service.yaml"
 #k8s deployment template and file
-export DEPLOYMENT_TEMPLATE_FILE=$TEMPLATES_LOCATION"deployment_claimVolume.yaml"
+#export DEPLOYMENT_TEMPLATE_FILE=$TEMPLATES_LOCATION"deployment_claimVolume.yaml"
+export DEPLOYMENT_TEMPLATE_FILE=$TEMPLATES_LOCATION"deployment_nfs.yaml"
 export DEPLOYMENT_FILE=$YAML_RUN_LOCATION"deployment.yaml"
 #k8s ingress template and file
 export INGRESS_TEMPLATE_FILE=$TEMPLATES_LOCATION"ingress.yaml"
 export INGRESS_FILE=$YAML_RUN_LOCATION"ingress.yaml"
 #k8s persistent volumes
 export GKE_VOLUME_QTY=2
-export GKE_VOLUME_1=$SERVICE_NAME"-drupal"
+#export GKE_VOLUME_1=#$SERVICE_NAME"-drupal"
+export GKE_VOLUME_1="/var/nfsroot/drupal"
 export GKE_VOLUME_SIZE_1="50G"
-export GKE_VOLUME_2=$SERVICE_NAME"-apache"
+#export GKE_VOLUME_2=$SERVICE_NAME"-apache"
+export GKE_VOLUME_2="/var/nfsroot/apache"
 export GKE_VOLUME_SIZE_2="50G"
-export PV_TEMPLATE_FILE=$TEMPLATES_LOCATION"pv.yaml"
+export PV_TEMPLATE_FILE=$TEMPLATES_LOCATION"pv_nfs.yaml"
 export PV_FILE=$YAML_RUN_LOCATION"pv.yaml"
 #export PVC_TEMPLATE_FILE=$TEMPLATES_LOCATION"pvc.yaml"
-export PVC_TEMPLATE_FILE=$TEMPLATES_LOCATION"pvc_unspecifiedVolume.yaml" #for statefulSet with dynamic unnamed volumes
+export PVC_TEMPLATE_FILE=$TEMPLATES_LOCATION"pvc_nfs.yaml" #for statefulSet with dynamic unnamed volumes
 export PVC_FILE=$YAML_RUN_LOCATION"pvc.yaml"
-export STORAGECLASS_TEMPLATE_FILE=$TEMPLATES_LOCATION"storageClass.yaml"
+#export STORAGECLASS_TEMPLATE_FILE=$TEMPLATES_LOCATION"storageClass.yaml"
+export STORAGECLASS_TEMPLATE_FILE=$TEMPLATES_LOCATION"storageClass_nfs.yaml"
 export STORAGECLASS_FILE=$YAML_RUN_LOCATION"storageClass.yaml"
 #k8s statefulset parameters
-export STATEFULSET_TEMPLATE_FILE=$TEMPLATES_LOCATION"statefulset_unspecifiedVolume.yaml"
+export STATEFULSET_TEMPLATE_FILE=$TEMPLATES_LOCATION"statefulset_nfs.yaml"
 export STATEFULSET_FILE=$YAML_RUN_LOCATION"statefulSet.yaml"
 export GKE_STATEFULSET_NAME=$SERVICE_NAME"-statefulset"
 
-
+#DEPLYMENT MANAGER SECTION - For the NFS server
+export NFS_DEPLOYMENT_NAME="nfs-deployment"
+export NFS_TEMPLATE_FILE="nfs-server.yaml"
+export NFS_SERVER="nfs-server" #name or IP address. On GCP it's accessible by name
 
 
 

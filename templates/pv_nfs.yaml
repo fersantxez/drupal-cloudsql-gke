@@ -1,0 +1,14 @@
+  apiVersion: v1
+  kind: PersistentVolume
+  metadata:
+    name: __VOLUME_NAME__
+    labels:
+      name: __VOLUME_NAME__ 
+  spec:
+    capacity:
+      storage: __VOLUME_SIZE__
+    accessModes:
+      - ReadWriteMany
+    nfs:
+      server: __NFS_SERVER__
+      path: __NFS_PATH__
