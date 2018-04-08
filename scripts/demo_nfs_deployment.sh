@@ -43,9 +43,15 @@ kubectl get secrets
 #    --config $NFS_TEMPLATE_FILE
 #gcloud deployment-manager deployments describe $NFS_DEPLOYMENT_NAME
 
+#create directories
+mkdir -p $TEMPLATES_LOCATION
+mkdir -p $CREDS_LOCATION
+mkdir -p $YAML_RUN_LOCATION
+
 #create deployment from template
 rm -f $DEPLOYMENT_FILE
 cp $DEPLOYMENT_TEMPLATE_FILE $DEPLOYMENT_FILE
+#swap out values in DEPLOYMENT template file according to env variables
 sed -i '' "s,__INSTANCE_CONNECTION_NAME__,$INSTANCE_CONNECTION_NAME,g" $DEPLOYMENT_FILE
 sed -i '' "s,__SERVICE_NAME__,$SERVICE_NAME,g" $DEPLOYMENT_FILE
 
@@ -53,7 +59,7 @@ sed -i '' "s,__SERVICE_NAME__,$SERVICE_NAME,g" $DEPLOYMENT_FILE
 rm -f $STORAGECLASS_FILE
 cp $STORAGECLASS_TEMPLATE_FILE $STORAGECLASS_FILE
 #swap out values in DEPLOYMENT template file according to env variables
-#sed -i '' "s,__INSTANCE_CONNECTION_NAME__,$INSTANCE_CONNECTION_NAME,g" $DEPLOYMENT_FILE
+sed -i '' "s,__ZONE__,$ZONE,g" $STORAGECLASS_FILE
 kubectl create -f $STORAGECLASS_FILE
 
 #create persistent volumes - as many ($GKE_VOLUME_QTY) as required for the app
@@ -69,7 +75,9 @@ for (( i=1; i<=$GKE_VOLUME_QTY; i++ )); do
 	#TODO: create volumes and exports in NFS server 
 	# CURRENTLY DONE MANUALLY OFFLINE!
 	#TODO: this should create each volume in the NFS server and return the IP://mount_path of each share
-	#
+	# CREATE AN NFS SERVER AND RETURN THE IP://MOUNT
+
+
 	#for k8s volume naming, we need to use a volume name without "/"; but we also need the share path later
 	NFS_PATH=${VOLUME} 				#store the path with "/" for later use
 	VOLUME=$(echo $VOLUME | tr / 0) #swap out / for 0 ; use the path with "0" instead of "/" for volume name

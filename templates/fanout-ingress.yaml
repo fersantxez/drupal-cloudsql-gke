@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: fanout-ingress
+spec:
+  tls:
+    - secretName: example-secret
+      rules:
+        - http:
+          paths:
+          - path: /content
+          backend:
+            serviceName: content
+            servicePort: 8080
+          - path: /
+          backend:
+            serviceName: web
+            servicePort: 8080
+
+

@@ -1,11 +1,15 @@
 #GCP project details
-export PROJECT_NAME="fersanchez-drupal-cloudsql"
-export REGION="us-east1"
-export ZONE="us-east1-b"
-export SOURCE_SNAPSHOT="snap-blank-ext4-50g-us-east1-b"
+export PROJECT_NAME="groundcontrol-www"
+export REGION="us-east4"
+export ZONE="us-east4-c"
+export SOURCE_SNAPSHOT="snap-blank-ext4-50g-us-east4-c"
+
+#NFS server details - THIS HAS TO BE CREATED OUTSIDE OF THE SCRIPT/PROCESS
+export NFS_SERVER="10.0.2.100" #IP address
+export NFS_PATH="/var/nfsroot" #each share 
 
 #Service name - this will be used to expose the service outside of GCP
-export SERVICE_NAME="bbby-cms" #LOWERCASE ONLY FOR VOLUME/DISK NAMES
+export SERVICE_NAME="groundcontrol-cms" #LOWERCASE ONLY FOR VOLUME/DISK NAMES
 export SERVICE_PORT_HTTP="80"
 export SERVICE_PORT_HTTPS="443"
 #purely internal:
@@ -20,14 +24,14 @@ export TEMPLATES_LOCATION=$HOME_DIR"templates/"
 export YAML_RUN_LOCATION=$HOME_DIR"yaml_run/"
 
 #GKE cluster details
-export GKE_CLUSTER_NAME="fersanchez-bbby-gke-6"
-export GKE_CLUSTER_VERSION="1.7.6-gke.1"
+export GKE_CLUSTER_NAME="groundcontrol-frontend-cluster"
+export GKE_CLUSTER_VERSION="1.8.8-gke.0"
 export GKE_MACHINE_TYPE="n1-standard-1"
-export GKE_CLUSTER_SIZE="5"
+export GKE_CLUSTER_SIZE="3"
 export GKE_SECONDARY_ZONE="" #for multi-zone HA
 
 #Cloud SQL parameters
-export CLOUDSQL_INSTANCE="drupal-sql6"
+export CLOUDSQL_INSTANCE="groundcontrol-sql"
 export CLOUDSQL_USERNAME="root"
 export CLOUDSQL_TIER="db-n1-standard-1 "
 export CLOUDSQL_STORAGE_TYPE="SSD"
@@ -51,15 +55,19 @@ export CLOUDSQL_BIN="/usr/local/bin/cloud_sql_proxy"
 #k8s deployment template and file
 export DEPLOYMENT_TEMPLATE_FILE=$TEMPLATES_LOCATION"deployment_nfs.yaml"
 export DEPLOYMENT_FILE=$YAML_RUN_LOCATION"deployment.yaml"
+#k8s storageclass template and file
+export STORAGECLASS_TEMPLATE_FILE=$TEMPLATES_LOCATION"storageclass.yaml"
+export STORAGECLASS_FILE=$YAML_RUN_LOCATION"storageclass.yaml"
 #k8s ingress template and file
 export INGRESS_TEMPLATE_FILE=$TEMPLATES_LOCATION"ingress.yaml"
 export INGRESS_FILE=$YAML_RUN_LOCATION"ingress.yaml"
+
 #k8s persistent volumes
 export GKE_VOLUME_QTY=2
 export GKE_VOLUME_1="/var/nfsroot/drupal"
-export GKE_VOLUME_SIZE_1="50G"
+export GKE_VOLUME_SIZE_1="200G"
 export GKE_VOLUME_2="/var/nfsroot/apache"
-export GKE_VOLUME_SIZE_2="50G"
+export GKE_VOLUME_SIZE_2="200G"
 export PV_TEMPLATE_FILE=$TEMPLATES_LOCATION"pv_nfs.yaml"
 export PV_FILE=$YAML_RUN_LOCATION"pv.yaml"
 export PVC_TEMPLATE_FILE=$TEMPLATES_LOCATION"pvc_nfs.yaml" #for statefulSet with dynamic unnamed volumes
