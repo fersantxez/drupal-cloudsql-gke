@@ -1,6 +1,12 @@
 variable "project_name" {}
 variable "region" {}
 
+variable "ports"{
+  description = "Ports the HTTP server listens on"
+  type = "list"
+  default = [ 8080, 8081 ]
+}
+
 provider "google" {
  region = "${var.region}"
 }
@@ -40,7 +46,7 @@ resource "google_compute_firewall" "default" {
 
   allow {
     protocol = "tcp"
-    ports    = ["80", "8080", "1000-2000"]
+    ports = "${var.ports}"
   }
 
   target_tags = ["web"]
@@ -48,4 +54,8 @@ resource "google_compute_firewall" "default" {
 
 output "instance_id" {
  value = "${google_compute_instance.default.self_link}"
+}
+
+output "public_ip" {
+ value = "${google_compute_instance.default.network_interface.0.access_config.0.assigned_nat_ip}"
 }
