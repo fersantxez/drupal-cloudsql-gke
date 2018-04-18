@@ -6,7 +6,11 @@ export SOURCE_SNAPSHOT="snap-blank-ext4-50g-us-east4-c"
 
 #NFS server details - THIS HAS TO BE CREATED OUTSIDE OF THE SCRIPT/PROCESS
 export NFS_SERVER="10.0.2.100" #IP address
-export NFS_PATH="/var/nfsroot" #each share 
+export NFS_PATH="/var/nfsroot" #each share
+#empty disk image
+export DISK_IMAGE_SIZE="200GB"
+export DISK_NAME="empty-disk"
+export DISK_IMAGE_NAME="empty-disk-image"
 
 #Service name - this will be used to expose the service outside of GCP
 export SERVICE_NAME="groundcontrol-cms" #LOWERCASE ONLY FOR VOLUME/DISK NAMES
@@ -33,7 +37,7 @@ export GKE_SECONDARY_ZONE="" #for multi-zone HA
 #Cloud SQL parameters
 export CLOUDSQL_INSTANCE="groundcontrol-sql"
 export CLOUDSQL_USERNAME="root"
-export CLOUDSQL_TIER="db-n1-standard-1 "
+export CLOUDSQL_TIER="db-n1-standard-1"
 export CLOUDSQL_STORAGE_TYPE="SSD"
 export CLOUDSQL_DB_VERSION="MYSQL_5_7"
 export CLOUDSQL_BACKUP_START_TIME="09:00"
