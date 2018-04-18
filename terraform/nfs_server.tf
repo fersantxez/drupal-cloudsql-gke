@@ -1,7 +1,19 @@
+//disk from snapshot -- externally formatted and persistent
+resource "google_compute_disk" "default" {
+  name     = "${var.nfs_disk}"
+  type     = "pd-ssd"
+  zone     = "${var.zone}"
+  snapshot = "${var.nfs_snapshot}"
+}
+
+output "self_link_compute_disk" {
+  value = "${google_compute_disk.default.self_link}"
+}
+
 //simple instance with startup script
 resource "google_compute_instance" "nfs_server" {
-  project      = "${var.project_name}"
-  zone         = "${data.google_compute_zones.available.names[0]}"
+  project      = "${var.project}"
+  zone         = "${var.zone}"
   name         = "tf-nfs-1"
   machine_type = "f1-micro"
   tags         = ["${var.tag}"]
@@ -12,6 +24,11 @@ resource "google_compute_instance" "nfs_server" {
     }
   }
 
+  attached_disk {
+    source      = "${google_compute_disk.default.name}"
+    device_name = "${var.nfs_device_name}"
+  }
+
   network_interface {
     network       = "default"
     access_config = {}
@@ -19,10 +36,10 @@ resource "google_compute_instance" "nfs_server" {
 
   metadata_startup_script = <<-EOF
                           #!/bin/bash
-                          mount -t ext4 mount -t ext4 \
-                           "${var.nfs_disk}""1" "${var.nfs_export_path}"
-                          echo "${var.nfs_disk}"" ""${var.nfs_export_path}" \
-                           " ext4 defaults 1 1" >> /etc/fstab
+                          mount -t ext4 \
+                           /dev/${var.nfs_device_name}1 ${var.nfs_export_path}
+                          echo "/dev/${var.nfs_device_name}1 ${var.nfs_export_path} \
+                           ext4 defaults 1 1" >> /etc/fstab
                           apt-get install -y nfs-kernel-server
                           systemctl status nfs-kernel-server
                           echo "${var.nfs_vol_1}

@@ -1,7 +1,7 @@
 //sql instance
 resource "google_sql_database_instance" "master" {
   name             = "${var.cloudsql_instance}"
-  database_version = "${cloudsql_db_version}"
+  database_version = "${var.cloudsql_db_version}"
   region           = "${var.region}"
 
   settings {
@@ -12,7 +12,7 @@ resource "google_sql_database_instance" "master" {
 }
 
 //output
-output "self_link" {
+output "self_link_sql_instance" {
   value = "${google_sql_database_instance.master.self_link}"
 }
 
@@ -26,11 +26,11 @@ output "self_link" {
 
 //sql proxy user account
 resource "google_sql_user" "users" {
-  name     = "${cloudsql_username}"
+  name     = "${var.cloudsql_username}"
   instance = "${google_sql_database_instance.master.name}"
 
   //host     = "me.com"
-  password = "${var.cloudsql_password}"
+  password = "${var.master_password}"
 }
 
 //add to kubernetes secret
@@ -41,6 +41,6 @@ resource "kubernetes_secret" "cloudsql-db-credentials" {
 
   data {
     username = "${var.cloudsql_username}"
-    password = "${var.cloudsql_password}"
+    password = "${var.master_password}"
   }
 }
