@@ -12,18 +12,18 @@ resource "google_container_cluster" "primary" {
 }
 
 # The following outputs allow authentication and connectivity to the GKE Cluster.
-output "client_certificate" {
+output "gke_client_certificate" {
   value = "${google_container_cluster.primary.master_auth.0.client_certificate}"
 }
 
-output "client_key" {
+output "gke_client_key" {
   value = "${google_container_cluster.primary.master_auth.0.client_key}"
 }
 
-output "cluster_ca_certificate" {
+output "gke_cluster_ca_certificate" {
   value = "${google_container_cluster.primary.master_auth.0.cluster_ca_certificate}"
 }
 
-output "endpoint" {
+output "gke_endpoint" {
   value = "${google_container_cluster.primary.endpoint}"
 }

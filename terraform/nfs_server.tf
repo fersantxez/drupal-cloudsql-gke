@@ -70,14 +70,14 @@ resource "google_compute_firewall" "default" {
   target_tags = ["${var.tag}"]
 }
 
-output "instance_id" {
+output "nfs_instance_id" {
   value = "${google_compute_instance.nfs_server.self_link}"
 }
 
-output "private_ip" {
+output "nfs_private_ip" {
   value = "${google_compute_instance.nfs_server.network_interface.0.address}"
 }
 
-output "public_ip" {
+output "nfs_public_ip" {
   value = "${google_compute_instance.nfs_server.network_interface.0.access_config.0.assigned_nat_ip}"
 }
