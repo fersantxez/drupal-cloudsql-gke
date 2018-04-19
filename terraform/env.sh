@@ -33,7 +33,7 @@ export TF_VAR_cloudsql_service_account_role="roles/cloudsql.client"
 ##export SERVICE_ACCOUNT_KEY_PATH=${CREDS_LOCATION}${PROJECT_NAME}"-cloudsql-svc-acct-key.json"
 
 #cloudSQL
-export TF_VAR_cloudsql_instance=$TF_VARVAR_project"-sql"
+export TF_VAR_cloudsql_instance=$TF_VAR_project"-sql"
 export TF_VAR_cloudsql_username="root"
 export TF_VAR_cloudsql_tier="db-n1-standard-1"
 export TF_VAR_cloudsql_storage_type="SSD"
