@@ -28,7 +28,9 @@ variable "nfs_export_path" {}
 variable "nfs_snapshot" {}
 variable "nfs_disk" {}
 variable "nfs_vol_1" {}
+variable "nfs_vol_1_size" {}
 variable "nfs_vol_2" {}
+variable "nfs_vol_2_size" {}
 variable "nfs_device_name" {}
 
 //cloudsql service account

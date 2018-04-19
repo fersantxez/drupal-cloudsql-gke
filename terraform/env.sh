@@ -22,8 +22,11 @@ export TF_VAR_nfs_snapshot="ext4-200g-us-east4-empty"     #a pre-created empty e
 export TF_VAR_nfs_disk="nfs-disk"               #a disk that will be created from snapshot
 export TF_VAR_nfs_export_path="/var/nfsroot"
 export TF_VAR_nfs_vol_1="drupal"
+export TF_VAR_nfs_vol_1_size="50Gi"
 export TF_VAR_nfs_vol_2="apache"
+export TF_VAR_nfs_vol_2_size="50Gi"
 export TF_VAR_nfs_device_name="sdb"
+
 
 #service account to use for CloudSQL proxy
 export TF_VAR_cloudsql_service_account_name="cloudsql-svc-acct"
