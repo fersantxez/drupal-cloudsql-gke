@@ -10,7 +10,7 @@ resource "kubernetes_persistent_volume" "vol_2" {
         persistent_volume_source {
             nfs {
                 server = "${google_compute_instance.nfs_server.network_interface.0.address}"
-                path = "${var.nfs_vol_2}"
+                path = "/${var.nfs_vol_2}"
             }
         }
     }
