@@ -10,7 +10,6 @@ variable "project" {}
 variable "region" {}
 variable "zone" {}
 variable "num_instances" {}
-variable "name" {}
 
 //network,security
 

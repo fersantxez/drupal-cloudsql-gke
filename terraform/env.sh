@@ -1,7 +1,6 @@
 #master password: DELETE or COMMENT for use
 export TF_VAR_master_password="12345678901234567890"
 #project and account info
-#export TF_VAR_name="test-fer"
 export TF_VAR_org_id=805845699844
 export TF_VAR_billing_account=00183D-07EE2D-3060A0
 export TF_ADMIN=groundcontrol-terraform-admin
