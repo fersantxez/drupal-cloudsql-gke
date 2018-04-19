@@ -1,7 +1,7 @@
 terraform {
  backend "gcs" {
-   bucket  = "cloudlamp-terraform-admin"
-   prefix  = "/fer-tf/terraform.tfstate"
-   project = "cloudlamp-terraform-admin"
+   bucket  = "groundcontrol-terraform"
+   prefix  = "/tf/terraform.tfstate"
+   project = "groundcontrol-www"
  }
 }
