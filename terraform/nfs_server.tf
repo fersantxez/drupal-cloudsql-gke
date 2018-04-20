@@ -1,9 +1,9 @@
 //disk from snapshot -- externally formatted and persistent
 resource "google_compute_disk" "default" {
-  name     = "${var.nfs_disk}"
+  name     = "${var.disk}"
   type     = "pd-ssd"
   zone     = "${var.zone}"
-  snapshot = "${var.nfs_snapshot}"
+  snapshot = "${var.snapshot}"
 }
 
 output "self_link_compute_disk" {
@@ -26,7 +26,7 @@ resource "google_compute_instance" "nfs_server" {
 
   attached_disk {
     source      = "${google_compute_disk.default.name}"
-    device_name = "${var.nfs_device_name}"
+    device_name = "${var.device_name}"
   }
 
   network_interface {
@@ -36,16 +36,16 @@ resource "google_compute_instance" "nfs_server" {
 
   metadata_startup_script = <<-EOF
                           #!/bin/bash
-			  mkdir -p ${var.nfs_export_path}
+			  mkdir -p ${var.export_path}
                           mount -t ext4 \
-                           /dev/${var.nfs_device_name}1 ${var.nfs_export_path}
-                          echo "/dev/${var.nfs_device_name}1 ${var.nfs_export_path} \
+                           /dev/${var.device_name}1 ${var.export_path}
+                          echo "/dev/${var.device_name}1 ${var.export_path} \
                            ext4 defaults 1 1" >> /etc/fstab
                           apt-get install -y nfs-kernel-server
                           systemctl status nfs-kernel-server
-                          echo "${var.nfs_vol_1} *(rw,sync,no_subtree_check,no_root_squash)" \
+                          echo "${var.vol_1} *(rw,sync,no_subtree_check,no_root_squash)" \
 			    >> /etc/exports
-                          echo "${var.nfs_vol_2} *(rw,sync,no_subtree_check,no_root_squash)" \
+                          echo "${var.vol_2} *(rw,sync,no_subtree_check,no_root_squash)" \
 			    >> /etc/exports
                           exportfs -a
                           systemctl restart nfs-kernel-server

@@ -17,15 +17,15 @@ export TF_VAR_num_instances=3                   #to use in instance group
 export TF_VAR_network="groundcontrol-frontend-us-east4"
 export TF_VAR_tag="web"                        #used to group instances and open firewall to them
 
-#NFS server
-export TF_VAR_nfs_snapshot="ext4-200g-us-east4-empty"     #a pre-created empty ext4 snapshot
-export TF_VAR_nfs_disk="nfs-disk"               #a disk that will be created from snapshot
-export TF_VAR_nfs_export_path="/var/nfsroot"
-export TF_VAR_nfs_vol_1="drupal"
-export TF_VAR_nfs_vol_1_size="50Gi"
-export TF_VAR_nfs_vol_2="apache"
-export TF_VAR_nfs_vol_2_size="50Gi"
-export TF_VAR_nfs_device_name="sdb"
+#Storage - NFS server or other shared filesystem
+export TF_VAR_snapshot="ext4-200g-us-east4-empty"     #a pre-created empty ext4 snapshot
+export TF_VAR_disk="nfs-disk"               #a disk that will be created from snapshot
+export TF_VAR_export_path="/var/nfsroot"
+export TF_VAR_vol_1="drupal"
+export TF_VAR_vol_1_size="50Gi"
+export TF_VAR_vol_2="apache"
+export TF_VAR_vol_2_size="50Gi"
+export TF_VAR_device_name="sdb"
 
 
 #service account to use for CloudSQL proxy
@@ -35,7 +35,7 @@ export TF_VAR_cloudsql_service_account_role="roles/cloudsql.client"
 ##export SERVICE_ACCOUNT_KEY_PATH=${CREDS_LOCATION}${PROJECT_NAME}"-cloudsql-svc-acct-key.json"
 
 #cloudSQL
-export TF_VAR_cloudsql_instance=$TF_VAR_project"-sql"
+export TF_VAR_cloudsql_instance=$TF_VAR_project"-sql2"
 export TF_VAR_cloudsql_username="root"
 export TF_VAR_cloudsql_tier="db-n1-standard-1"
 export TF_VAR_cloudsql_storage_type="SSD"
@@ -47,4 +47,6 @@ export TF_VAR_gke_cluster_version="1.8.8-gke.0"
 export TF_VAR_gke_machine_type="n1-standard-1"
 export TF_VAR_gke_cluster_size="3"
 export TF_VAR_gke_username="client"
+
+
 

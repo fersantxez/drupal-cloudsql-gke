@@ -22,16 +22,16 @@ variable "ports" {
   default     = [8080, 8081]
 }
 
-//NFS
+//Storage - NFS or other shared filesystems
 
-variable "nfs_export_path" {}
-variable "nfs_snapshot" {}
-variable "nfs_disk" {}
-variable "nfs_vol_1" {}
-variable "nfs_vol_1_size" {}
-variable "nfs_vol_2" {}
-variable "nfs_vol_2_size" {}
-variable "nfs_device_name" {}
+variable "export_path" {}
+variable "snapshot" {}
+variable "disk" {}
+variable "vol_1" {}
+variable "vol_1_size" {}
+variable "vol_2" {}
+variable "vol_2_size" {}
+variable "device_name" {}
 
 //cloudsql service account
 
