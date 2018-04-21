@@ -48,5 +48,22 @@ export TF_VAR_gke_machine_type="n1-standard-1"
 export TF_VAR_gke_cluster_size="3"
 export TF_VAR_gke_username="client"
 
+#GKE service
+export TF_VAR_gke_service_name=$TF_VAR_PROJECT"drupal-svc"
+export TF_VAR_gke_app_name=$TF_VAR_PROJECT"drupal-app"
+export TF_VAR_gke_drupal_image="bitnami/drupal:8.3.7-r0"
+export TF_VAR_drupal_username="user"
+export TF_VAR_drupal_email="user@example.com"
+export TF_VAR_drupal_password=$TF_VAR_master_password
+export TF_VAR_gke_cloudsql_image="gcr.io/cloudsql-docker/gce-proxy:1.09"
+#export TF_VAR_gke_cloudsql_command=() \
+#    "/cloud_sql_proxy" \
+#    "--dir=/cloudsql" \
+#    "-instances=__INSTANCE_CONNECTION_NAME__=tcp:3306" \
+#    "-credential_file=/secrets/cloudsql/credentials.json" \
+#    )
 
-
+export TF_VAR_gke_vol_1_name="drupal-data"
+export TF_VAR_gke_vol_1_mount_path="/bitnami/drupal"
+export TF_VAR_gke_vol_2_name="apache-data"
+export TF_VAR_gke_vol_2_mount_path="/bitnami/apache"

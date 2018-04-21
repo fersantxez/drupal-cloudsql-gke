@@ -54,5 +54,29 @@ variable "gke_machine_type" {}
 variable "gke_cluster_size" {}
 variable "gke_username" {}
 
+//GKE service
+
+variable "gke_service_name" {}
+variable "gke_app_name" {}
+variable "gke_drupal_image" {}
+variable "drupal_username" {}
+variable "drupal_password" {}
+variable "drupal_email" {}
+variable "gke_cloudsql_image" {}
+
+//variable "gke_cloudsql_command" {
+//  description = "command to run on the cloudsql container"
+//  type        = "list"
+//  default     = ["/cloud_sql_proxy", "--dir=/cloudsql", "-instances=MYINSTANCENAME=tcp:3306", "-credential_file=/secrets/cloudsql/credentials.json"]
+//}
+
+//
+//    "-instances=${google_sql_database_instance.master.self_link}=tcp:3306",
+
+variable "gke_vol_1_name" {}
+variable "gke_vol_1_mount_path" {}
+variable "gke_vol_2_name" {}
+variable "gke_vol_2_mount_path" {}
+
 //data
 data "google_compute_zones" "available" {}
