@@ -30,8 +30,12 @@ resource "google_compute_instance" "nfs_server" {
   }
 
   network_interface {
-    network       = "default"
-    access_config = {}
+    network    = "${var.network}"
+    subnetwork = "${var.subnetwork}"
+
+    access_config = {
+      // nat_ip = "${var.FIXME_FIXED_EXTERNAL_IP}"
+    }
   }
 
   metadata_startup_script = <<-EOF

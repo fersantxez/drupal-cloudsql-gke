@@ -3,11 +3,17 @@
 resource "google_container_cluster" "primary" {
   name               = "${var.gke_cluster_name}"
   zone               = "${var.zone}"
+  network            = "${var.network}"
+  subnetwork         = "${var.subnetwork}"
   initial_node_count = "${var.gke_cluster_size}"
 
   master_auth {
     username = "${var.gke_username}"
     password = "${var.master_password}"
+  }
+
+  node_config {
+    tags = ["${var.tag}"]
   }
 }
 

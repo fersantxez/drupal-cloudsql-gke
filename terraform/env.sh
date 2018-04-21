@@ -8,14 +8,15 @@ export TF_CREDS=~/.ssh/groundcontrol-terraform-admin.json
 export TF_VAR_project=groundcontrol-www
 export TF_VAR_region=us-east4
 export TF_VAR_zone=us-east4-c
+export TF_VAR_num_instances=3                   #to use in instance group
 
 export GOOGLE_APPLICATION_CREDENTIALS=${TF_CREDS}
 export GOOGLE_PROJECT=${TF_VAR_project}
 
-#instance group with load balancer etc. - TEST
-export TF_VAR_num_instances=3                   #to use in instance group
+#network and security
 export TF_VAR_network="groundcontrol-frontend-us-east4"
-export TF_VAR_tag="web"                        #used to group instances and open firewall to them
+export TF_VAR_subnetwork="groundcontrol-frontend-us-east4"
+export TF_VAR_tag="cloudlamp"                        #used to group instances and open firewall to them
 
 #Storage - NFS server or other shared filesystem
 export TF_VAR_snapshot="ext4-200g-us-east4-empty"     #a pre-created empty ext4 snapshot
@@ -35,7 +36,7 @@ export TF_VAR_cloudsql_service_account_role="roles/cloudsql.client"
 ##export SERVICE_ACCOUNT_KEY_PATH=${CREDS_LOCATION}${PROJECT_NAME}"-cloudsql-svc-acct-key.json"
 
 #cloudSQL
-export TF_VAR_cloudsql_instance=$TF_VAR_project"-sql2"
+export TF_VAR_cloudsql_instance=$TF_VAR_project"-sql"4
 export TF_VAR_cloudsql_username="root"
 export TF_VAR_cloudsql_tier="db-n1-standard-1"
 export TF_VAR_cloudsql_storage_type="SSD"

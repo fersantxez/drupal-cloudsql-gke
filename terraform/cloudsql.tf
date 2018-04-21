@@ -16,6 +16,10 @@ output "self_link_sql_instance" {
   value = "${google_sql_database_instance.master.self_link}"
 }
 
+output "connection_name" {
+  value = "${google_sql_database_instance.master.connection_name}"
+}
+
 //Creates a new Google SQL Database on a Google SQL Database Instance
 //resource "google_sql_database" "users" {
 //  name      = "users-db"

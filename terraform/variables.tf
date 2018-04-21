@@ -14,12 +14,13 @@ variable "num_instances" {}
 //network,security
 
 variable "network" {}
+variable "subnetwork" {}
 variable "tag" {}
 
 variable "ports" {
-  description = "Ports the HTTP server listens on"
+  description = "Ports the HTTP server listens on to be allowd in th external firewall"
   type        = "list"
-  default     = [8080, 8081]
+  default     = [80, 443, 8080, 8081]
 }
 
 //Storage - NFS or other shared filesystems

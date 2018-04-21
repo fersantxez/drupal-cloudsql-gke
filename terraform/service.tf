@@ -119,10 +119,18 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
       }
 
       container {
-        image   = "${var.gke_cloudsql_image}"
-        name    = "cloudsql-proxy"
-        command = ["/cloud_sql_proxy", "--dir=/cloudsql", "-instances=MYINSTANCENAME=tcp:3306", "-credential_file=/secrets/cloudsql/credentials.json"]
+        image = "${var.gke_cloudsql_image}"
+        name  = "cloudsql-proxy"
 
+        //"-instances=${var.project}:${var.region}:${var.cloudsql_instance}=tcp:3306", 
+        command = [
+          "/cloud_sql_proxy",
+          "--dir=/cloudsql",
+          "-instances=${google_sql_database_instance.master.connection_name}=tcp:3306",
+          "-credential_file=/secrets/cloudsql/credentials.json",
+        ]
+
+        //**DEBUG: CloudSQL Instance name detected as: groundcontrol-www:us-east4:groundcontrol-sql-3
         port = [
           {
             container_port = 3306
