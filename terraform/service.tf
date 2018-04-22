@@ -12,18 +12,18 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
 
     template {
       volume {
-        name = "${kubernetes_persistent_volume_claim.pvc_1.metadata.0.name}"
+        name = "${kubernetes_persistent_volume.vol_1.metadata.0.name}"
 
         persistent_volume_claim {
-          claim_name = "${kubernetes_persistent_volume.vol_1.metadata.0.name}"
+          claim_name = "${kubernetes_persistent_volume_claim.pvc_1.metadata.0.name}"
         }
       }
 
       volume {
-        name = "${kubernetes_persistent_volume_claim.pvc_2.metadata.0.name}"
+        name = "${kubernetes_persistent_volume.vol_2.metadata.0.name}"
 
         persistent_volume_claim {
-          claim_name = "${kubernetes_persistent_volume.vol_2.metadata.0.name}"
+          claim_name = "${kubernetes_persistent_volume_claim.pvc_2.metadata.0.name}"
         }
       }
 
@@ -139,8 +139,8 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
         ]
 
         volume_mount {
-          name       = "cloudsql-instance-credentials"
-          mount_path = "/etc/ssl/certs"
+          name       = "${kubernetes_secret.cloudsql-db-credentials.metadata.0.name}"
+          mount_path = "/secrets/cloudsql"
           read_only  = true
         }
 

@@ -37,7 +37,8 @@ variable "device_name" {}
 //cloudsql service account
 
 variable "cloudsql_service_account_name" {}
-variable "cloudsql_service_account_role" {}
+variable "cloudsql_client_role" {}
+variable "create_keys_role" {}
 
 //cloudSQL
 

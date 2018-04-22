@@ -22,21 +22,22 @@ export TF_VAR_tag="cloudlamp"                        #used to group instances an
 export TF_VAR_snapshot="ext4-200g-us-east4-empty"     #a pre-created empty ext4 snapshot
 export TF_VAR_disk="nfs-disk"               #a disk that will be created from snapshot
 export TF_VAR_export_path="/var/nfsroot"
-export TF_VAR_vol_1="drupal"
-export TF_VAR_vol_1_size="50Gi"
-export TF_VAR_vol_2="apache"
-export TF_VAR_vol_2_size="50Gi"
+export TF_VAR_vol_1="drupal-vol"
+export TF_VAR_vol_1_size="200Gi"
+export TF_VAR_vol_2="apache-vol"
+export TF_VAR_vol_2_size="200Gi"
 export TF_VAR_device_name="sdb"
 
 
 #service account to use for CloudSQL proxy
 export TF_VAR_cloudsql_service_account_name="cloudsql-svc-acct"
 export TF_VAR_cloudsql_service_account_description="Service account for CloudSQL proxy"
-export TF_VAR_cloudsql_service_account_role="roles/cloudsql.client"
+export TF_VAR_cloudsql_client_role="roles/cloudsql.client"
+export TF_VAR_create_keys_role="roles/iam.serviceAccountKeyAdmin"
 ##export SERVICE_ACCOUNT_KEY_PATH=${CREDS_LOCATION}${PROJECT_NAME}"-cloudsql-svc-acct-key.json"
 
 #cloudSQL
-export TF_VAR_cloudsql_instance=$TF_VAR_project"-sql"4
+export TF_VAR_cloudsql_instance=$TF_VAR_project"-sql"9
 export TF_VAR_cloudsql_username="root"
 export TF_VAR_cloudsql_tier="db-n1-standard-1"
 export TF_VAR_cloudsql_storage_type="SSD"

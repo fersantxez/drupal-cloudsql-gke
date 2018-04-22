@@ -1,6 +1,6 @@
 //firewall rule: allow all traffic internal to the network
-resource "google_compute_firewall" "allow_internal" {
-  name        = "allow_internal"
+resource "google_compute_firewall" "internal" {
+  name        = "internal"
   project     = "${var.project}"
   network     = "${var.network}"
   description = "allow all traffic between instances in the network with the same tag"
@@ -21,8 +21,8 @@ resource "google_compute_firewall" "allow_internal" {
   target_tags = ["${var.tag}"]
 }
 
-resource "google_compute_firewall" "allow_external" {
-  name        = "allow_external"
+resource "google_compute_firewall" "external" {
+  name        = "external"
   project     = "${var.project}"
   network     = "${var.network}"
   description = "allow external traffic towards instances in the network in some ports"

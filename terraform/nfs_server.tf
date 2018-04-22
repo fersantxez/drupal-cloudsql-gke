@@ -30,7 +30,7 @@ resource "google_compute_instance" "nfs_server" {
   }
 
   network_interface {
-    network    = "${var.network}"
+    //network    = "${var.network}"
     subnetwork = "${var.subnetwork}"
 
     access_config = {
@@ -55,23 +55,6 @@ resource "google_compute_instance" "nfs_server" {
                           systemctl restart nfs-kernel-server
                           showmount -e
                           EOF
-}
-
-//firewall rule allowing a few ports (from the variables file)
-resource "google_compute_firewall" "default" {
-  name    = "test-firewall"
-  network = "default"
-
-  allow {
-    protocol = "icmp"
-  }
-
-  allow {
-    protocol = "tcp"
-    ports    = "${var.ports}"
-  }
-
-  target_tags = ["${var.tag}"]
 }
 
 output "nfs_instance_id" {
