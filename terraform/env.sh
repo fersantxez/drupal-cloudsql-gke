@@ -32,7 +32,7 @@ export TF_VAR_device_name="sdb"
 #service account to use for CloudSQL proxy
 export TF_VAR_cloudsql_service_account_name="cloudsql-svc-acct"
 export TF_VAR_cloudsql_service_account_description="Service account for CloudSQL proxy"
-export TF_VAR_cloudsql_client_role="roles/cloudsql.client"
+export TF_VAR_cloudsql_client_role="roles/editor"
 export TF_VAR_create_keys_role="roles/iam.serviceAccountKeyAdmin"
 ##export SERVICE_ACCOUNT_KEY_PATH=${CREDS_LOCATION}${PROJECT_NAME}"-cloudsql-svc-acct-key.json"
 

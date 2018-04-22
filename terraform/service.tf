@@ -35,13 +35,14 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
         }
       }
 
-      volume {
-        name = "ssl-certs"
+      //volume {
+      //  name = "ssl-certs"
 
-        secret {
-          secret_name = "ssl-certs"
-        }
-      }
+
+      //  secret {
+      //   secret_name = "ssl-certs"
+      //  }
+      //}
 
       container {
         image = "${var.gke_drupal_image}"
@@ -117,7 +118,6 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
           },
         ]
       }
-
       container {
         image = "${var.gke_cloudsql_image}"
         name  = "cloudsql-proxy"
@@ -144,10 +144,10 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
           read_only  = true
         }
 
-        volume_mount {
-          name       = "ssl-certs"
-          mount_path = "/etc/ssl/certs"
-        }
+        //volume_mount {
+        //  name       = "ssl-certs"
+        //  mount_path = "/etc/ssl/certs"
+        //}
       }
     }
   }

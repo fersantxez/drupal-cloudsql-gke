@@ -4,12 +4,18 @@ resource "google_service_account" "cloudsql-sa" {
   display_name = "CloudSQL service account"
 }
 
-//PART I: create SA key and add key to k8s secret to be used from k8s svcs
-
-//IAM policy - allow to create svc account keys
-data "google_iam_policy" "create-keys-policy" {
+//IAM policy - allow to create svc account keys and access cloudsql as client
+data "google_iam_policy" "create-keys-and-sql-client-policy" {
   binding {
     role = "${var.create_keys_role}"
+
+    members = [
+      "serviceAccount:${google_service_account.cloudsql-sa.email}",
+    ]
+  }
+
+  binding {
+    role = "${var.cloudsql_client_role}"
 
     members = [
       "serviceAccount:${google_service_account.cloudsql-sa.email}",
@@ -44,19 +50,6 @@ resource "kubernetes_secret" "cloudsql-instance-credentials" {
 
   data {
     credentials.json = "${base64decode(google_service_account_key.cloudsql-sa-key.private_key)}"
-  }
-}
-
-//PART II: Enable the SA to access CloudSQL and add the DB connection to k8s as secret
-
-//IAM policy - allow to access CloudSQL
-data "google_iam_policy" "cloudsql-client-policy" {
-  binding {
-    role = "${var.cloudsql_client_role}"
-
-    members = [
-      "serviceAccount:${google_service_account.cloudsql-sa.email}",
-    ]
   }
 }
 
