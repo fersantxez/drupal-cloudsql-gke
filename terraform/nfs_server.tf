@@ -30,44 +30,33 @@ resource "google_compute_instance" "nfs_server" {
   }
 
   network_interface {
-    network       = "default"
-    access_config = {}
+    //network    = "${var.network}"
+    subnetwork = "${var.subnetwork}"
+
+    access_config = {
+      // nat_ip = "${var.FIXME_FIXED_EXTERNAL_IP}"
+    }
   }
 
   metadata_startup_script = <<-EOF
                           #!/bin/bash
-			  mkdir -p ${var.export_path}
+			                    mkdir -p ${var.export_path}
                           mount -t ext4 \
                            /dev/${var.device_name}1 ${var.export_path}
                           echo "/dev/${var.device_name}1 ${var.export_path} \
                            ext4 defaults 1 1" >> /etc/fstab
+			                    mkdir -p ${var.export_path}/${var.vol_1}
+                          mkdir -p ${var.export_path}/${var.vol_2}
                           apt-get install -y nfs-kernel-server
                           systemctl status nfs-kernel-server
-                          echo "${var.vol_1} *(rw,sync,no_subtree_check,no_root_squash)" \
+                          echo "${var.export_path}/${var.vol_1} *(rw,sync,no_subtree_check,no_root_squash)" \
 			    >> /etc/exports
-                          echo "${var.vol_2} *(rw,sync,no_subtree_check,no_root_squash)" \
+                          echo  "${var.export_path}/${var.vol_2} *(rw,sync,no_subtree_check,no_root_squash)" \
 			    >> /etc/exports
                           exportfs -a
                           systemctl restart nfs-kernel-server
                           showmount -e
                           EOF
-}
-
-//firewall rule allowing a few ports (from the variables file)
-resource "google_compute_firewall" "default" {
-  name    = "test-firewall"
-  network = "default"
-
-  allow {
-    protocol = "icmp"
-  }
-
-  allow {
-    protocol = "tcp"
-    ports    = "${var.ports}"
-  }
-
-  target_tags = ["${var.tag}"]
 }
 
 output "nfs_instance_id" {
