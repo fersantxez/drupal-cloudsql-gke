@@ -28,6 +28,14 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
       }
 
       volume {
+        name = "${kubernetes_secret.cloudsql-instance-credentials.metadata.0.name}"
+
+        secret {
+          secret_name = "${kubernetes_secret.cloudsql-instance-credentials.metadata.0.name}"
+        }
+      }
+
+      volume {
         name = "${kubernetes_secret.cloudsql-db-credentials.metadata.0.name}"
 
         secret {
@@ -117,11 +125,17 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
             value = "${var.drupal_email}"
           },
         ]
+
+        //{
+        //  name  = "GOOGLE_APPLICATION_CREDENTIALS"
+        //  value = "/secrets/cloudsql/credentials.json"
+        //},
       }
       container {
         image = "${var.gke_cloudsql_image}"
         name  = "cloudsql-proxy"
 
+        //**DEBUG: CloudSQL Instance name detected as: groundcontrol-www:us-east4:groundcontrol-sql-3
         //"-instances=${var.project}:${var.region}:${var.cloudsql_instance}=tcp:3306", 
         command = [
           "/cloud_sql_proxy",
@@ -130,24 +144,24 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
           "-credential_file=/secrets/cloudsql/credentials.json",
         ]
 
-        //**DEBUG: CloudSQL Instance name detected as: groundcontrol-www:us-east4:groundcontrol-sql-3
+        //  "-credential_file=/secrets/cloudsql/credentials.json",
+        //]
+
         port = [
           {
             container_port = 3306
             name           = "mysql"
           },
         ]
-
         volume_mount {
-          name       = "${kubernetes_secret.cloudsql-db-credentials.metadata.0.name}"
-          mount_path = "/secrets/cloudsql"
+          name       = "${kubernetes_secret.cloudsql-instance-credentials.metadata.0.name}"
+          mount_path = "/secrets/cloudsql/"
           read_only  = true
         }
-
-        //volume_mount {
-        //  name       = "ssl-certs"
-        //  mount_path = "/etc/ssl/certs"
-        //}
+        volume_mount {
+          name       = "${kubernetes_secret.cloudsql-db-credentials.metadata.0.name}"
+          mount_path = "/secrets/db-creds/"
+        }
       }
     }
   }

@@ -30,18 +30,19 @@ export TF_VAR_device_name="sdb"
 
 
 #service account to use for CloudSQL proxy
-export TF_VAR_cloudsql_service_account_name="cloudsql-svc-acct"
+export TF_VAR_cloudsql_service_account_name="cloudsqlsa"
 export TF_VAR_cloudsql_service_account_description="Service account for CloudSQL proxy"
-export TF_VAR_cloudsql_client_role="roles/editor"
+export TF_VAR_cloudsql_client_role="roles/editor"  #"roles/cloudsql.client" #
 export TF_VAR_create_keys_role="roles/iam.serviceAccountKeyAdmin"
 ##export SERVICE_ACCOUNT_KEY_PATH=${CREDS_LOCATION}${PROJECT_NAME}"-cloudsql-svc-acct-key.json"
 
 #cloudSQL
-export TF_VAR_cloudsql_instance=$TF_VAR_project"-sql"9
+export TF_VAR_cloudsql_instance=$TF_VAR_project"-sql"10
 export TF_VAR_cloudsql_username="root"
 export TF_VAR_cloudsql_tier="db-n1-standard-1"
 export TF_VAR_cloudsql_storage_type="SSD"
 export TF_VAR_cloudsql_db_version="MYSQL_5_7"
+export TF_VAR_cloudsql_db_creds_path="~/.ssh/cloudsql-tf-creds.json"
 
 #GKE cluster details
 export TF_VAR_gke_cluster_name=$TF_VAR_project"-gke"

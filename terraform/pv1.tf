@@ -15,7 +15,7 @@ resource "kubernetes_persistent_volume" "vol_1" {
     persistent_volume_source {
       nfs {
         server = "${google_compute_instance.nfs_server.network_interface.0.address}"
-        path   = "/${var.vol_1}"
+        path   = "${var.export_path}/${var.vol_1}"
       }
     }
   }

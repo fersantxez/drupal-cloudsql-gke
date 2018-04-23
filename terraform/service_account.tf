@@ -5,23 +5,15 @@ resource "google_service_account" "cloudsql-sa" {
 }
 
 //IAM policy - allow to create svc account keys and access cloudsql as client
-data "google_iam_policy" "create-keys-and-sql-client-policy" {
-  binding {
-    role = "${var.create_keys_role}"
+//data "google_iam_policy" "create-keys-policy" {
+//  binding {
+//   role = "${var.create_keys_role}"//
 
-    members = [
-      "serviceAccount:${google_service_account.cloudsql-sa.email}",
-    ]
-  }
-
-  binding {
-    role = "${var.cloudsql_client_role}"
-
-    members = [
-      "serviceAccount:${google_service_account.cloudsql-sa.email}",
-    ]
-  }
-}
+//    members = [
+//     "serviceAccount:${google_service_account.cloudsql-sa.email}",
+//   ]
+// }
+//}
 
 //IAM policy binding - allow SA to create svc account keys
 resource "google_service_account_iam_binding" "cloudsql-sa-create-keys" {
@@ -42,18 +34,18 @@ resource "google_service_account_key" "cloudsql-sa-key" {
   public_key_type = "TYPE_X509_PEM_FILE"
 }
 
-//add key to kubernetes secret
-resource "kubernetes_secret" "cloudsql-instance-credentials" {
-  metadata {
-    name = "cloudsql-instance-credentials"
-  }
+//policy - access cloudsql
+//data "google_iam_policy" "sql-client-policy" {
+// binding {
+//  role = "${var.cloudsql_client_role}"
 
-  data {
-    credentials.json = "${base64decode(google_service_account_key.cloudsql-sa-key.private_key)}"
-  }
-}
+//    members = [
+//    "serviceAccount:${google_service_account.cloudsql-sa.email}"//,
+//    ]
+//  }
+//}
 
-//IAM policy binding - allow SA to access CloudSQL
+//policy binding - associate  the access cloudSQL permission with SA
 resource "google_service_account_iam_binding" "cloudsql-sa-cloudsql-client" {
   service_account_id = "${google_service_account.cloudsql-sa.name}"
 
@@ -64,14 +56,22 @@ resource "google_service_account_iam_binding" "cloudsql-sa-cloudsql-client" {
   ]
 }
 
-resource "kubernetes_config_map" "dbconfig" {
-  "metadata" {
-    name = "dbconfig"
+//service account to cloudsql secret
+//add key to kubernetes secret
+resource "kubernetes_secret" "cloudsql-instance-credentials" {
+  metadata {
+    name = "cloudsql-instance-credentials"
+
+    //annotations {
+    //  "kubernetes.io/service_account_name" = "${google_service_account.cloudsql-sa.account_id}"
+    //}
   }
 
-  data = {
-    dbconnection = "${google_sql_database_instance.master.connection_name}"
-
-    //"${var.project}:${var.region}:${google_sql_database_instance.master.name}"
+  data {
+    //credentials.json = "${base64decode(google_service_account_key.cloudsql-sa-key.private_key)}"
+    //FIXME: find the file where the secret is stored as code , not pre-set variable
+    credentials.json = "${file("${var.cloudsql_db_creds_path}")}"
   }
+
+  //type = "kubernetes.io/service-account-token"
 }

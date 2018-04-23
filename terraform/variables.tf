@@ -47,6 +47,7 @@ variable "cloudsql_username" {}
 variable "cloudsql_tier" {}
 variable "cloudsql_storage_type" {}
 variable "cloudsql_db_version" {}
+variable "cloudsql_db_creds_path" {}
 
 //GKE
 

@@ -37,7 +37,7 @@ resource "google_sql_user" "users" {
   password = "${var.master_password}"
 }
 
-//add to kubernetes secret
+//add to kubernetes secret - currently unused but backup/reference for future
 resource "kubernetes_secret" "cloudsql-db-credentials" {
   metadata {
     name = "cloudsql-db-credentials"
@@ -46,5 +46,17 @@ resource "kubernetes_secret" "cloudsql-db-credentials" {
   data {
     username = "${var.cloudsql_username}"
     password = "${var.master_password}"
+  }
+}
+
+resource "kubernetes_config_map" "dbconfig" {
+  "metadata" {
+    name = "dbconfig"
+  }
+
+  data = {
+    dbconnection = "${google_sql_database_instance.master.connection_name}"
+
+    //"${var.project}:${var.region}:${google_sql_database_instance.master.name}"
   }
 }
