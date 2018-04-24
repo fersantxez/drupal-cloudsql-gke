@@ -63,3 +63,9 @@ export TF_VAR_gke_vol_1_name="drupal-data"
 export TF_VAR_gke_vol_1_mount_path="/bitnami/drupal"
 export TF_VAR_gke_vol_2_name="apache-data"
 export TF_VAR_gke_vol_2_mount_path="/bitnami/apache"
+
+#networking
+export TF_VAR_ext_ip_name=$TF_VAR_project"-ext-ip"
+export TF_VAR_domain="groundcontrol.me"
+export TF_VAR_dns_zone_name="blog"
+export TF_VAR_dns_name=$TF_VAR_dns_zone_name"."$TF_VAR_domain

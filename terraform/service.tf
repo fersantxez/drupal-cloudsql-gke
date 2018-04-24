@@ -174,7 +174,6 @@ resource "kubernetes_service" "cloud-drupal" {
       app = "${var.gke_app_name}"
     }
 
-
     session_affinity = "ClientIP"
 
     port {
@@ -184,6 +183,8 @@ resource "kubernetes_service" "cloud-drupal" {
     }
 
     type = "LoadBalancer"
+    //load_balancer_ip = "${google_compute_global_address.frontend.address}"
+
   }
 }
 

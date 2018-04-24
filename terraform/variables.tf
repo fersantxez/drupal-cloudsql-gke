@@ -18,7 +18,7 @@ variable "subnetwork" {}
 variable "tag" {}
 
 variable "ports" {
-  description = "Ports the HTTP server listens on to be allowd in th external firewall"
+  description = "Ports the HTTP server listens on to be allowd in the external firewall"
   type        = "list"
   default     = [80, 443, 8080, 8081]
 }
@@ -80,6 +80,13 @@ variable "gke_vol_1_name" {}
 variable "gke_vol_1_mount_path" {}
 variable "gke_vol_2_name" {}
 variable "gke_vol_2_mount_path" {}
+
+//networking
+
+variable "ext_ip_name" {}
+variable "domain" {}
+variable "dns_zone_name" {}
+variable "dns_name" {}
 
 //data
 data "google_compute_zones" "available" {}
