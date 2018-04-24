@@ -61,7 +61,7 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
         liveness_probe {
           http_get {
             port = 80
-            path = "/usr/login"
+            path = "/"
           }
 
           initial_delay_seconds = 120
@@ -70,7 +70,7 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
         readiness_probe {
           http_get {
             port = 80
-            path = "/usr/login"
+            path = "/"
           }
 
           initial_delay_seconds = 30
@@ -174,13 +174,19 @@ resource "kubernetes_service" "cloud-drupal" {
       app = "${var.gke_app_name}"
     }
 
+
     session_affinity = "ClientIP"
 
     port {
-      port        = 8080
+      protocol    = "TCP"
+      port        = 80
       target_port = 80
     }
 
     type = "LoadBalancer"
   }
+}
+
+output "lb_ip" {
+value = "${kubernetes_service.cloud-drupal.load_balancer_ingress.0.ip}"
 }

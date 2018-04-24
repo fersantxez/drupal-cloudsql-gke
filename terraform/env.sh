@@ -30,13 +30,13 @@ export TF_VAR_device_name="sdb"
 
 
 #service account to use for CloudSQL proxy
-export TF_VAR_cloudsql_service_account_name="cloudsqlsa"
+export TF_VAR_cloudsql_service_account_name="cloudsql-svc-acct"
 export TF_VAR_cloudsql_service_account_description="Service account for CloudSQL proxy"
 export TF_VAR_cloudsql_client_role="roles/cloudsql.client" #
 export TF_VAR_create_keys_role="roles/iam.serviceAccountKeyAdmin"
 
 #cloudSQL
-export TF_VAR_cloudsql_instance=$TF_VAR_project"-sql"14
+export TF_VAR_cloudsql_instance=$TF_VAR_project"-sql"16
 export TF_VAR_cloudsql_username="cloudsqlproxy"
 export TF_VAR_cloudsql_tier="db-n1-standard-1"
 export TF_VAR_cloudsql_storage_type="SSD"
