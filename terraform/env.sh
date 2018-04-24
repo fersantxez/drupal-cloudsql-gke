@@ -32,13 +32,12 @@ export TF_VAR_device_name="sdb"
 #service account to use for CloudSQL proxy
 export TF_VAR_cloudsql_service_account_name="cloudsqlsa"
 export TF_VAR_cloudsql_service_account_description="Service account for CloudSQL proxy"
-export TF_VAR_cloudsql_client_role="roles/editor"  #"roles/cloudsql.client" #
+export TF_VAR_cloudsql_client_role="roles/cloudsql.client" #
 export TF_VAR_create_keys_role="roles/iam.serviceAccountKeyAdmin"
-##export SERVICE_ACCOUNT_KEY_PATH=${CREDS_LOCATION}${PROJECT_NAME}"-cloudsql-svc-acct-key.json"
 
 #cloudSQL
-export TF_VAR_cloudsql_instance=$TF_VAR_project"-sql"11
-export TF_VAR_cloudsql_username="root"
+export TF_VAR_cloudsql_instance=$TF_VAR_project"-sql"14
+export TF_VAR_cloudsql_username="cloudsqlproxy"
 export TF_VAR_cloudsql_tier="db-n1-standard-1"
 export TF_VAR_cloudsql_storage_type="SSD"
 export TF_VAR_cloudsql_db_version="MYSQL_5_7"
@@ -59,12 +58,6 @@ export TF_VAR_drupal_username="user"
 export TF_VAR_drupal_email="user@example.com"
 export TF_VAR_drupal_password=$TF_VAR_master_password
 export TF_VAR_gke_cloudsql_image="gcr.io/cloudsql-docker/gce-proxy:1.09"
-#export TF_VAR_gke_cloudsql_command=() \
-#    "/cloud_sql_proxy" \
-#    "--dir=/cloudsql" \
-#    "-instances=__INSTANCE_CONNECTION_NAME__=tcp:3306" \
-#    "-credential_file=/secrets/cloudsql/credentials.json" \
-#    )
 
 export TF_VAR_gke_vol_1_name="drupal-data"
 export TF_VAR_gke_vol_1_mount_path="/bitnami/drupal"

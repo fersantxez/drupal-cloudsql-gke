@@ -51,10 +51,6 @@ resource "google_project_iam_policy" "cloudsql-client-on-project" {
 resource "kubernetes_secret" "cloudsql-instance-credentials" {
   metadata {
     name = "cloudsql-instance-credentials"
-
-    //annotations {
-    //  "kubernetes.io/service_account_name" = "${google_service_account.cloudsql-sa.account_id}"
-    //}
   }
 
   data {
@@ -62,6 +58,4 @@ resource "kubernetes_secret" "cloudsql-instance-credentials" {
     //FIXME: find the file where the secret is stored as code , not pre-set variable
     credentials.json = "${file("${var.cloudsql_db_creds_path}")}"
   }
-
-  //type = "kubernetes.io/service-account-token"
 }
