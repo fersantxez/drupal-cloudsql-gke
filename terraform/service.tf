@@ -156,7 +156,7 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
 
         volume_mount {
           name       = "${kubernetes_secret.cloudsql-instance-credentials.metadata.0.name}"
-          mount_path = "/secrets/cloudsql/${kubernetes_secret.cloudsql-instance-credentials.metadata.0.name}"
+          mount_path = "/secrets/${kubernetes_secret.cloudsql-instance-credentials.metadata.0.name}"
           read_only  = true
         }
       }
