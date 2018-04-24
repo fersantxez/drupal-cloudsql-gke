@@ -104,7 +104,7 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
             name = "MARIADB_USER"
 
             //value = "${var.cloudsql_username}"
-            //value = ${file("/secrets/${kubernetes_secret.cloudsql-db-credentials.metadata0.name}/password)} 
+            //value = ${file("/secrets/${kubernetes_secret.cloudsql-db-credentials.metadata0.name}/username)} 
             value = "${kubernetes_secret.cloudsql-db-credentials.data.username}"
           },
           {
