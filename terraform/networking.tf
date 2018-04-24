@@ -29,6 +29,10 @@ resource "google_dns_record_set" "frontend" {
   rrdatas = ["${google_compute_address.frontend.address}"]
 }
 
+output "frontend-URL"{
+  value = "${google_dns_record_set.frontend.name}"
+}
+
 resource "google_dns_record_set" "www" {
   name = "www.${google_dns_managed_zone.myzone.dns_name}"
   type = "CNAME"
@@ -37,4 +41,8 @@ resource "google_dns_record_set" "www" {
   managed_zone = "${google_dns_managed_zone.myzone.name}"
 
   rrdatas = ["${google_dns_managed_zone.myzone.dns_name}"]
+}
+
+output "www-URL"{
+  value = "${google_dns_record_set.www.name}"
 }

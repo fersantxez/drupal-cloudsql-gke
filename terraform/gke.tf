@@ -15,6 +15,8 @@ resource "google_container_cluster" "primary" {
   node_config {
     tags = ["${var.tag}"]
   }
+
+  enable_legacy_abac = true
 }
 
 # The following outputs allow authentication and connectivity to the GKE Cluster.
