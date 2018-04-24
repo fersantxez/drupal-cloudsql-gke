@@ -2,13 +2,14 @@
 
 
 //external IP that should be used in the external load balancer / FIXME: not working
-resource "google_compute_global_address" "frontend" {
+resource "google_compute_address" "frontend" {
   project = "${var.project}"
   name = "${var.ext_ip_name}"
+  region = "${var.region}"
 }
 
 output "frontend-ip"{
-  value = "${google_compute_global_address.frontend.address}"
+  value = "${google_compute_address.frontend.address}"
 }
 
 //DNS record
@@ -24,7 +25,8 @@ resource "google_dns_record_set" "frontend" {
   type = "A"
   ttl  = 300
 
-  rrdatas = ["${kubernetes_service.cloud-drupal.load_balancer_ingress.0.ip}"]
+  //rrdatas = ["${kubernetes_service.cloud-drupal.load_balancer_ingress.0.ip}"]
+  rrdatas = ["${google_compute_address.frontend.address}"]
 }
 
 resource "google_dns_record_set" "www" {

@@ -3,14 +3,14 @@ export TF_VAR_master_password="12345678901234567890"
 #project and account info
 export TF_VAR_org_id=805845699844
 export TF_VAR_billing_account=00183D-07EE2D-3060A0
-export TF_ADMIN=groundcontrol-terraform-admin
-export TF_CREDS=~/.ssh/groundcontrol-terraform-admin.json
+export TF_VAR_ADMIN=groundcontrol-terraform-admin
+export TF_VAR_CREDS=~/.ssh/groundcontrol-terraform-admin.json
 export TF_VAR_project=groundcontrol-www
 export TF_VAR_region=us-east4
 export TF_VAR_zone=us-east4-c
 export TF_VAR_num_instances=3                   #to use in instance group
 
-export GOOGLE_APPLICATION_CREDENTIALS=${TF_CREDS}
+export GOOGLE_APPLICATION_CREDENTIALS=${TF_VAR_CREDS}
 export GOOGLE_PROJECT=${TF_VAR_project}
 
 #network and security
@@ -51,8 +51,8 @@ export TF_VAR_gke_cluster_size="3"
 export TF_VAR_gke_username="client"
 
 #GKE service
-export TF_VAR_gke_service_name=$TF_VAR_PROJECT"drupal-svc"
-export TF_VAR_gke_app_name=$TF_VAR_PROJECT"drupal-app"
+export TF_VAR_gke_service_name=$TF_VAR_PROJECT"-drupal-svc"
+export TF_VAR_gke_app_name=$TF_VAR_PROJECT"-drupal-app"
 export TF_VAR_gke_drupal_image="bitnami/drupal:8.3.7-r0"
 export TF_VAR_drupal_username="user"
 export TF_VAR_drupal_email="user@example.com"
@@ -69,3 +69,15 @@ export TF_VAR_ext_ip_name=$TF_VAR_project"-ext-ip"
 export TF_VAR_domain="groundcontrol.me"
 export TF_VAR_dns_zone_name="blog"
 export TF_VAR_dns_name=$TF_VAR_dns_zone_name"."$TF_VAR_domain
+
+
+#ECFS - Elastifile
+export TF_VAR_NUM_OF_VMS="3"
+export TF_VAR_DISKTYPE="local"
+export TF_VAR_NUM_OF_DISKS="1"
+export TF_VAR_CLUSTER_NAME=${TF_VAR_PROJECT}"-ecfs"
+export TF_VAR_ZONE=${TF_VAR_zone}
+export TF_VAR_PROJECT=${TF_VAR_project}
+export TF_VAR_IMAGE="emanage-2-5-1-10-142ee106f93b"
+export TF_VAR_CREDENTIALS=${TF_VAR_CREDS} 
+export TF_VAR_SERVICE_EMAIL=${TF_VAR_ADMIN}@${TF_VAR_project}".iam.gserviceaccount.com"
