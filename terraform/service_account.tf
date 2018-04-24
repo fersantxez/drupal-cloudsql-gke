@@ -29,6 +29,20 @@ resource "google_service_account_key" "cloudsql-sa-key" {
   public_key_type = "TYPE_X509_PEM_FILE"
 }
 
+//add key to kubernetes secret
+resource "kubernetes_secret" "cloudsql-instance-credentials" {
+  metadata {
+    name = "cloudsql-instance-credentials"
+  }
+
+  data {
+    //credentials.json = "${base64decode(google_service_account_key.cloudsql-sa-key.private_key)}"
+    //FIXME: find the file where the secret is stored as code , not pre-set variable
+    //credentials.json = "${file("${var.cloudsql_db_creds_path}")}"
+    credentials.json = "${base64decode(google_service_account_key.cloudsql-sa-key.private_key)}"
+  }
+}
+
 //IAM policy - allow to connect to cloudSQL
 data "google_iam_policy" "cloudsql-client" {
   binding {
@@ -47,15 +61,4 @@ resource "google_project_iam_policy" "cloudsql-client-on-project" {
 }
 
 //service account to cloudsql secret
-//add key to kubernetes secret
-resource "kubernetes_secret" "cloudsql-instance-credentials" {
-  metadata {
-    name = "cloudsql-instance-credentials"
-  }
 
-  data {
-    //credentials.json = "${base64decode(google_service_account_key.cloudsql-sa-key.private_key)}"
-    //FIXME: find the file where the secret is stored as code , not pre-set variable
-    credentials.json = "${file("${var.cloudsql_db_creds_path}")}"
-  }
-}
