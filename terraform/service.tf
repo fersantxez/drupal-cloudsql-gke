@@ -43,15 +43,6 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
         }
       }
 
-      //volume {
-      //  name = "ssl-certs"
-
-
-      //  secret {
-      //   secret_name = "ssl-certs"
-      //  }
-      //}
-
       container {
         image = "${var.gke_drupal_image}"
         name  = "drupal"
@@ -95,6 +86,11 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
           mount_path = "${var.gke_vol_2_mount_path}"
         }
 
+        volume_mount {
+          name       = "${kubernetes_secret.cloudsql-db-credentials.metadata.0.name}"
+          mount_path = "/secrets/${kubernetes_secret.cloudsql-db-credentials.metadata.0.name}"
+        }
+
         env = [
           {
             name  = "MARIADB_HOST"
@@ -105,12 +101,18 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
             value = "3306"
           },
           {
-            name  = "MARIADB_USER"
-            value = "${var.cloudsql_username}"
+            name = "MARIADB_USER"
+
+            //value = "${var.cloudsql_username}"
+            //value = ${file("/secrets/${kubernetes_secret.cloudsql-db-credentials.metadata0.name}/password)} 
+            value = "${kubernetes_secret.cloudsql-db-credentials.data.username}"
           },
           {
-            name  = "MARIADB_PASSWORD"
-            value = "${var.master_password}"
+            name = "MARIADB_PASSWORD"
+
+            //value = "${var.master_password}"
+            //value = ${file("/secrets/${kubernetes_secret.cloudsql-db-credentials.metadata0.name}/password)} 
+            value = "${kubernetes_secret.cloudsql-db-credentials.data.password}"
           },
           {
             name  = "DRUPAL_USERNAME"
@@ -131,6 +133,7 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
         //  value = "/secrets/cloudsql/credentials.json"
         //},
       }
+
       container {
         image = "${var.gke_cloudsql_image}"
         name  = "cloudsql-proxy"
@@ -141,11 +144,8 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
           "/cloud_sql_proxy",
           "--dir=/cloudsql",
           "-instances=${google_sql_database_instance.master.connection_name}=tcp:3306",
-          "-credential_file=/secrets/cloudsql/credentials.json",
+          "-credential_file=/secrets/${kubernetes_secret.cloudsql-instance-credentials.metadata.0.name}/credentials.json",
         ]
-
-        //  "-credential_file=/secrets/cloudsql/credentials.json",
-        //]
 
         port = [
           {
@@ -153,14 +153,11 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
             name           = "mysql"
           },
         ]
+
         volume_mount {
           name       = "${kubernetes_secret.cloudsql-instance-credentials.metadata.0.name}"
-          mount_path = "/secrets/cloudsql/"
+          mount_path = "/secrets/cloudsql/${kubernetes_secret.cloudsql-instance-credentials.metadata.0.name}"
           read_only  = true
-        }
-        volume_mount {
-          name       = "${kubernetes_secret.cloudsql-db-credentials.metadata.0.name}"
-          mount_path = "/secrets/db-creds/"
         }
       }
     }

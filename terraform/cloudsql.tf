@@ -5,8 +5,6 @@ resource "google_sql_database_instance" "master" {
   region           = "${var.region}"
 
   settings {
-    # Second-generation instance tiers are based on the machine
-    # type. See argument reference below.
     tier = "${var.cloudsql_tier}"
   }
 }
@@ -19,14 +17,6 @@ output "self_link_sql_instance" {
 output "connection_name" {
   value = "${google_sql_database_instance.master.connection_name}"
 }
-
-//Creates a new Google SQL Database on a Google SQL Database Instance
-//resource "google_sql_database" "users" {
-//  name      = "users-db"
-//  instance  = "${google_sql_database_instance.master.name}"
-//  charset   = "latin1"
-//  collation = "latin1_swedish_ci"
-// }
 
 //sql proxy user account
 resource "google_sql_user" "users" {
