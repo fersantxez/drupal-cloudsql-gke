@@ -83,6 +83,7 @@ variable "gke_vol_2_mount_path" {}
 
 //networking
 
+variable "subnetcidr" {}
 variable "ext_ip_name" {}
 variable "domain" {}
 variable "dns_zone_name" {}

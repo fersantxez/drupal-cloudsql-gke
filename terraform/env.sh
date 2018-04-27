@@ -16,6 +16,7 @@ export GOOGLE_PROJECT=${TF_VAR_project}
 #network and security
 export TF_VAR_network="groundcontrol-frontend-us-east4"
 export TF_VAR_subnetwork="groundcontrol-frontend-us-east4"
+export TF_VAR_subnetcidr="10.0.0.0/16"
 export TF_VAR_tag="cloudlamp"                        #used to group instances and open firewall to them
 
 #Storage - NFS server or other shared filesystem

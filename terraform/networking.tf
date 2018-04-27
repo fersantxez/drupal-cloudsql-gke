@@ -1,5 +1,25 @@
-//Networking: external_ip and DNS name
+//Networking: network,subnet, external_ip and DNS name
 
+//network and subnetwork
+resource "google_compute_network" "mynetwork" {
+  name                    = "${var.network}"
+  auto_create_subnetworks = "true"
+}
+
+output "network"{
+  value = "${google_compute_network.mynetwork.self_link}"
+}
+
+resource "google_compute_subnetwork" "mysubnetwork" {
+  name          = "${var.subnetwork}"
+  ip_cidr_range = "${var.subnetcidr}"
+  network       = "${google_compute_network.mynetwork.self_link}"
+  region        = "${var.region}"
+}
+
+output "subnetwork"{
+  value = "${google_compute_subnetwork.mysubnetwork.self_link}"
+}
 
 //external IP that should be used in the external load balancer / FIXME: not working
 resource "google_compute_address" "frontend" {
