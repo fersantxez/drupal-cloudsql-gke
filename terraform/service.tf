@@ -64,7 +64,7 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
             path = "/"
           }
 
-          initial_delay_seconds = 120
+          initial_delay_seconds = 180
         }
 
         readiness_probe {
@@ -73,7 +73,7 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
             path = "/"
           }
 
-          initial_delay_seconds = 30
+          initial_delay_seconds = 120
         }
 
         volume_mount {
