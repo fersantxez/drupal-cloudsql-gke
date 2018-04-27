@@ -21,7 +21,7 @@ output "subnetwork"{
   value = "${google_compute_subnetwork.mysubnetwork.self_link}"
 }
 
-//external IP that should be used in the external load balancer / FIXME: not working
+//external IP that should be used in the external load balancer
 resource "google_compute_address" "frontend" {
   project = "${var.project}"
   name = "${var.ext_ip_name}"
