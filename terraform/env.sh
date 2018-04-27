@@ -1,26 +1,34 @@
-#master password: DELETE or COMMENT for use
-export TF_VAR_master_password="12345678901234567890"
-#project and account info
-export TF_VAR_org_id=805845699844
-export TF_VAR_billing_account=00183D-07EE2D-3060A0
-export TF_VAR_ADMIN=groundcontrol-terraform-admin
-export TF_VAR_CREDS=~/.ssh/groundcontrol-terraform-admin.json
-export TF_VAR_project=groundcontrol-www
+##### CONFIGURE THESE ACCORDING TO YOUR SETUP ######
+#GCP account info
+export TF_VAR_org_id=805845699844								#your GCP org ID
+export TF_VAR_billing_account=00183D-07EE2D-3060A0				#billing account for your project
+export TF_VAR_ADMIN_SVC_ACCOUNT=groundcontrol-terraform-admin	#service account used by Terraform
+export TF_VAR_CREDS=~/.ssh/groundcontrol-terraform-admin.json	#location of the credentials file
+
+#project info
+export TF_VAR_project=groundcontrol-www			#pre-created project where the resources will be placed
 export TF_VAR_region=us-east4
 export TF_VAR_zone=us-east4-c
-export TF_VAR_num_instances=3                   #to use in instance group
 
 export GOOGLE_APPLICATION_CREDENTIALS=${TF_VAR_CREDS}
 export GOOGLE_PROJECT=${TF_VAR_project}
 
+#master password: DELETE or COMMENT for use
+export TF_VAR_master_password="12345678901234567890"
+
 #network and security
-export TF_VAR_network="groundcontrol-frontend-us-east4"
-export TF_VAR_subnetwork="groundcontrol-frontend-us-east4"
-export TF_VAR_subnetcidr="10.0.0.0/16"
-export TF_VAR_tag="cloudlamp"                        #used to group instances and open firewall to them
+export TF_VAR_network=${TF_VAR_project}"-net"			#name of a network to be created
+export TF_VAR_subnetwork=${TF_VAR_project}"-subnet"		#name of a subnet to be created
+export TF_VAR_subnetcidr="10.0.0.0/16"							#addressing for the subnet
+export TF_VAR_tag=${TF_VAR_project}"-tag"                        #used to group instances and open firewall to them
 
 #Storage - NFS server or other shared filesystem
 export TF_VAR_snapshot="ext4-200g-us-east4-empty"     #a pre-created empty ext4 snapshot
+
+
+
+############ NO NEED TO CONFIGURE THESE ###############
+
 export TF_VAR_disk="nfs-disk"               #a disk that will be created from snapshot
 export TF_VAR_export_path="/var/nfsroot"
 export TF_VAR_vol_1="drupal-vol"
@@ -81,4 +89,4 @@ export TF_VAR_ZONE=${TF_VAR_zone}
 export TF_VAR_PROJECT=${TF_VAR_project}
 export TF_VAR_IMAGE="emanage-2-5-1-10-142ee106f93b"
 export TF_VAR_CREDENTIALS=${TF_VAR_CREDS} 
-export TF_VAR_SERVICE_EMAIL=${TF_VAR_ADMIN}@${TF_VAR_project}".iam.gserviceaccount.com"
+export TF_VAR_SERVICE_EMAIL=${TF_VAR_ADMIN_SVC_ACCOUNT}@${TF_VAR_project}".iam.gserviceaccount.com"
