@@ -6,6 +6,15 @@ resource "google_sql_database_instance" "master" {
 
   settings {
     tier = "${var.cloudsql_tier}"
+
+    //ip_configuration  {
+    //  authorized_networks = [
+    //    {
+    //      name = "${google_compute_network.mynetwork.name}"
+    //      value = "${var.subnetcidr}"
+    //    }
+    //  ]
+    //}
   }
 }
 
@@ -19,12 +28,16 @@ output "connection_name" {
 }
 
 //sql proxy user account
-resource "google_sql_user" "users" {
+resource "google_sql_user" "cloudsql-user" {
   name     = "${var.cloudsql_username}"
   instance = "${google_sql_database_instance.master.name}"
 
   //host     = "me.com"
   password = "${var.master_password}"
+}
+
+output "sql_user" {
+  value = "${google_sql_user.cloudsql-user.name}"
 }
 
 //add to kubernetes secret - currently unused but backup/reference for future

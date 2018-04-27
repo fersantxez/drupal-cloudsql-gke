@@ -1,4 +1,8 @@
+#!/bin/bash
+
 ##### CONFIGURE THESE ACCORDING TO YOUR SETUP ######
+####################################################
+
 #GCP account info
 export TF_VAR_org_id=805845699844								#your GCP org ID
 export TF_VAR_billing_account=00183D-07EE2D-3060A0				#billing account for your project
@@ -13,21 +17,21 @@ export TF_VAR_zone=us-east4-c
 export GOOGLE_APPLICATION_CREDENTIALS=${TF_VAR_CREDS}
 export GOOGLE_PROJECT=${TF_VAR_project}
 
-#master password: DELETE or COMMENT for use
+#master password: DELETE or COMMENT for production use
 export TF_VAR_master_password="12345678901234567890"
+
+#Storage - NFS server or other shared filesystem
+export TF_VAR_snapshot="ext4-200g-us-east4-empty"     	#name of ***PRE-CREATED*** empty ext4 snapshot.
+														#you need to create an empty ext4 disk and this snapshot from it 
 
 #network and security
 export TF_VAR_network=${TF_VAR_project}"-net"			#name of a network to be created
 export TF_VAR_subnetwork=${TF_VAR_project}"-subnet"		#name of a subnet to be created
-export TF_VAR_subnetcidr="10.0.0.0/16"							#addressing for the subnet
+export TF_VAR_subnetcidr="10.10.10.0/24"							#addressing for the subnet
 export TF_VAR_tag=${TF_VAR_project}"-tag"                        #used to group instances and open firewall to them
 
-#Storage - NFS server or other shared filesystem
-export TF_VAR_snapshot="ext4-200g-us-east4-empty"     #a pre-created empty ext4 snapshot
-
-
-
 ############ NO NEED TO CONFIGURE THESE ###############
+#######################################################
 
 export TF_VAR_disk="nfs-disk"               #a disk that will be created from snapshot
 export TF_VAR_export_path="/var/nfsroot"
@@ -37,15 +41,14 @@ export TF_VAR_vol_2="apache-vol"
 export TF_VAR_vol_2_size="200Gi"
 export TF_VAR_device_name="sdb"
 
-
 #service account to use for CloudSQL proxy
 export TF_VAR_cloudsql_service_account_name="cloudsql-svc-acct"
 export TF_VAR_cloudsql_service_account_description="Service account for CloudSQL proxy"
-export TF_VAR_cloudsql_client_role="roles/cloudsql.client" #
+export TF_VAR_cloudsql_client_role="roles/cloudsql.client"
 export TF_VAR_create_keys_role="roles/iam.serviceAccountKeyAdmin"
 
 #cloudSQL
-export TF_VAR_cloudsql_instance=$TF_VAR_project"-sql"16
+export TF_VAR_cloudsql_instance=$TF_VAR_project"-sql"27
 export TF_VAR_cloudsql_username="cloudsqlproxy"
 export TF_VAR_cloudsql_tier="db-n1-standard-1"
 export TF_VAR_cloudsql_storage_type="SSD"

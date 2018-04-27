@@ -4,6 +4,25 @@ resource "google_service_account" "cloudsql-sa" {
   display_name = "CloudSQL service account"
 }
 
+//IAM policy - allow to connect to cloudSQL
+data "google_iam_policy" "cloudsql-client" {
+  binding {
+    role = "${var.cloudsql_client_role}"
+
+    members = [
+      "serviceAccount:${google_service_account.cloudsql-sa.email}",
+    ]
+  }
+}
+
+//IAM  project policy - apply policy to project
+resource "google_project_iam_policy" "cloudsql-client-on-project" {
+  project     = "${var.project}"
+  policy_data = "${data.google_iam_policy.cloudsql-client.policy_data}"
+}
+
+//service account to cloudsql secret
+
 //IAM policy - allow to create keys
 data "google_iam_policy" "create-keys" {
   binding {
@@ -42,23 +61,3 @@ resource "kubernetes_secret" "cloudsql-instance-credentials" {
     credentials.json = "${base64decode(google_service_account_key.cloudsql-sa-key.private_key)}"
   }
 }
-
-//IAM policy - allow to connect to cloudSQL
-data "google_iam_policy" "cloudsql-client" {
-  binding {
-    role = "${var.cloudsql_client_role}"
-
-    members = [
-      "serviceAccount:${google_service_account.cloudsql-sa.email}",
-    ]
-  }
-}
-
-//IAM  project policy - apply policy to project
-resource "google_project_iam_policy" "cloudsql-client-on-project" {
-  project     = "${var.project}"
-  policy_data = "${data.google_iam_policy.cloudsql-client.policy_data}"
-}
-
-//service account to cloudsql secret
-
