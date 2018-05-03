@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#set -o errexit -o nounset -o pipefail
+set -o errexit -o nounset -o pipefail
 
 #make sure there's an internet connection
 if ping -q -c 1 -W 1 google.com >/dev/null; then
@@ -18,9 +18,28 @@ source ./env.sh
 
 #make sure the project exists
 
-
+gcloud auth login --no-launch-browser && \
 gcloud config set account ${ACCOUNT_ID}
 gcloud config set project ${TF_VAR_project}
+
+# make sure that the relevant APIs are enabled
+echo "***INFO: finding project ID for project "${TF_VAR_project}
+export PROJECT_ID=$(gcloud compute project-info describe \
+                |grep 'id:' \
+                |awk '{print $2}')
+
+echo "***INFO: validating APIs on project ID "${PROJECT_ID}
+
+gcloud services enable compute.googleapis.com && \
+gcloud services enable container.googleapis.com && \
+gcloud services enable dns.googleapis.com && \
+gcloud services enable iam.googleapis.com && \
+gcloud services enable replicapool.googleapis.com && \
+gcloud services enable replicapoolupdater.googleapis.com && \
+gcloud services enable resourceviews.googleapis.com && \
+gcloud services enable sql-component.googleapis.com && \
+gcloud services enable storage-api.googleapis.com && \
+gcloud services enable storage-component.googleapis.com 
 
 #make sure service account in the variables exists
 echo "***INFO: validating Service Accounts"
@@ -35,27 +54,56 @@ for i in ${SERVICE_ACCOUNT_LIST};do
     if [ $i = "${ADMIN_SVC_ACCOUNT}" ] ; then
         export SA_FOUND=true
         echo "Service Account "$i" found"
-        exit
+        break
     fi
 done
 
 if [ "${SA_FOUND}" = false ]; then
     echo "***ERROR: Service account "${ADMIN_SVC_ACCOUNT}" not found in project "${TF_VAR_project}
-    echo "Please create it manually and enable the following permissions on it: "
-    echo "FIXME: list of permissions"
-    #return
+    echo "Do you want me to create it and enable the required permissions: "
+    echo "roles/iam.organizationRoleAdmin"
+    echo "roles/iam.roleAdmin"
+    echo "roles/compute.storageAdmin" 
+    echo "roles/compute.securityAdmin"
+    echo "roles/compute.networkAdmin"
+    echo "roles/compute.instanceAdmin.v1"
+    read -p  "***(y/n): " RESPONSE
+    while true; do
+    case $RESPONSE in
+        [yY]) echo "***Creating service account "${ADMIN_SVC_ACCOUNT}" on project "${TF_VAR_project}
+            #create service account
+            gcloud iam service-accounts create ${ADMIN_SVC_ACCOUNT} \
+                --display-name "Terraform Admin Service Account" && \
+            #add relevant permissions
+            gcloud projects add-iam-policy-binding ${TF_VAR_project} \
+                --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
+                --role roles/iam.organizationRoleAdmin
+            gcloud projects add-iam-policy-binding ${TF_VAR_project} \
+                --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
+                --role roles/iam.roleAdmin
+            gcloud projects add-iam-policy-binding ${TF_VAR_project} \
+                --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
+                --role roles/compute.storageAdmin
+            gcloud projects add-iam-policy-binding ${TF_VAR_project} \
+                --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
+                --role roles/compute.securityAdmin
+            gcloud projects add-iam-policy-binding ${TF_VAR_project} \
+                --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
+                --role roles/compute.networkAdmin
+            gcloud projects add-iam-policy-binding ${TF_VAR_project} \
+                --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
+                --role roles/compute.instanceAdmin.v1                                                                            
+            ;;
+        [nN]) echo "***Exiting. Please create the Service Account and assign IAM roles manually or re-run this script"
+            exit
+            ;;
+        *) "**Invalid input. Please select [y] or [n]"
+            ;;
+    esac
+    done
 fi
 
 
-# make sure that the relevant APIs are enabled
-echo "***INFO: finding project ID for project "TF_VAR_project
-export PROJECT_ID=$(gcloud compute project-info describe \
-                |grep 'id:' \
-                |awk '{print $2}'
 
-echo "***INFO: validating APIs on project ID "${PROJECT_ID}
 
-curl https://console.developers.google.com/apis/api/container.googleapis.com/overview?project=PROJECT_ID
-curl https://console.developers.google.com/apis/api/sqladmin.googleapis.com/overview?project=PROJECT_ID
-curl https://console.developers.google.com/apis/api/iam.googleapis.com/overview?project=PROJECT_ID
-curl https://console.developers.google.com/apis/api/iam.googleapis.com/overview?project=PROJECT_ID
+
