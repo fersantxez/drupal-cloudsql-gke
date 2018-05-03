@@ -77,22 +77,23 @@ if [ "${SA_FOUND}" = false ]; then
             #add relevant permissions
             gcloud projects add-iam-policy-binding ${TF_VAR_project} \
                 --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
-                --role roles/iam.organizationRoleAdmin
+                --role 'roles/iam.organizationRoleAdmin'
             gcloud projects add-iam-policy-binding ${TF_VAR_project} \
                 --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
-                --role roles/iam.roleAdmin
+                --role 'roles/iam.roleAdmin'
             gcloud projects add-iam-policy-binding ${TF_VAR_project} \
                 --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
-                --role roles/compute.storageAdmin
+                --role 'roles/compute.storageAdmin'
             gcloud projects add-iam-policy-binding ${TF_VAR_project} \
                 --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
-                --role roles/compute.securityAdmin
+                --role 'roles/compute.securityAdmin'
             gcloud projects add-iam-policy-binding ${TF_VAR_project} \
                 --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
-                --role roles/compute.networkAdmin
+                --role 'roles/compute.networkAdmin'
             gcloud projects add-iam-policy-binding ${TF_VAR_project} \
                 --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
-                --role roles/compute.instanceAdmin.v1                                                                            
+                --role 'roles/compute.instanceAdmin.v1'
+            break                                                                            
             ;;
         [nN]) echo "***Exiting. Please create the Service Account and assign IAM roles manually or re-run this script"
             exit
