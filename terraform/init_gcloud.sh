@@ -86,6 +86,9 @@ if [ "${SA_FOUND}" = false ]; then
                 --role 'roles/compute.storageAdmin'
             gcloud projects add-iam-policy-binding ${TF_VAR_project} \
                 --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
+                --role 'roles/storage.objectAdmin'
+            gcloud projects add-iam-policy-binding ${TF_VAR_project} \
+                --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
                 --role 'roles/compute.securityAdmin'
             gcloud projects add-iam-policy-binding ${TF_VAR_project} \
                 --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
@@ -103,6 +106,18 @@ if [ "${SA_FOUND}" = false ]; then
     esac
     done
 fi
+
+#download the service account credentials to the right location
+gcloud iam service-accounts keys create \
+    ${TF_VAR_CREDS} \
+    --iam-account ${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com
+
+#make bucket
+gsutil mb -l ${TF_VAR_region} "gs://"${TF_VAR_bucket_name}
+
+echo "***Initialization finished. Please remember to edit 'backend.tf' and add your bucket name "${TF_VAR_bucket_name}
+echo "then run 'terraform init' 'terraform apply'"
+
 
 
 
