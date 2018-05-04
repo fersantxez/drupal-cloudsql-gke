@@ -38,6 +38,7 @@ gcloud services enable replicapool.googleapis.com && \
 gcloud services enable replicapoolupdater.googleapis.com && \
 gcloud services enable resourceviews.googleapis.com && \
 gcloud services enable sql-component.googleapis.com && \
+gcloud services enable sqladmin.googleapis.com && \
 gcloud services enable storage-api.googleapis.com && \
 gcloud services enable storage-component.googleapis.com 
 
@@ -77,25 +78,31 @@ if [ "${SA_FOUND}" = false ]; then
             #add relevant permissions
             gcloud projects add-iam-policy-binding ${TF_VAR_project} \
                 --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
-                --role 'roles/iam.organizationRoleAdmin'
+                --role 'roles/iam.organizationRoleAdmin' >/dev/null 2>&1
             gcloud projects add-iam-policy-binding ${TF_VAR_project} \
                 --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
-                --role 'roles/iam.roleAdmin'
+                --role 'roles/iam.roleAdmin' >/dev/null 2>&1
             gcloud projects add-iam-policy-binding ${TF_VAR_project} \
                 --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
-                --role 'roles/compute.storageAdmin'
+                --role 'roles/iam.serviceAccountAdmin' >/dev/null 2>&1
             gcloud projects add-iam-policy-binding ${TF_VAR_project} \
                 --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
-                --role 'roles/storage.objectAdmin'
+                --role 'roles/compute.storageAdmin' >/dev/null 2>&1
             gcloud projects add-iam-policy-binding ${TF_VAR_project} \
                 --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
-                --role 'roles/compute.securityAdmin'
+                --role 'roles/storage.objectAdmin' >/dev/null 2>&1
             gcloud projects add-iam-policy-binding ${TF_VAR_project} \
                 --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
-                --role 'roles/compute.networkAdmin'
+                --role 'roles/compute.securityAdmin' >/dev/null 2>&1
             gcloud projects add-iam-policy-binding ${TF_VAR_project} \
                 --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
-                --role 'roles/compute.instanceAdmin.v1'
+                --role 'roles/compute.networkAdmin' >/dev/null 2>&1
+            gcloud projects add-iam-policy-binding ${TF_VAR_project} \
+                --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
+                --role 'roles/compute.instanceAdmin.v1' >/dev/null 2>&1
+            gcloud projects add-iam-policy-binding ${TF_VAR_project} \
+                --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
+                --role 'roles/containers.clusters.create' >/dev/null 2>&1
             break                                                                            
             ;;
         [nN]) echo "***Exiting. Please create the Service Account and assign IAM roles manually or re-run this script"
@@ -118,6 +125,7 @@ gsutil mb -l ${TF_VAR_region} "gs://"${TF_VAR_bucket_name}
 echo "***Initialization finished. Please remember to edit 'backend.tf' and add your bucket name "${TF_VAR_bucket_name}
 echo "then run 'terraform init' 'terraform apply'"
 
+#FIXME: missing the snapshot creation
 
 
 
