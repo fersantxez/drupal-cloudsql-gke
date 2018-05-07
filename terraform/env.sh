@@ -10,7 +10,7 @@ export ADMIN_SVC_ACCOUNT=bbby-terraform-admin			#service account used by Terrafo
 #
 export TF_VAR_org_id=805845699844								#your GCP org ID
 export TF_VAR_billing_account=00183D-07EE2D-3060A0				#billing account for your project
-export TF_VAR_CREDS=~/.ssh/${TF_VAR_project}-terraform-admin.json	#location of the credentials file
+export TF_VAR_CREDS=~/.ssh/${ADMIN_SVC_ACCOUNT}.json	#location of the credentials file
 
 #project info
 export TF_VAR_project=bbby-host		#***PRE_CREATED*** project where the resources will be placed
@@ -36,6 +36,7 @@ export TF_VAR_tag=${TF_VAR_project}"-tag"               #used to group instances
 export TF_VAR_raw_disk_name=${TF_VAR_project}"-disk"
 export TF_VAR_raw_disk_size="400GB"
 export TF_VAR_raw_disk_type="pd-standard"
+export TF_VAR_nfs_machine_type="f1-micro"
 export TF_VAR_snapshot="ext4-200g-us-east4-empty"     	#name of ***PRE-CREATED*** empty ext4 snapshot.
 														#you need to create an empty ext4 disk and this snapshot from it 
 

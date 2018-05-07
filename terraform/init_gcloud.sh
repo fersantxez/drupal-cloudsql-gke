@@ -3,12 +3,12 @@
 set -o errexit -o nounset -o pipefail
 
 #make sure there's an internet connection
-if ping -q -c 1 -W 1 google.com >/dev/null; then
-  echo "** Internet connectivity is working."
-else
-  echo "** Internet connectivity is not working. Aborting."
-  exit
-fi
+#if ping -q -c 1 -W 1 google.com >/dev/null; then
+#  echo "** Internet connectivity is working."
+#else
+#  echo "** Internet connectivity is not working. Aborting."
+#  exit
+#fi
 
 #check gcloud is installed
 echo "***INFO: validating environment"
@@ -45,8 +45,8 @@ gcloud services enable storage-component.googleapis.com
 #make sure service account in the variables exists
 echo "***INFO: validating Service Accounts"
 export SERVICE_ACCOUNT_LIST=$(gcloud iam service-accounts list  \
-    | tail -n +3  \
-    | awk '{print $1}' \
+    | tail -n +2  \                 #skip fist line
+    | awk '{print $1}' \            #get first column. SA description does not have spaces.
     )
 
 export SA_FOUND=false
@@ -64,17 +64,20 @@ if [ "${SA_FOUND}" = false ]; then
     echo "Do you want me to create it and enable the required permissions: "
     echo "roles/iam.organizationRoleAdmin"
     echo "roles/iam.roleAdmin"
+    echo "roles/iam.serviceAccountAdmin"
+    echo "roles/storage.objectAdmin"
     echo "roles/compute.storageAdmin" 
     echo "roles/compute.securityAdmin"
     echo "roles/compute.networkAdmin"
     echo "roles/compute.instanceAdmin.v1"
+    echo "roles/containers.clusters.create"
     read -p  "***(y/n): " RESPONSE
     while true; do
     case $RESPONSE in
         [yY]) echo "***Creating service account "${ADMIN_SVC_ACCOUNT}" on project "${TF_VAR_project}
             #create service account
             gcloud iam service-accounts create ${ADMIN_SVC_ACCOUNT} \
-                --display-name "Terraform Admin Service Account" && \
+                --display-name ${ADMIN_SVC_ACCOUNT} && \
             #add relevant permissions
             gcloud projects add-iam-policy-binding ${TF_VAR_project} \
                 --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
@@ -122,9 +125,6 @@ gcloud iam service-accounts keys create \
 #make bucket
 gsutil mb -l ${TF_VAR_region} "gs://"${TF_VAR_bucket_name}
 
-echo "***Initialization finished. Please remember to edit 'backend.tf' and add your bucket name "${TF_VAR_bucket_name}
-echo "then run 'terraform init' 'terraform apply'"
-
 #FIXME: missing the snapshot creation
 #create a GCP disk - if it exists this will error out but disk will remain
 gcloud compute disks create \
@@ -135,6 +135,9 @@ gcloud compute disks create \
   --zone=${TF_VAR_zone}
   #[--image-project=IMAGE_PROJECT --image=IMAGE     |
   # [--labels=[KEY=VALUE,…]] [--licenses=[LICENSE,…]] [--no-require-csek-key-create]   --image-family=IMAGE_FAMILY     | --source-snapshot=SOURCE_SNAPSHOT] [GCLOUD_WIDE_FLAG …]
+
+echo "***Initialization finished. Please remember to edit 'backend.tf' and add your bucket name "${TF_VAR_bucket_name}
+echo "then run 'terraform init' 'terraform apply'"
 
 
 

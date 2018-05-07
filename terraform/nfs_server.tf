@@ -10,12 +10,24 @@ output "self_link_compute_disk" {
   value = "${google_compute_disk.default.self_link}"
 }
 
+//template for NFS server startup script
+data "template_file" "startup_script" {
+  template = "${file("nfs_server_startup.sh")}"
+
+  vars {
+    device_name = "${var.device_name}"
+    export_path = "${var.server_port}"
+    vol_1       = "${var.vol_1}"
+    vol_2       = "${var.vol_2}"
+  }
+}
+
 //simple instance with startup script
 resource "google_compute_instance" "nfs_server" {
   project      = "${var.project}"
   zone         = "${var.zone}"
   name         = "tf-nfs-1"
-  machine_type = "f1-micro"
+  machine_type = "${var.nfs_machine_type}"
   tags         = ["${var.tag}"]
 
   boot_disk {
@@ -38,25 +50,7 @@ resource "google_compute_instance" "nfs_server" {
     }
   }
 
-  metadata_startup_script = <<-EOF
-                          #!/bin/bash
-			                    mkdir -p ${var.export_path}
-                          mount -t ext4 \
-                           /dev/${var.device_name}1 ${var.export_path}
-                          echo "/dev/${var.device_name}1 ${var.export_path} \
-                           ext4 defaults 1 1" >> /etc/fstab
-			                    mkdir -p ${var.export_path}/${var.vol_1}
-                          mkdir -p ${var.export_path}/${var.vol_2}
-                          apt-get install -y nfs-kernel-server
-                          systemctl status nfs-kernel-server
-                          echo "${var.export_path}/${var.vol_1} *(rw,sync,no_subtree_check,no_root_squash)" \
-			    >> /etc/exports
-                          echo  "${var.export_path}/${var.vol_2} *(rw,sync,no_subtree_check,no_root_squash)" \
-			    >> /etc/exports
-                          exportfs -a
-                          systemctl restart nfs-kernel-server
-                          showmount -e
-                          EOF
+  metadata_startup_script = "${data.template_file.startup_script.rendered}"
 }
 
 output "nfs_instance_id" {
