@@ -1,7 +1,7 @@
 //disk from snapshot -- externally formatted and persistent
 resource "google_compute_disk" "default" {
   name     = "${var.disk}"
-  type     = "pd-ssd"
+  type     = "${var.raw_disk_type}"
   zone     = "${var.zone}"
   snapshot = "${var.snapshot}"
 }
