@@ -126,6 +126,15 @@ echo "***Initialization finished. Please remember to edit 'backend.tf' and add y
 echo "then run 'terraform init' 'terraform apply'"
 
 #FIXME: missing the snapshot creation
+#create a GCP disk - if it exists this will error out but disk will remain
+gcloud compute disks create \
+  ${TF_VAR_raw_disk_name} \
+  --description="Raw disk to use as backend for NFS" \
+  --size=${TF_VAR_raw_disk_size} \
+  --type=${TF_VAR_raw_disk_type}  \
+  --zone=${TF_VAR_zone}
+  #[--image-project=IMAGE_PROJECT --image=IMAGE     |
+  # [--labels=[KEY=VALUE,…]] [--licenses=[LICENSE,…]] [--no-require-csek-key-create]   --image-family=IMAGE_FAMILY     | --source-snapshot=SOURCE_SNAPSHOT] [GCLOUD_WIDE_FLAG …]
 
 
 

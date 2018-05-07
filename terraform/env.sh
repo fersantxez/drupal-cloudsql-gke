@@ -24,18 +24,21 @@ export GOOGLE_PROJECT=${TF_VAR_project}
 #master password: DELETE or COMMENT for production use
 export TF_VAR_master_password="12345678901234567890"
 
-#Storage - NFS server or other shared filesystem
-export TF_VAR_snapshot="ext4-200g-us-east4-empty"     	#name of ***PRE-CREATED*** empty ext4 snapshot.
-														#you need to create an empty ext4 disk and this snapshot from it 
-
+############ NO NEED TO CONFIGURE THESE ###############
+#######################################################
 #network and security
 export TF_VAR_network=${TF_VAR_project}"-net"			#name of a network to be created
 export TF_VAR_subnetwork=${TF_VAR_project}"-subnet"		#name of a subnet to be created
-export TF_VAR_subnetcidr="10.10.10.0/24"							#addressing for the subnet
-export TF_VAR_tag=${TF_VAR_project}"-tag"                        #used to group instances and open firewall to them
+export TF_VAR_subnetcidr="10.10.10.0/24"				#addressing for the subnet
+export TF_VAR_tag=${TF_VAR_project}"-tag"               #used to group instances and open firewall to them
 
-############ NO NEED TO CONFIGURE THESE ###############
-#######################################################
+#Storage - NFS server or other shared filesystem
+export TF_VAR_raw_disk_name=${TF_VAR_project}"-disk"
+export TF_VAR_raw_disk_size="400GB"
+export TF_VAR_raw_disk_type="pd-standard"
+export TF_VAR_snapshot="ext4-200g-us-east4-empty"     	#name of ***PRE-CREATED*** empty ext4 snapshot.
+														#you need to create an empty ext4 disk and this snapshot from it 
+
 
 export TF_VAR_disk="nfs-disk"               #a disk that will be created from snapshot
 export TF_VAR_export_path="/var/nfsroot"
