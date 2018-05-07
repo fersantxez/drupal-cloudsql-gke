@@ -45,9 +45,7 @@ gcloud services enable storage-component.googleapis.com
 #make sure service account in the variables exists
 echo "***INFO: validating Service Accounts"
 export SERVICE_ACCOUNT_LIST=$(gcloud iam service-accounts list  \
-    | tail -n +2  \                 #skip fist line
-    | awk '{print $1}' \            #get first column. SA description does not have spaces.
-    )
+    | tail -n +2 | awk '{print $1}')            #get first column. SA description does not have spaces.
 
 export SA_FOUND=false
 for i in ${SERVICE_ACCOUNT_LIST};do
