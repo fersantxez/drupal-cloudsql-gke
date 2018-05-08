@@ -1,9 +1,10 @@
 //disk from snapshot -- externally formatted and persistent
 resource "google_compute_disk" "default" {
-  name     = "${var.disk}"
-  type     = "${var.raw_disk_type}"
-  zone     = "${var.zone}"
-  snapshot = "${var.snapshot}"
+  name = "${var.disk}"
+  type = "${var.raw_disk_type}"
+  zone = "${var.zone}"
+
+  #snapshot = "${var.snapshot}" #blank disk by default
 }
 
 output "self_link_compute_disk" {
@@ -16,7 +17,7 @@ data "template_file" "startup_script" {
 
   vars {
     device_name = "${var.device_name}"
-    export_path = "${var.server_port}"
+    export_path = "${var.export_path}"
     vol_1       = "${var.vol_1}"
     vol_2       = "${var.vol_2}"
   }
@@ -26,7 +27,7 @@ data "template_file" "startup_script" {
 resource "google_compute_instance" "nfs_server" {
   project      = "${var.project}"
   zone         = "${var.zone}"
-  name         = "tf-nfs-1"
+  name         = "tf-nfs-server"
   machine_type = "${var.nfs_machine_type}"
   tags         = ["${var.tag}"]
 

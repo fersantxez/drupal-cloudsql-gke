@@ -1,10 +1,10 @@
 #!/bin/bash
 # List to format as EXT4 for NFS, SPACE separated as in: 
 # "/dev/hda /dev/hdb /dev/hdc"
-DISKS="/dev/"${device_name}
+export DISKS=/dev/${device_name}
 
 # Create a script to partition disks
-FDISK=nfs_fdisk_headless.sh  #just a name for the script below.
+export FDISK=nfs_fdisk_headless.sh  #just a name for the script below.
 # script to format disks as EXT4
 cat > ./$FDISK << EOF
 #!/bin/sh
@@ -21,25 +21,28 @@ w
 "|fdisk $i;mkfs.ext4 -F $i;done
 EOF
 chmod +x ./$FDISK
-
+sleep 3             #for disk to sync
 #run only if the disk does not have any existing partitions
 export UNPARTITIONED=$(/sbin/parted -lm 2>&1 \
     | grep 'unrecognised' \
     | grep ${device_name} \
     )
-    
+
 if [[ !  -z  $UNPARTITIONED  ]];then
     #disk is not partitioned yet
-    echo "**DEBUG: disk "${DISKS}" is not partitioned. Partitioning as ext4"
+    echo "**DEBUG: disk "$DISKS" is not partitioned. Partitioning as ext4"
     ./$FDISK #&& rm -f $FDISK
 else
-    echo "**DEBUG: disk "${DISKS}" exists and is partitioned. Reusing it."
+    echo "**DEBUG: disk "$DISKS" exists and is partitioned. Reusing it."
 fi
 
 #mount and use
 mkdir -p ${export_path}
+echo "**DEBUG: mounting "${device_name}
 mount -t ext4 \
 /dev/${device_name}1 ${export_path}
+echo "**DEBUG: mounted. Mount output: "
+mount
 echo "/dev/${device_name}1 ${export_path} ext4 defaults 1 1" >> /etc/fstab
 mkdir -p ${export_path}/${vol_1}
 mkdir -p ${export_path}/${vol_2}

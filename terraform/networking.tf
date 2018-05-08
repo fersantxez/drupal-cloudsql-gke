@@ -6,7 +6,7 @@ resource "google_compute_network" "mynetwork" {
   auto_create_subnetworks = "true"
 }
 
-output "network"{
+output "network" {
   value = "${google_compute_network.mynetwork.self_link}"
 }
 
@@ -17,23 +17,23 @@ resource "google_compute_subnetwork" "mysubnetwork" {
   region        = "${var.region}"
 }
 
-output "subnetwork"{
+output "subnetwork" {
   value = "${google_compute_subnetwork.mysubnetwork.self_link}"
 }
 
 //external IP that should be used in the external load balancer
 resource "google_compute_address" "frontend" {
   project = "${var.project}"
-  name = "${var.ext_ip_name}"
-  region = "${var.region}"
+  name    = "${var.ext_ip_name}"
+  region  = "${var.region}"
 }
 
-output "frontend-ip"{
+output "frontend-ip" {
   value = "${google_compute_address.frontend.address}"
 }
 
 //DNS record
-
+/*
 resource "google_dns_managed_zone" "myzone" {
   name     = "${var.dns_zone_name}"
   dns_name = "${var.dns_name}."
@@ -66,3 +66,5 @@ resource "google_dns_record_set" "www" {
 output "www-URL"{
   value = "${google_dns_record_set.www.name}"
 }
+*/
+

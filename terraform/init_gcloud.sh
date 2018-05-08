@@ -28,19 +28,19 @@ export PROJECT_ID=$(gcloud compute project-info describe \
                 |grep 'id:' \
                 |awk '{print $2}')
 
-echo "***INFO: validating APIs on project ID "${PROJECT_ID}
-
-gcloud services enable compute.googleapis.com && \
-gcloud services enable container.googleapis.com && \
-gcloud services enable dns.googleapis.com && \
-gcloud services enable iam.googleapis.com && \
-gcloud services enable replicapool.googleapis.com && \
-gcloud services enable replicapoolupdater.googleapis.com && \
-gcloud services enable resourceviews.googleapis.com && \
-gcloud services enable sql-component.googleapis.com && \
-gcloud services enable sqladmin.googleapis.com && \
-gcloud services enable storage-api.googleapis.com && \
-gcloud services enable storage-component.googleapis.com 
+echo "***INFO: enabling APIs on project ID "${PROJECT_ID}
+#gcloud services enable compute.googleapis.com && \
+#gcloud services enable container.googleapis.com && \
+#gcloud services enable dns.googleapis.com && \
+#gcloud services enable iam.googleapis.com && \
+#gcloud services enable replicapool.googleapis.com && \
+#gcloud services enable replicapoolupdater.googleapis.com && \
+#gcloud services enable resourceviews.googleapis.com && \
+#gcloud services enable sql-component.googleapis.com && \
+#gcloud services enable sqladmin.googleapis.com && \
+#gcloud services enable storage-api.googleapis.com && \
+#gcloud services enable storage-component.googleapis.com && \
+gcloud services enable cloudresourcemanager.googleapis.com
 
 #make sure service account in the variables exists
 echo "***INFO: validating Service Accounts"
@@ -53,6 +53,7 @@ for i in ${SERVICE_ACCOUNT_LIST};do
     if [ $i = "${ADMIN_SVC_ACCOUNT}" ] ; then
         export SA_FOUND=true
         echo "Service Account "$i" found"
+        echo "Please make sure it has the right permissions, or delete it manually and re-create it using this script."
         break
     fi
 done
@@ -72,59 +73,71 @@ if [ "${SA_FOUND}" = false ]; then
     read -p  "***(y/n): " RESPONSE
     while true; do
     case $RESPONSE in
-        [yY]) echo "***Creating service account "${ADMIN_SVC_ACCOUNT}" on project "${TF_VAR_project}
+        [yY]) echo "***INFO: Creating service account "${ADMIN_SVC_ACCOUNT}" on project "${TF_VAR_project}
             #create service account
             gcloud iam service-accounts create ${ADMIN_SVC_ACCOUNT} \
-                --display-name ${ADMIN_SVC_ACCOUNT} && \
+                --display-name ${ADMIN_SVC_ACCOUNT}  \
             #add relevant permissions
+            #gcloud projects add-iam-policy-binding ${TF_VAR_project} \
+            #    --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
+            #    --role 'roles/iam.organizationRoleAdmin' 
             gcloud projects add-iam-policy-binding ${TF_VAR_project} \
                 --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
-                --role 'roles/iam.organizationRoleAdmin' >/dev/null 2>&1
+                --role 'roles/iam.roleAdmin'  
             gcloud projects add-iam-policy-binding ${TF_VAR_project} \
                 --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
-                --role 'roles/iam.roleAdmin' >/dev/null 2>&1
+                --role 'roles/iam.serviceAccountAdmin'
             gcloud projects add-iam-policy-binding ${TF_VAR_project} \
                 --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
-                --role 'roles/iam.serviceAccountAdmin' >/dev/null 2>&1
+                --role 'roles/iam.serviceAccountActor'
             gcloud projects add-iam-policy-binding ${TF_VAR_project} \
                 --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
-                --role 'roles/compute.storageAdmin' >/dev/null 2>&1
+                --role 'roles/iam.serviceAccountKeyAdmin'       
             gcloud projects add-iam-policy-binding ${TF_VAR_project} \
                 --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
-                --role 'roles/storage.objectAdmin' >/dev/null 2>&1
+                --role 'roles/compute.storageAdmin'  
             gcloud projects add-iam-policy-binding ${TF_VAR_project} \
                 --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
-                --role 'roles/compute.securityAdmin' >/dev/null 2>&1
+                --role 'roles/storage.objectAdmin'  
             gcloud projects add-iam-policy-binding ${TF_VAR_project} \
                 --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
-                --role 'roles/compute.networkAdmin' >/dev/null 2>&1
+                --role 'roles/compute.securityAdmin'  
             gcloud projects add-iam-policy-binding ${TF_VAR_project} \
                 --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
-                --role 'roles/compute.instanceAdmin.v1' >/dev/null 2>&1
+                --role 'roles/compute.networkAdmin'  
             gcloud projects add-iam-policy-binding ${TF_VAR_project} \
                 --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
-                --role 'roles/containers.clusters.create' >/dev/null 2>&1
+                --role 'roles/compute.instanceAdmin.v1'  
+            gcloud projects add-iam-policy-binding ${TF_VAR_project} \
+                --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
+                --role 'roles/container.admin' 
+            gcloud projects add-iam-policy-binding ${TF_VAR_project} \
+                --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
+                --role 'roles/dns.admin'
             break                                                                            
             ;;
-        [nN]) echo "***Exiting. Please create the Service Account and assign IAM roles manually or re-run this script"
+        [nN]) echo "***ERROR: Please create the Service Account and assign IAM roles manually or re-run this script. Exiting. "
             exit
             ;;
-        *) "**Invalid input. Please select [y] or [n]"
+        *) "**ERROR: Invalid input. Please select [y] or [n]"
             ;;
     esac
     done
 fi
 
 #download the service account credentials to the right location
+echo "**INFO: creating Service Account keys"
 gcloud iam service-accounts keys create \
     ${TF_VAR_CREDS} \
     --iam-account ${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com
 
 #make bucket
+"**INFO: creating bucket for Terraform state"
 gsutil mb -l ${TF_VAR_region} "gs://"${TF_VAR_bucket_name}
 
 #FIXME: missing the snapshot creation
 #create a GCP disk - if it exists this will error out but disk will remain
+"**INFO: creating disk for NFS server (if it doesn't exist already)"
 gcloud compute disks create \
   ${TF_VAR_raw_disk_name} \
   --description="Raw disk to use as backend for NFS" \
@@ -134,7 +147,7 @@ gcloud compute disks create \
   #[--image-project=IMAGE_PROJECT --image=IMAGE     |
   # [--labels=[KEY=VALUE,…]] [--licenses=[LICENSE,…]] [--no-require-csek-key-create]   --image-family=IMAGE_FAMILY     | --source-snapshot=SOURCE_SNAPSHOT] [GCLOUD_WIDE_FLAG …]
 
-echo "***Initialization finished. Please remember to edit 'backend.tf' and add your bucket name "${TF_VAR_bucket_name}
+echo "***INFO: Initialization finished. Please remember to edit 'backend.tf' and add your bucket name "${TF_VAR_bucket_name}
 echo "then run 'terraform init' 'terraform apply'"
 
 
