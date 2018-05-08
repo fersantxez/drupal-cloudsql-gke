@@ -1,7 +1,7 @@
 terraform {
  backend "gcs" {
-   bucket  = "bbby-host-terraform"
+   bucket  = "groundcontrol-www-terraform"
    prefix  = "/tf/terraform.tfstate"
-   project = "bbby-host"
+   project = "groundcontrol-www"
  }
 }

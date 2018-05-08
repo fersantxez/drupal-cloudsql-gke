@@ -136,6 +136,13 @@ gcloud iam service-accounts keys create \
 echo "**INFO: creating bucket for Terraform state"
 gsutil mb -l ${TF_VAR_region} "gs://"${TF_VAR_bucket_name}
 
+#update backend template file
+echo "**INFO: updating backend from template"
+rm -f backend.tf
+cp backend.tf.template backend.tf
+sed  "s,__BUCKET__,$TF_VAR_bucket_name,g" backend.tf
+sed  "s,__PROJECT__,$TF_VAR_project,g" backend.tf
+
 echo "***INFO: Initialization finished. Please remember to edit 'backend.tf' and add your bucket name "${TF_VAR_bucket_name}
 echo "then run 'terraform init' 'terraform apply'"
 
