@@ -134,8 +134,8 @@ gsutil mb -l ${TF_VAR_region} "gs://"${TF_VAR_bucket_name}
 echo "**INFO: updating backend from template"
 rm -f backend.tf±—
 cp backend.tf.template backend.tf
-sed  -i '' "s,__BUCKET__,$TF_VAR_bucket_name,g" backend.tf  
-sed  -i '' "s,__PROJECT__,$TF_VAR_project,g" backend.tf  
+sed -i `` "s,__BUCKET__,$TF_VAR_bucket_name,g" backend.tf
+sed -i `` "s,__PROJECT__,$TF_VAR_project,g" backend.tf
 
 echo "**INFO: Initialization finished. Ready to run with the following backend information on 'backend.tf':"
 cat backend.tf
