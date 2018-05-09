@@ -64,8 +64,8 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
             path = "/"
           }
 
-          initial_delay_seconds = 300
-          timeout_seconds = 3
+          initial_delay_seconds = 500
+          timeout_seconds       = 3
         }
 
         readiness_probe {
@@ -75,8 +75,8 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
           }
 
           initial_delay_seconds = 600
-          success_threshold = 3
-          timeout_seconds = 3
+          success_threshold     = 3
+          timeout_seconds       = 3
         }
 
         volume_mount {
@@ -178,6 +178,7 @@ resource "kubernetes_service" "cloud-drupal" {
     }
 
     type = "LoadBalancer"
+
     // not working:
     load_balancer_ip = "${google_compute_address.frontend.0.address}"
 
@@ -188,11 +189,9 @@ resource "kubernetes_service" "cloud-drupal" {
       port        = 80
       target_port = 80
     }
-
-
   }
 }
 
 output "lb_ip" {
-value = "${kubernetes_service.cloud-drupal.load_balancer_ingress.0.ip}"
+  value = "${kubernetes_service.cloud-drupal.load_balancer_ingress.0.ip}"
 }
