@@ -1,14 +1,12 @@
 #!/bin/bash
-# List to format as EXT4 for NFS, SPACE separated as in: 
-# "/dev/hda /dev/hdb /dev/hdc"
-export DISKS=/dev/${device_name}
+export DISK=/dev/${device_name}
 
 # Create a script to partition disks
 export FDISK=nfs_fdisk_headless.sh  #just a name for the script below.
 # script to format disks as EXT4
 cat > ./$FDISK << EOF
 #!/bin/sh
-hdd="$DISKS"
+hdd="$DISK"
 EOF
 cat >> ./$FDISK << 'EOF'
 for i in $hdd;do
@@ -30,10 +28,10 @@ export UNPARTITIONED=$(/sbin/parted -lm 2>&1 \
 
 if [[ !  -z  $UNPARTITIONED  ]];then
     #disk is not partitioned yet
-    echo "**DEBUG: disk "$DISKS" is not partitioned. Partitioning as ext4"
+    echo "**DEBUG: disk "$DISK" is not partitioned. Partitioning as ext4"
     ./$FDISK #&& rm -f $FDISK
 else
-    echo "**DEBUG: disk "$DISKS" exists and is partitioned. Reusing it."
+    echo "**DEBUG: disk "$DISK" exists and is partitioned. Reusing it."
 fi
 
 #mount and use
