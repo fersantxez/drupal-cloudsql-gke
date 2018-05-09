@@ -29,6 +29,8 @@ export PROJECT_ID=$(gcloud compute project-info describe \
                 |awk '{print $2}')
 
 echo "***INFO: enabling APIs on project ID "${PROJECT_ID}
+#FIXME: consider https://pantheon.corp.google.com/flows/enableapi?\
+#apiid=dataflow,compute_component,logging,storage_component,storage_api,bigquery
 #gcloud services enable compute.googleapis.com && \
 #gcloud services enable container.googleapis.com && \
 #gcloud services enable dns.googleapis.com && \
@@ -147,7 +149,11 @@ gcloud compute disks create \
   #[--image-project=IMAGE_PROJECT --image=IMAGE     |
   # [--labels=[KEY=VALUE,…]] [--licenses=[LICENSE,…]] [--no-require-csek-key-create]   --image-family=IMAGE_FAMILY     | --source-snapshot=SOURCE_SNAPSHOT] [GCLOUD_WIDE_FLAG …]
 
-echo "***INFO: Initialization finished. Please remember to edit 'backend.tf' and add your bucket name "${TF_VAR_bucket_name}
+echo "**INFO: updating backend template..."
+sed -i '' "s,__INSTANCE_CONNECTION_NAME__,$INSTANCE_CONNECTION_NAME,g" $DEPLOYMENT_FILE
+
+
+echo "**INFO: Initialization finished. Please remember to edit 'backend.tf' and add your bucket name "${TF_VAR_bucket_name}
 echo "then run 'terraform init' 'terraform apply'"
 
 
