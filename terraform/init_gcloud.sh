@@ -21,13 +21,7 @@ gcloud config set account ${ACCOUNT_ID} && \
 gcloud config set project ${TF_VAR_project} && \
 gcloud config set compute/zone ${TF_VAR_zone}
 
-# make sure that the relevant APIs are enabled
-echo "***INFO: finding project ID for project "${TF_VAR_project}
-export PROJECT_ID=$(gcloud compute project-info describe \
-                |grep 'id:' \
-                |awk '{print $2}')
-
-echo "***INFO: enabling APIs on project ID "${PROJECT_ID}
+echo "***INFO: enabling APIs on project"
 gcloud services enable \
 compute.googleapis.com \
 container.googleapis.com \
@@ -41,6 +35,13 @@ sqladmin.googleapis.com \
 storage-api.googleapis.com \
 storage-component.googleapis.com \
 cloudresourcemanager.googleapis.com
+
+# make sure that the relevant APIs are enabled
+echo "***INFO: finding project ID for project "${TF_VAR_project}
+export PROJECT_ID=$(gcloud compute project-info describe \
+                |grep 'id:' \
+                |awk '{print $2}')
+echo "***Project ID found: "${PROJECT_ID}
 
 #make sure service account in the variables exists
 echo "***INFO: validating Service Accounts"
@@ -87,6 +88,9 @@ if [ "${SA_FOUND}" = false ]; then
             gcloud projects add-iam-policy-binding ${TF_VAR_project} \
                 --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
                 --role 'roles/compute.storageAdmin'  
+            gcloud projects add-iam-policy-binding ${TF_VAR_project} \ 
+                --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
+                --role 'roles/storage.admin'
             gcloud projects add-iam-policy-binding ${TF_VAR_project} \
                 --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
                 --role 'roles/storage.objectAdmin'  
