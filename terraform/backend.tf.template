@@ -1,0 +1,7 @@
+terraform {
+ backend "gcs" {
+   bucket  = "__BUCKET__"
+   prefix  = "/tf/terraform.tfstate"
+   project = "__PROJECT__"
+ }
+}

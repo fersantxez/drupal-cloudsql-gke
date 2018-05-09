@@ -3,12 +3,12 @@
 set -o errexit -o nounset -o pipefail
 
 #make sure there's an internet connection
-#if ping -q -c 1 -W 1 google.com >/dev/null; then
-#  echo "** Internet connectivity is working."
-#else
-#  echo "** Internet connectivity is not working. Aborting."
-#  exit
-#fi
+if ping -q -c 1 -W 1 google.com >/dev/null; then
+  echo "** Internet connectivity is working."
+else
+  echo "** Internet connectivity is not working. Aborting."
+  exit
+fi
 
 #check gcloud is installed
 echo "***INFO: validating environment"
@@ -21,6 +21,7 @@ source ./env.sh
 gcloud auth login --no-launch-browser && \
 gcloud config set account ${ACCOUNT_ID}
 gcloud config set project ${TF_VAR_project}
+gcloud config set compute/zone ${TF_VAR_zone}
 
 # make sure that the relevant APIs are enabled
 echo "***INFO: finding project ID for project "${TF_VAR_project}
@@ -29,6 +30,7 @@ export PROJECT_ID=$(gcloud compute project-info describe \
                 |awk '{print $2}')
 
 echo "***INFO: enabling APIs on project ID "${PROJECT_ID}
+<<<<<<< HEAD
 #FIXME: consider https://pantheon.corp.google.com/flows/enableapi?\
 #apiid=dataflow,compute_component,logging,storage_component,storage_api,bigquery
 #gcloud services enable compute.googleapis.com && \
@@ -42,6 +44,19 @@ echo "***INFO: enabling APIs on project ID "${PROJECT_ID}
 #gcloud services enable sqladmin.googleapis.com && \
 #gcloud services enable storage-api.googleapis.com && \
 #gcloud services enable storage-component.googleapis.com && \
+=======
+gcloud services enable compute.googleapis.com && \
+gcloud services enable container.googleapis.com && \
+gcloud services enable dns.googleapis.com && \
+gcloud services enable iam.googleapis.com && \
+gcloud services enable replicapool.googleapis.com && \
+gcloud services enable replicapoolupdater.googleapis.com && \
+gcloud services enable resourceviews.googleapis.com && \
+gcloud services enable sql-component.googleapis.com && \
+gcloud services enable sqladmin.googleapis.com && \
+gcloud services enable storage-api.googleapis.com && \
+gcloud services enable storage-component.googleapis.com && \
+>>>>>>> 0bac2b5553cf43d3d38010553eb2dcaccc710dda
 gcloud services enable cloudresourcemanager.googleapis.com
 
 #make sure service account in the variables exists
@@ -134,20 +149,15 @@ gcloud iam service-accounts keys create \
     --iam-account ${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com
 
 #make bucket
-"**INFO: creating bucket for Terraform state"
+echo "**INFO: creating bucket for Terraform state"
 gsutil mb -l ${TF_VAR_region} "gs://"${TF_VAR_bucket_name}
 
-#FIXME: missing the snapshot creation
-#create a GCP disk - if it exists this will error out but disk will remain
-"**INFO: creating disk for NFS server (if it doesn't exist already)"
-gcloud compute disks create \
-  ${TF_VAR_raw_disk_name} \
-  --description="Raw disk to use as backend for NFS" \
-  --size=${TF_VAR_raw_disk_size} \
-  --type=${TF_VAR_raw_disk_type}  \
-  --zone=${TF_VAR_zone}
-  #[--image-project=IMAGE_PROJECT --image=IMAGE     |
-  # [--labels=[KEY=VALUE,…]] [--licenses=[LICENSE,…]] [--no-require-csek-key-create]   --image-family=IMAGE_FAMILY     | --source-snapshot=SOURCE_SNAPSHOT] [GCLOUD_WIDE_FLAG …]
+#update backend template file
+echo "**INFO: updating backend from template"
+rm -f backend.tf
+cp backend.tf.template backend.tf
+sed  "s,__BUCKET__,$TF_VAR_bucket_name,g" backend.tf
+sed  "s,__PROJECT__,$TF_VAR_project,g" backend.tf
 
 echo "**INFO: updating backend template..."
 sed -i '' "s,__INSTANCE_CONNECTION_NAME__,$INSTANCE_CONNECTION_NAME,g" $DEPLOYMENT_FILE

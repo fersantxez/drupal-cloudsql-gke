@@ -4,8 +4,8 @@
 ####################################################
 
 #GCP account info
-export ACCOUNT_ID=fersanchez@google.com							#your GCP account ID
-export ADMIN_SVC_ACCOUNT=bbby-terraform-admin			#service account used by Terraform - NO SPACES
+export ACCOUNT_ID=fer@groundcontrol.me						#your GCP account ID
+export ADMIN_SVC_ACCOUNT=groundcontrols-terraform-admin			#service account used by Terraform - NO SPACES
 																#NEEDS TO BE ***PRE-CREATED*** MANUALLY
 #
 export TF_VAR_org_id=805845699844								#your GCP org ID
@@ -13,19 +13,19 @@ export TF_VAR_billing_account=00183D-07EE2D-3060A0				#billing account for your 
 export TF_VAR_CREDS=~/.ssh/${ADMIN_SVC_ACCOUNT}.json	#location of the credentials file
 
 #project info
-export TF_VAR_project=bbby-host		#***PRE_CREATED*** project where the resources will be placed
+export TF_VAR_project=groundcontrol-www		#***PRE_CREATED*** project where the resources will be placed
 export TF_VAR_region=us-east4
 export TF_VAR_zone=us-east4-c
-export TF_VAR_bucket_name=${TF_VAR_project}"-terraform"
 
-export GOOGLE_APPLICATION_CREDENTIALS=${TF_VAR_CREDS}
-export GOOGLE_PROJECT=${TF_VAR_project}
 
 #master password: DELETE or COMMENT for production use
 export TF_VAR_master_password="12345678901234567890"
 
 ############ NO NEED TO CONFIGURE THESE ###############
 #######################################################
+export TF_VAR_bucket_name=${TF_VAR_project}"-terraform"
+export GOOGLE_APPLICATION_CREDENTIALS=${TF_VAR_CREDS}
+export GOOGLE_PROJECT=${TF_VAR_project}
 #network and security
 export TF_VAR_network=${TF_VAR_project}"-net"			#name of a network to be created
 export TF_VAR_subnetwork=${TF_VAR_project}"-subnet"		#name of a subnet to be created
