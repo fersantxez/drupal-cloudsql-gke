@@ -96,8 +96,8 @@ if [ "${SA_FOUND}" = false ]; then
                 --role 'roles/resourcemanager.projectIamAdmin'       
             gcloud projects add-iam-policy-binding ${TF_VAR_project} \
                 --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
-                --role 'roles/compute.storageAdmin'  
-            gcloud projects add-iam-policy-binding ${TF_VAR_project} \ 
+                --role 'roles/compute.storageAdmin'
+            gcloud projects add-iam-policy-binding ${TF_VAR_project} \
                 --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
                 --role 'roles/storage.admin'
             gcloud projects add-iam-policy-binding ${TF_VAR_project} \
