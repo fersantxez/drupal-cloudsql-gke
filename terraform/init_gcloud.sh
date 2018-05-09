@@ -1,8 +1,8 @@
 #!/bin/bash
 
-set -o errexit -o nounset -o pipefail
+source ./env.sh
 
-#make sure there's an internet connection
+#make sure there is an internet connection
 if ping -q -c 1 -W 1 google.com >/dev/null; then
   echo "** Internet connectivity is working."
 else
@@ -13,11 +13,9 @@ fi
 #check gcloud is installed
 echo "***INFO: validating environment"
 command -v gcloud >/dev/null 2>&1 || { echo "I require gcloud but it's not installed.  Aborting." >&2; exit 1; }
-# init gcloud with the information in env.sh
-source ./env.sh
 
-#make sure the project exists
-
+#login to gcloud and set project params
+echo "***INFO: logging into gcloud and setting up the project"
 gcloud auth login --no-launch-browser && \
 gcloud config set account ${ACCOUNT_ID}
 gcloud config set project ${TF_VAR_project}
@@ -62,17 +60,7 @@ done
 
 if [ "${SA_FOUND}" = false ]; then
     echo "***ERROR: Service account "${ADMIN_SVC_ACCOUNT}" not found in project "${TF_VAR_project}
-    echo "Do you want me to create it and enable the required permissions: "
-    echo "roles/iam.organizationRoleAdmin"
-    echo "roles/iam.roleAdmin"
-    echo "roles/iam.serviceAccountAdmin"
-    echo "roles/storage.objectAdmin"
-    echo "roles/compute.storageAdmin" 
-    echo "roles/compute.securityAdmin"
-    echo "roles/compute.networkAdmin"
-    echo "roles/compute.instanceAdmin.v1"
-    echo "roles/containers.clusters.create"
-    read -p  "***(y/n): " RESPONSE
+    read -p "Do you want me to create it and enable the required permissions: (y/n): " RESPONSE
     while true; do
     case $RESPONSE in
         [yY]) echo "***INFO: Creating service account "${ADMIN_SVC_ACCOUNT}" on project "${TF_VAR_project}
@@ -131,7 +119,8 @@ fi
 echo "**INFO: creating Service Account keys"
 gcloud iam service-accounts keys create \
     ${TF_VAR_CREDS} \
-    --iam-account ${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com
+    --iam-account ${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com && \
+export GOOGLE_DEFAULT_CREDENTIALS=${TF_VAR_CREDS}
 
 #make bucket
 echo "**INFO: creating bucket for Terraform state"
@@ -141,15 +130,12 @@ gsutil mb -l ${TF_VAR_region} "gs://"${TF_VAR_bucket_name}
 echo "**INFO: updating backend from template"
 rm -f backend.tf
 cp backend.tf.template backend.tf
-sed  "s,__BUCKET__,$TF_VAR_bucket_name,g" backend.tf
-sed  "s,__PROJECT__,$TF_VAR_project,g" backend.tf
+sed  -i '' "s,__BUCKET__,$TF_VAR_bucket_name,g" backend.tf  
+sed  -i '' "s,__PROJECT__,$TF_VAR_project,g" backend.tf  
 
-echo "**INFO: updating backend template..."
-sed -i '' "s,__INSTANCE_CONNECTION_NAME__,$INSTANCE_CONNECTION_NAME,g" $DEPLOYMENT_FILE
-
-
-echo "**INFO: Initialization finished. Please remember to edit 'backend.tf' and add your bucket name "${TF_VAR_bucket_name}
-echo "then run 'terraform init' 'terraform apply'"
+echo "**INFO: Initialization finished. Ready to run with the following backend information on 'backend.tf':"
+cat backend.tf
+echo "**INFO: now run 'terraform init' and then 'terraform apply'"
 
 
 
