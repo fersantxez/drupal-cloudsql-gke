@@ -18,7 +18,7 @@ p
 
 
 w
-"|fdisk $i;mkfs.ext4 -F $i;done
+"|fdisk $i;mkfs.ext4 -F $i"1";done
 EOF
 chmod +x ./$FDISK
 sleep 3             #for disk to sync
@@ -43,7 +43,7 @@ mount -t ext4 \
 /dev/${device_name}1 ${export_path}
 echo "**DEBUG: mounted. Mount output: "
 mount
-echo "/dev/${device_name}1 ${export_path} ext4 defaults 1 1" >> /etc/fstab
+#echo "/dev/${device_name}1 ${export_path} ext4 defaults 1 1" >> /etc/fstab
 mkdir -p ${export_path}/${vol_1}
 mkdir -p ${export_path}/${vol_2}
 apt-get install -y nfs-kernel-server

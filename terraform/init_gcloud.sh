@@ -17,8 +17,8 @@ command -v gcloud >/dev/null 2>&1 || { echo "I require gcloud but it's not insta
 #login to gcloud and set project params
 echo "***INFO: logging into gcloud and setting up the project"
 gcloud auth login --no-launch-browser && \
-gcloud config set account ${ACCOUNT_ID}
-gcloud config set project ${TF_VAR_project}
+gcloud config set account ${ACCOUNT_ID} && \
+gcloud config set project ${TF_VAR_project} && \
 gcloud config set compute/zone ${TF_VAR_zone}
 
 # make sure that the relevant APIs are enabled
@@ -49,7 +49,7 @@ export SERVICE_ACCOUNT_LIST=$(gcloud iam service-accounts list  \
 
 export SA_FOUND=false
 for i in ${SERVICE_ACCOUNT_LIST};do
-    echo "searching... "$i
+    echo "Searching... "$i
     if [ $i = "${ADMIN_SVC_ACCOUNT}" ] ; then
         export SA_FOUND=true
         echo "Service Account "$i" found"

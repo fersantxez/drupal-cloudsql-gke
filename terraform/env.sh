@@ -5,24 +5,23 @@
 
 #GCP account info
 export ACCOUNT_ID=fer@groundcontrol.me						#your GCP account ID
-export ADMIN_SVC_ACCOUNT=groundcontrols-terraform-admin			#service account used by Terraform - NO SPACES
-																#NEEDS TO BE ***PRE-CREATED*** MANUALLY
+export ADMIN_SVC_ACCOUNT=groundcontrols-terraform-admin		#service account used by Terraform - NO SPACES
 #
-export TF_VAR_org_id=805845699844								#your GCP org ID
-export TF_VAR_billing_account=00183D-07EE2D-3060A0				#billing account for your project
-export TF_VAR_CREDS=~/.ssh/${ADMIN_SVC_ACCOUNT}.json	#location of the credentials file
+export TF_VAR_org_id=805845699844							#your GCP org ID
+export TF_VAR_billing_account=00183D-07EE2D-3060A0			#billing account for your project
+export TF_VAR_CREDS=~/.ssh/${ADMIN_SVC_ACCOUNT}.json		#location of the credentials file
 
 #project info
 export TF_VAR_project=groundcontrol-www		#***PRE_CREATED*** project where the resources will be placed
 export TF_VAR_region=us-east4
 export TF_VAR_zone=us-east4-c
 
-
 #master password: DELETE or COMMENT for production use
-export TF_VAR_master_password="12345678901234567890"
+#export TF_VAR_master_password="12345678901234567890"
 
 ############ NO NEED TO CONFIGURE THESE ###############
 #######################################################
+
 export TF_VAR_bucket_name=${TF_VAR_project}"-terraform"
 export GOOGLE_APPLICATION_CREDENTIALS=${TF_VAR_CREDS}
 export GOOGLE_PROJECT=${TF_VAR_project}
@@ -41,7 +40,7 @@ export TF_VAR_snapshot="ext4-200g-us-east4-empty"     	#name of ***PRE-CREATED**
 														#you need to create an empty ext4 disk and this snapshot from it 
 
 
-export TF_VAR_disk="nfs-disk"               #a disk that will be created from snapshot
+export TF_VAR_disk=${TF_VAR_project}"-raw-disk"               			#a disk that will be created from snapshot
 export TF_VAR_export_path="/var/nfsroot"
 export TF_VAR_vol_1="drupal-vol"
 export TF_VAR_vol_1_size="200Gi"
@@ -56,7 +55,7 @@ export TF_VAR_cloudsql_client_role="roles/cloudsql.client"
 export TF_VAR_create_keys_role="roles/iam.serviceAccountKeyAdmin"
 
 #cloudSQL
-export TF_VAR_cloudsql_instance=$TF_VAR_project"-sql"31
+export TF_VAR_cloudsql_instance=$TF_VAR_project"-sql"
 export TF_VAR_cloudsql_username="cloudsqlproxy"
 export TF_VAR_cloudsql_tier="db-n1-standard-1"
 export TF_VAR_cloudsql_storage_type="SSD"
