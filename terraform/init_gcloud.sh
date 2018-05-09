@@ -10,18 +10,27 @@ else
   #exit
 fi
 
+#make sure we're running on linux to avoid bash weirdness
+unameOut="$(uname -s)"
+if [[ $unameOut = *"inux"* ]]; then
+  echo "**INFO: Running on Linux"
+else
+  echo "**ERROR: I can only run on Linux. Exiting"
+  exit
+fi
+
 #check gcloud is installed
-echo "***INFO: validating environment"
+echo "**INFO: validating environment"
 command -v gcloud >/dev/null 2>&1 || { echo "I require gcloud but it's not installed.  Aborting." >&2; exit 1; }
 
 #login to gcloud and set project params
-echo "***INFO: logging into gcloud and setting up the project"
+echo "**INFO: logging into gcloud and setting up the project"
 gcloud auth login --no-launch-browser && \
 gcloud config set account ${ACCOUNT_ID} && \
 gcloud config set project ${TF_VAR_project} && \
 gcloud config set compute/zone ${TF_VAR_zone}
 
-echo "***INFO: enabling APIs on project"
+echo "**INFO: enabling APIs on project"
 gcloud services enable \
 compute.googleapis.com \
 container.googleapis.com \
@@ -37,14 +46,14 @@ storage-component.googleapis.com \
 cloudresourcemanager.googleapis.com
 
 # make sure that the relevant APIs are enabled
-echo "***INFO: finding project ID for project "${TF_VAR_project}
+echo "**INFO: finding project ID for project "${TF_VAR_project}
 export PROJECT_ID=$(gcloud compute project-info describe \
                 |grep 'id:' \
                 |awk '{print $2}')
-echo "***Project ID found: "${PROJECT_ID}
+echo "**Project ID found: "${PROJECT_ID}
 
 #make sure service account in the variables exists
-echo "***INFO: validating Service Accounts"
+echo "**INFO: validating Service Accounts"
 export SERVICE_ACCOUNT_LIST=$(gcloud iam service-accounts list  \
     | tail -n +2 | awk '{print $1}')            #get first column. SA description does not have spaces.
 
