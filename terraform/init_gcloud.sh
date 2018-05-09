@@ -7,7 +7,7 @@ if ping -q -c 1 -W 1 google.com >/dev/null; then
   echo "** Internet connectivity is working."
 else
   echo "** Internet connectivity is not working. Aborting."
-  exit
+  #exit
 fi
 
 #check gcloud is installed
@@ -30,34 +30,19 @@ export PROJECT_ID=$(gcloud compute project-info describe \
                 |awk '{print $2}')
 
 echo "***INFO: enabling APIs on project ID "${PROJECT_ID}
-<<<<<<< HEAD
-#FIXME: consider https://pantheon.corp.google.com/flows/enableapi?\
-#apiid=dataflow,compute_component,logging,storage_component,storage_api,bigquery
-#gcloud services enable compute.googleapis.com && \
-#gcloud services enable container.googleapis.com && \
-#gcloud services enable dns.googleapis.com && \
-#gcloud services enable iam.googleapis.com && \
-#gcloud services enable replicapool.googleapis.com && \
-#gcloud services enable replicapoolupdater.googleapis.com && \
-#gcloud services enable resourceviews.googleapis.com && \
-#gcloud services enable sql-component.googleapis.com && \
-#gcloud services enable sqladmin.googleapis.com && \
-#gcloud services enable storage-api.googleapis.com && \
-#gcloud services enable storage-component.googleapis.com && \
-=======
-gcloud services enable compute.googleapis.com && \
-gcloud services enable container.googleapis.com && \
-gcloud services enable dns.googleapis.com && \
-gcloud services enable iam.googleapis.com && \
-gcloud services enable replicapool.googleapis.com && \
-gcloud services enable replicapoolupdater.googleapis.com && \
-gcloud services enable resourceviews.googleapis.com && \
-gcloud services enable sql-component.googleapis.com && \
-gcloud services enable sqladmin.googleapis.com && \
-gcloud services enable storage-api.googleapis.com && \
-gcloud services enable storage-component.googleapis.com && \
->>>>>>> 0bac2b5553cf43d3d38010553eb2dcaccc710dda
-gcloud services enable cloudresourcemanager.googleapis.com
+gcloud services enable \
+compute.googleapis.com \
+container.googleapis.com \
+dns.googleapis.com \
+iam.googleapis.com \
+replicapool.googleapis.com \
+replicapoolupdater.googleapis.com \
+resourceviews.googleapis.com \
+sql-component.googleapis.com \
+sqladmin.googleapis.com \
+storage-api.googleapis.com \
+storage-component.googleapis.com \
+cloudresourcemanager.googleapis.com
 
 #make sure service account in the variables exists
 echo "***INFO: validating Service Accounts"
