@@ -59,18 +59,16 @@ for i in ${SERVICE_ACCOUNT_LIST};do
 done
 
 if [ "${SA_FOUND}" = false ]; then
-    echo "***ERROR: Service account "${ADMIN_SVC_ACCOUNT}" not found in project "${TF_VAR_project}
-    read -p "Do you want me to create it and enable the required permissions: (y/n): " RESPONSE
+    echo "**ERROR: Service account "${ADMIN_SVC_ACCOUNT}" not found in project "${TF_VAR_project}
+    echo "**Do you want me to create it and enable the required permissions?"" (y/n): "
     while true; do
+    read -p "** Enter (y/n): " RESPONSE
     case $RESPONSE in
         [yY]) echo "***INFO: Creating service account "${ADMIN_SVC_ACCOUNT}" on project "${TF_VAR_project}
             #create service account
             gcloud iam service-accounts create ${ADMIN_SVC_ACCOUNT} \
                 --display-name ${ADMIN_SVC_ACCOUNT}  \
             #add relevant permissions
-            #gcloud projects add-iam-policy-binding ${TF_VAR_project} \
-            #    --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
-            #    --role 'roles/iam.organizationRoleAdmin' 
             gcloud projects add-iam-policy-binding ${TF_VAR_project} \
                 --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
                 --role 'roles/iam.roleAdmin'  
@@ -82,7 +80,10 @@ if [ "${SA_FOUND}" = false ]; then
                 --role 'roles/iam.serviceAccountActor'
             gcloud projects add-iam-policy-binding ${TF_VAR_project} \
                 --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
-                --role 'roles/iam.serviceAccountKeyAdmin'       
+                --role 'roles/iam.serviceAccountKeyAdmin'
+            gcloud projects add-iam-policy-binding ${TF_VAR_project} \
+                --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
+                --role 'roles/resourcemanager.projectIamAdmin'       
             gcloud projects add-iam-policy-binding ${TF_VAR_project} \
                 --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
                 --role 'roles/compute.storageAdmin'  
@@ -100,7 +101,10 @@ if [ "${SA_FOUND}" = false ]; then
                 --role 'roles/compute.instanceAdmin.v1'  
             gcloud projects add-iam-policy-binding ${TF_VAR_project} \
                 --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
-                --role 'roles/container.admin' 
+                --role 'roles/cloudsql.admin'
+            gcloud projects add-iam-policy-binding ${TF_VAR_project} \
+                --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
+                --role 'roles/container.admin'
             gcloud projects add-iam-policy-binding ${TF_VAR_project} \
                 --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
                 --role 'roles/dns.admin'
@@ -109,7 +113,7 @@ if [ "${SA_FOUND}" = false ]; then
         [nN]) echo "***ERROR: Please create the Service Account and assign IAM roles manually or re-run this script. Exiting. "
             exit
             ;;
-        *) "**ERROR: Invalid input. Please select [y] or [n]"
+        *) echo "**ERROR: Invalid input. Please select [y] or [n]"
             ;;
     esac
     done
@@ -128,7 +132,7 @@ gsutil mb -l ${TF_VAR_region} "gs://"${TF_VAR_bucket_name}
 
 #update backend template file
 echo "**INFO: updating backend from template"
-rm -f backend.tf
+rm -f backend.tf±—
 cp backend.tf.template backend.tf
 sed  -i '' "s,__BUCKET__,$TF_VAR_bucket_name,g" backend.tf  
 sed  -i '' "s,__PROJECT__,$TF_VAR_project,g" backend.tf  
