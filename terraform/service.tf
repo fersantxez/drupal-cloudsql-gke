@@ -64,7 +64,7 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
             path = "/"
           }
 
-          initial_delay_seconds = 500
+          initial_delay_seconds = 600
           timeout_seconds       = 3
         }
 
