@@ -97,4 +97,3 @@ export TF_VAR_PROJECT=${TF_VAR_project}
 export TF_VAR_IMAGE="emanage-2-5-1-10-142ee106f93b"
 export TF_VAR_CREDENTIALS=${TF_VAR_CREDS} 
 export TF_VAR_SERVICE_EMAIL=${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}".iam.gserviceaccount.com"
-export TF_VAR_master_password=12345678901234567890

@@ -170,9 +170,12 @@ echo "****** then will run:"
 echo "terraform apply"
 
 echo "**INFO: Initializing and running Terraform:"
-terraform init && terraform apply
-echo "**INFO: ******* FINISHED *******"
-echo "**INFO: Drupal will be available at the lb_ip address above"
+terraform init && terraform apply && \
+echo "**INFO: ******* FINISHED *******" && \
+echo "**INFO: Drupal will be available at the lb_ip address above" && \
+exit
+
+echo "**ERROR: please run 'terraform init' again"
 
 
 

@@ -16,6 +16,7 @@ resource "google_compute_firewall" "internal" {
 
   allow {
     protocol = "udp"
+    ports    = "${var.ports}"
   }
 
   source_tags = ["${var.tag}"]

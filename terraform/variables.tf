@@ -25,7 +25,6 @@ variable "ports" {
 //Storage - NFS or other shared filesystems
 
 variable "export_path" {}
-variable "snapshot" {}
 variable "disk" {}
 variable "raw_disk_type" {}
 variable "nfs_machine_type" {}
