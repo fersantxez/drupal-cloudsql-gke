@@ -158,7 +158,8 @@ rm -Rf .terraform/
 
 #create master password
 echo "**INFO: PLEASE ENTER ***MASTER PASSWORD*** (needs to be AT LEAST 20 chars LONG)" 
-read -p ": "${VAR_master_password}
+read -s TF_VAR_master_password
+export TF_VAR_master_password
 
 echo "**INFO: Initialization finished. Ready to run with the following backend information (backend.tf):"
 cat backend.tf
