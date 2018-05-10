@@ -11,6 +11,7 @@ resource "google_compute_firewall" "internal" {
 
   allow {
     protocol = "tcp"
+    ports    = "${var.ports}"
   }
 
   allow {

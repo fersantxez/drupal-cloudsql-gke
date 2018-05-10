@@ -47,16 +47,12 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
         image = "${var.gke_drupal_image}"
         name  = "drupal"
 
-        port = [
-          {
-            container_port = 80
-            name           = "http"
-          },
-          {
-            container_port = 443
-            name           = "https"
-          },
-        ]
+        resources {
+          requests {
+            cpu    = "1"
+            memory = "512Mi"
+          }
+        }
 
         liveness_probe {
           http_get {

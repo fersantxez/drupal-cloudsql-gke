@@ -26,6 +26,9 @@ command -v gcloud >/dev/null 2>&1 || { echo "I require gcloud but it's not insta
 #login to gcloud and set project params
 echo "**INFO: logging into gcloud and setting up the project"
 gcloud auth login --no-launch-browser && \
+#gcloud projects create \
+#  ${TF_VAR_project} --name=${TF_VAR_project} --organization=${TF_VAR_org_id} \
+#  --enable-cloud-apis --set-as-default && \
 gcloud config set account ${ACCOUNT_ID} && \
 gcloud config set project ${TF_VAR_project} && \
 gcloud config set compute/zone ${TF_VAR_zone}
@@ -150,12 +153,20 @@ cp backend.tf.template backend.tf
 sed -i `` "s,__BUCKET__,$TF_VAR_bucket_name,g" backend.tf
 sed -i `` "s,__PROJECT__,$TF_VAR_project,g" backend.tf
 
-#create master password
-read -p "**INFO: PLEASE ENTER ***MASTER PASSWORD*** (needs to be AT LEAST 20 chars LONG)" TF_VAR_master_password
+#remove previous state
+rm -f .terraform
 
-echo "**INFO: Initialization finished. Ready to run with the following backend information on 'backend.tf':"
+#create master password
+echo "**INFO: PLEASE ENTER ***MASTER PASSWORD*** (needs to be AT LEAST 20 chars LONG)" 
+read -p ": "${VAR_master_password}
+
+echo "**INFO: Initialization finished. Ready to run with the following backend information (backend.tf):"
 cat backend.tf
-echo "**INFO: now run 'terraform init' and then 'terraform apply'"
+echo "****** READY ******"
+echo "****** now run: "
+echo "terraform init"
+echo "****** then:"
+echo "terraform apply"
 
 
 

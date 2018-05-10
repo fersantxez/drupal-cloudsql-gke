@@ -52,7 +52,7 @@ export TF_VAR_cloudsql_client_role="roles/cloudsql.client"
 export TF_VAR_create_keys_role="roles/iam.serviceAccountKeyAdmin"
 
 #cloudSQL
-export TF_VAR_cloudsql_instance=$TF_VAR_project"-sql"2
+export TF_VAR_cloudsql_instance=$TF_VAR_project"-sql"3
 export TF_VAR_cloudsql_username="cloudsqlproxy"
 export TF_VAR_cloudsql_tier="db-n1-standard-1"
 export TF_VAR_cloudsql_storage_type="SSD"
@@ -62,7 +62,7 @@ export TF_VAR_cloudsql_db_creds_path="~/.ssh/cloudsql-tf-creds.json"
 #GKE cluster details
 export TF_VAR_gke_cluster_name=$TF_VAR_project"-gke"
 export TF_VAR_gke_cluster_version="1.8.8-gke.0"
-export TF_VAR_gke_machine_type="n1-standard-1"
+export TF_VAR_gke_machine_type="n1-standard-2"
 export TF_VAR_gke_cluster_size="3"
 export TF_VAR_gke_username="client"
 

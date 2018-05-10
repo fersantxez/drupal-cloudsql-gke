@@ -13,7 +13,8 @@ resource "google_container_cluster" "primary" {
   }
 
   node_config {
-    tags = ["${var.tag}"]
+    tags         = ["${var.tag}"]
+    machine_type = "${var.gke_machine_type}"
   }
 
   enable_legacy_abac = true
