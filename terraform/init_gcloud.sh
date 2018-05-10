@@ -4,9 +4,9 @@ source ./env.sh
 
 #make sure there is an internet connection
 if ping -q -c 1 -W 1 google.com >/dev/null; then
-  echo "** Internet connectivity is working."
+  echo "**INFO: Internet connectivity is working."
 else
-  echo "** Internet connectivity is not working. Aborting."
+  echo "**ERROR: Internet connectivity is not working. Aborting."
   #exit
 fi
 
@@ -73,7 +73,7 @@ done
 
 if [ "${SA_FOUND}" = false ]; then
     echo "**ERROR: Service account "${ADMIN_SVC_ACCOUNT}" not found in project "${TF_VAR_project}
-    echo "**Do you want me to create it and enable the required permissions?"" (y/n): "
+    echo "**INFO: Do you want me to create it and enable the required permissions?"
     while true; do
     read -p "** Enter (y/n): " RESPONSE
     case $RESPONSE in
@@ -175,7 +175,7 @@ echo "**INFO: ******* FINISHED *******" && \
 echo "**INFO: Drupal will be available at the lb_ip address above" && \
 exit
 
-echo "**ERROR: please run 'terraform init' again"
+echo "**ERROR: please run 'terraform apply' again"
 
 
 

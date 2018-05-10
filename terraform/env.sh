@@ -10,7 +10,7 @@ export TF_VAR_org_id=433637338589						#your GCP org ID
 export TF_VAR_billing_account=00183D-07EE2D-3060A0		#billing account for your project
 
 #project info
-export TF_VAR_project=fersanchez-0-2 #***PRE_CREATED*** project where the resources will be placed
+export TF_VAR_project=fersanchez-0-3 #***PRE_CREATED*** project where the resources will be placed
 export TF_VAR_region=us-east4
 export TF_VAR_zone=us-east4-c
 
