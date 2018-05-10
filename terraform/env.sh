@@ -4,13 +4,13 @@
 ####################################################
 
 #GCP account info
-export ACCOUNT_ID=fer@groundcontrol.me						#your GCP account ID
+export ACCOUNT_ID=fersanchez@google.com						#your GCP account ID
 #
-export TF_VAR_org_id=805845699844							#your GCP org ID
+export TF_VAR_org_id=433637338589						#your GCP org ID
 export TF_VAR_billing_account=00183D-07EE2D-3060A0			#billing account for your project
 
 #project info
-export TF_VAR_project=groundcontrol-www		#***PRE_CREATED*** project where the resources will be placed
+export TF_VAR_project=fersanchez-lamptest #***PRE_CREATED*** project where the resources will be placed
 export TF_VAR_region=us-east4
 export TF_VAR_zone=us-east4-c
 
@@ -36,9 +36,6 @@ export TF_VAR_raw_disk_name=${TF_VAR_project}"-disk"
 export TF_VAR_raw_disk_size="400GB"
 export TF_VAR_raw_disk_type="pd-standard"
 export TF_VAR_nfs_machine_type="f1-micro"
-export TF_VAR_snapshot="ext4-200g-us-east4-empty"     	#name of ***PRE-CREATED*** empty ext4 snapshot.
-														#you need to create an empty ext4 disk and this snapshot from it 
-
 
 export TF_VAR_disk=${TF_VAR_project}"-raw-disk"               			#a disk that will be created from snapshot
 export TF_VAR_export_path="/var/nfsroot"
@@ -55,7 +52,7 @@ export TF_VAR_cloudsql_client_role="roles/cloudsql.client"
 export TF_VAR_create_keys_role="roles/iam.serviceAccountKeyAdmin"
 
 #cloudSQL
-export TF_VAR_cloudsql_instance=$TF_VAR_project"-sql"
+export TF_VAR_cloudsql_instance=$TF_VAR_project"-sql"2
 export TF_VAR_cloudsql_username="cloudsqlproxy"
 export TF_VAR_cloudsql_tier="db-n1-standard-1"
 export TF_VAR_cloudsql_storage_type="SSD"
