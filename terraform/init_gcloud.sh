@@ -159,15 +159,20 @@ rm -Rf .terraform/
 #create master password
 echo "**INFO: PLEASE ENTER ***MASTER PASSWORD*** (needs to be AT LEAST 20 chars LONG)" 
 read -s TF_VAR_master_password
-export TF_VAR_master_password
+#echo "export TF_VAR_master_password=${TF_VAR_master_password}" >> ./env.sh
 
 echo "**INFO: Initialization finished. Ready to run with the following backend information (backend.tf):"
 cat backend.tf
 echo "****** READY ******"
-echo "****** now run: "
+echo "****** now running: "
 echo "terraform init"
-echo "****** then:"
+echo "****** then will run:"
 echo "terraform apply"
+
+echo "**INFO: Initializing and running Terraform:"
+terraform init && terraform apply
+echo "**INFO: ******* FINISHED *******"
+echo "**INFO: Drupal will be available at the lb_ip address above"
 
 
 
