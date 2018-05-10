@@ -4,9 +4,9 @@ source ./env.sh
 
 #make sure there is an internet connection
 if ping -q -c 1 -W 1 google.com >/dev/null; then
-  echo "** Internet connectivity is working."
+  echo "**INFO: Internet connectivity is working."
 else
-  echo "** Internet connectivity is not working. Aborting."
+  echo "**ERROR: Internet connectivity is not working. Aborting."
   #exit
 fi
 
@@ -26,6 +26,9 @@ command -v gcloud >/dev/null 2>&1 || { echo "I require gcloud but it's not insta
 #login to gcloud and set project params
 echo "**INFO: logging into gcloud and setting up the project"
 gcloud auth login --no-launch-browser && \
+#gcloud projects create \
+#  ${TF_VAR_project} --name=${TF_VAR_project} --organization=${TF_VAR_org_id} \
+#  --enable-cloud-apis --set-as-default && \
 gcloud config set account ${ACCOUNT_ID} && \
 gcloud config set project ${TF_VAR_project} && \
 gcloud config set compute/zone ${TF_VAR_zone}
@@ -70,7 +73,7 @@ done
 
 if [ "${SA_FOUND}" = false ]; then
     echo "**ERROR: Service account "${ADMIN_SVC_ACCOUNT}" not found in project "${TF_VAR_project}
-    echo "**Do you want me to create it and enable the required permissions?"" (y/n): "
+    echo "**INFO: Do you want me to create it and enable the required permissions?"
     while true; do
     read -p "** Enter (y/n): " RESPONSE
     case $RESPONSE in
@@ -150,12 +153,29 @@ cp backend.tf.template backend.tf
 sed -i `` "s,__BUCKET__,$TF_VAR_bucket_name,g" backend.tf
 sed -i `` "s,__PROJECT__,$TF_VAR_project,g" backend.tf
 
-#create master password
-read -p "**INFO: PLEASE ENTER ***MASTER PASSWORD*** (needs to be AT LEAST 20 chars LONG)" TF_VAR_master_password
+#remove previous state
+rm -Rf .terraform/
 
-echo "**INFO: Initialization finished. Ready to run with the following backend information on 'backend.tf':"
+#create master password
+echo "**INFO: PLEASE ENTER ***MASTER PASSWORD*** (needs to be AT LEAST 20 chars LONG)" 
+read -s TF_VAR_master_password
+#echo "export TF_VAR_master_password=${TF_VAR_master_password}" >> ./env.sh
+
+echo "**INFO: Initialization finished. Ready to run with the following backend information (backend.tf):"
 cat backend.tf
-echo "**INFO: now run 'terraform init' and then 'terraform apply'"
+echo "****** READY ******"
+echo "****** now running: "
+echo "terraform init"
+echo "****** then will run:"
+echo "terraform apply"
+
+echo "**INFO: Initializing and running Terraform:"
+terraform init && terraform apply && \
+echo "**INFO: ******* FINISHED *******" && \
+echo "**INFO: Drupal will be available at the lb_ip address above" && \
+exit
+
+echo "**ERROR: please run 'terraform apply' again"
 
 
 

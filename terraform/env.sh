@@ -4,13 +4,13 @@
 ####################################################
 
 #GCP account info
-export ACCOUNT_ID=fersanchez@google.com						#your GCP account ID
+export ACCOUNT_ID=fersanchez@google.com					#your GCP account ID
 #
 export TF_VAR_org_id=433637338589						#your GCP org ID
-export TF_VAR_billing_account=00183D-07EE2D-3060A0			#billing account for your project
+export TF_VAR_billing_account=00183D-07EE2D-3060A0		#billing account for your project
 
 #project info
-export TF_VAR_project=fersanchez-lamptest #***PRE_CREATED*** project where the resources will be placed
+export TF_VAR_project=fersanchez-0-3 #***PRE_CREATED*** project where the resources will be placed
 export TF_VAR_region=us-east4
 export TF_VAR_zone=us-east4-c
 
@@ -20,7 +20,7 @@ export TF_VAR_zone=us-east4-c
 ############ NO NEED TO CONFIGURE THESE ###############
 #######################################################
 export ADMIN_SVC_ACCOUNT=terraform-admin-svc-acct		#service account used by Terraform - NO SPACES
-export TF_VAR_CREDS=~/.ssh/${ADMIN_SVC_ACCOUNT}.json		#location of the credentials file
+export TF_VAR_CREDS=~/.ssh/${ADMIN_SVC_ACCOUNT}.json	#location of the credentials file
 
 export TF_VAR_bucket_name=${TF_VAR_project}"-terraform"
 export GOOGLE_APPLICATION_CREDENTIALS=${TF_VAR_CREDS}
@@ -52,7 +52,7 @@ export TF_VAR_cloudsql_client_role="roles/cloudsql.client"
 export TF_VAR_create_keys_role="roles/iam.serviceAccountKeyAdmin"
 
 #cloudSQL
-export TF_VAR_cloudsql_instance=$TF_VAR_project"-sql"2
+export TF_VAR_cloudsql_instance=$TF_VAR_project"-sql"
 export TF_VAR_cloudsql_username="cloudsqlproxy"
 export TF_VAR_cloudsql_tier="db-n1-standard-1"
 export TF_VAR_cloudsql_storage_type="SSD"
@@ -62,7 +62,7 @@ export TF_VAR_cloudsql_db_creds_path="~/.ssh/cloudsql-tf-creds.json"
 #GKE cluster details
 export TF_VAR_gke_cluster_name=$TF_VAR_project"-gke"
 export TF_VAR_gke_cluster_version="1.8.8-gke.0"
-export TF_VAR_gke_machine_type="n1-standard-1"
+export TF_VAR_gke_machine_type="n1-standard-2"
 export TF_VAR_gke_cluster_size="3"
 export TF_VAR_gke_username="client"
 

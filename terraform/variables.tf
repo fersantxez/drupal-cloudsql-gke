@@ -17,15 +17,14 @@ variable "subnetwork" {}
 variable "tag" {}
 
 variable "ports" {
-  description = "Ports the HTTP server listens on to be allowd in the external firewall"
+  description = "Ports to open in the firewall. FIXME: separate ports_internal and ports_external"
   type        = "list"
-  default     = [80, 443, 3306, 8080, 8081]
+  default     = [80, 443, 3306, 8080, 8081, 111, 2049, 1110, 4045]
 }
 
 //Storage - NFS or other shared filesystems
 
 variable "export_path" {}
-variable "snapshot" {}
 variable "disk" {}
 variable "raw_disk_type" {}
 variable "nfs_machine_type" {}
