@@ -6,11 +6,11 @@
 #GCP account info
 export ACCOUNT_ID=fersanchez@google.com					#your GCP account ID
 #
-export TF_VAR_org_id=433637338589						#your GCP org ID
+export TF_VAR_org_id=590652955230						#your GCP org ID
 export TF_VAR_billing_account=00183D-07EE2D-3060A0		#billing account for your project
 
 #project info
-export TF_VAR_project=fersanchez-0-3 #***PRE_CREATED*** project where the resources will be placed
+export TF_VAR_project=bbby-host #***PRE_CREATED*** project where the resources will be placed
 export TF_VAR_region=us-east4
 export TF_VAR_zone=us-east4-c
 
@@ -94,6 +94,6 @@ export TF_VAR_NUM_OF_DISKS="1"
 export TF_VAR_CLUSTER_NAME=${TF_VAR_project}"-ecfs"
 export TF_VAR_ZONE=${TF_VAR_zone}
 export TF_VAR_PROJECT=${TF_VAR_project}
-export TF_VAR_IMAGE="emanage-2-5-1-10-142ee106f93b"
+export TF_VAR_IMAGE="emanage-2-5-2-2-279bd59528e3"
 export TF_VAR_CREDENTIALS=${TF_VAR_CREDS} 
 export TF_VAR_SERVICE_EMAIL=${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}".iam.gserviceaccount.com"
