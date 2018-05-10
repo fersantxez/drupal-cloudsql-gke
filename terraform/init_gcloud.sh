@@ -154,7 +154,7 @@ sed -i `` "s,__BUCKET__,$TF_VAR_bucket_name,g" backend.tf
 sed -i `` "s,__PROJECT__,$TF_VAR_project,g" backend.tf
 
 #remove previous state
-rm -f .terraform
+rm -Rf .terraform/
 
 #create master password
 echo "**INFO: PLEASE ENTER ***MASTER PASSWORD*** (needs to be AT LEAST 20 chars LONG)" 
