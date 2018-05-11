@@ -1,4 +1,5 @@
 #!/bin/bash
+set -o errexit -o nounset -o pipefail
 
 source ./env.sh
 
@@ -137,14 +138,33 @@ fi
 
 #download the service account credentials to the right location
 echo "**INFO: creating Service Account keys"
-gcloud iam service-accounts keys create \
-    ${TF_VAR_CREDS} \
-    --iam-account ${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com && \
-export GOOGLE_DEFAULT_CREDENTIALS=${TF_VAR_CREDS}
+if [ -f ${TF_VAR_CREDS} ]; then
+    echo "**INFO: Service Account keys found at "${TF_VAR_CREDS}
+else
+    echo "**INFO: No Service Account keys found. Creating them as "${TF_VAR_CREDS}
+    gcloud iam service-accounts keys create \
+        ${TF_VAR_CREDS} \
+        --iam-account ${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com && \
+    export GOOGLE_DEFAULT_CREDENTIALS=${TF_VAR_CREDS}
+fi
 
-#make bucket
+#make bucket - catch if it already exists so we don't exit but ask
 echo "**INFO: creating bucket for Terraform state"
-gsutil mb -l ${TF_VAR_region} "gs://"${TF_VAR_bucket_name}
+if `gsutil ls gs://${TF_VAR_bucket_name}` ; then 
+    echo "**INFO: Terraform state bucket "${TF_VAR_bucket_name} "found."
+else 
+    echo "**INFO: Terraform state bucket "${TF_VAR_bucket_name} "does not exist."
+    read -r -p "Do you want to create it? [y/N] " response
+    case "$response" in
+        [yY][eE][sS]|[yY])
+            gsutil mb -l ${TF_VAR_region} "gs://"${TF_VAR_bucket_name}  
+            ;;
+        *)
+            echo "Terraform state bucket is needed. Exiting."
+            exit
+            ;;
+    esac
+fi
 
 #update backend template file
 echo "**INFO: updating backend from template"
