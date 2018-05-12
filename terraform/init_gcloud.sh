@@ -58,21 +58,6 @@ declare -a REQUIRED_APIS=(\
  )
 export ENABLED_APIS=$(gcloud services list --enabled | awk '{print $1}' | tail -n +1)
 
- << -COMMENT-
-function contains() {
-    local n=$#
-    local value=${!n}
-    for ((i=1;i < $#;i++)) {
-        if [ "${!i}" == "${value}" ]; then
-            echo "y"
-            return 0
-        fi
-    }
-    echo "n"
-    return 1
-}
--COMMENT-
-
 for api in "${REQUIRED_APIS[@]}"; do
     echo "**DEBUG: API "$api" is required"
     if [[ " ${ENABLED_APIS[@]} " =~ "${api}" ]]; then
