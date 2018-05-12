@@ -21,24 +21,26 @@ else
 fi
 
 #check gcloud is installed
-echo "**INFO: validating environment"
+echo "**INFO: Validating environment"
 command -v gcloud >/dev/null 2>&1 || { echo "I require gcloud but it's not installed.  Aborting." >&2; exit 1; }
 
 #login to gcloud and set project params
-echo "**INFO: logging into gcloud and setting up the project"
+echo "**INFO: Logging into gcloud and setting up the project"
 export LOGGED_ACCOUNT=$(gcloud config list account | awk '{print $3}' | sed -n 2,3p)
-if [[ "$LOGGED_ACCOUNT" == "$ACCOUNT_ID" ]]; then
-    echo "**INFO: Logged in as "$LOGGED_ACCOUNT
-else
+export LOGGED_PROJECT=$(gcloud config list|grep project|awk '{print $3}')
+if [[ "$LOGGED_ACCOUNT" != "$ACCOUNT_ID" ]] || [[ "$LOGGED_PROJECT" != "$TF_VAR_project" ]] ; then
     echo "**INFO: Not logged in. Logging in as "${ACCOUNT_ID}
+    echo "**INFO: Logging into project "${TF_VAR_project}    
     gcloud auth login --brief --no-launch-browser && \
     gcloud config set account ${ACCOUNT_ID} && \
     gcloud config set project ${TF_VAR_project} && \
     gcloud config set compute/zone ${TF_VAR_zone}
 fi
+echo "**INFO: Logged in as "$LOGGED_ACCOUNT
+echo "**INFO: Logged onto project "${TF_VAR_project}
 
 # make sure that the relevant APIs are enabled
-echo "**INFO: enabling APIs on project"
+echo "**INFO: Enabling APIs on project"
 export ENABLED_APIS=$(gcloud services list --enabled | awk '{print $1}' | tail -n +1)
 #REQUIRED_APIS defined in env.sh as array
 for api in "${REQUIRED_APIS[@]}"; do
@@ -52,22 +54,15 @@ for api in "${REQUIRED_APIS[@]}"; do
 done
 
 #make sure Service Account exists
-echo "**INFO: validating Service Accounts"
-export SERVICE_ACCOUNT_LIST=$(gcloud iam service-accounts list  \
-    | tail -n +2 | awk '{print $1}')            #get first column. SA description does not have spaces.
+echo "**INFO: Validating Service Accounts"
+export SERVICE_ACCOUNT_LIST=($(gcloud iam service-accounts list  \
+    | tail -n +2 | awk '{print $1}')) #double parenthesis for array
 
-export SA_FOUND=false
-for i in ${SERVICE_ACCOUNT_LIST};do
-    echo "Searching... "$i
-    if [ $i = "${ADMIN_SVC_ACCOUNT}" ] ; then
-        export SA_FOUND=true
-        echo "Service Account "$i" found"
-        break
-    fi
-done
-
+if [[ " ${SERVICE_ACCOUNT_LIST[@]} " =~ "${ADMIN_SVC_ACCOUNT}" ]]; then
+    echo "Service Account "${ADMIN_SVC_ACCOUNT}" found"
+else
 #if it doesnt exist, create it
-if [ "${SA_FOUND}" = false ]; then
+#if [ "${SA_FOUND}" = false ]; then
     echo "**ERROR: Service account "${ADMIN_SVC_ACCOUNT}" not found in project "${TF_VAR_project}
     echo "**ERROR: Do you want me to create it?"
     read -p "** (y/n): " RESPONSE
@@ -76,7 +71,6 @@ if [ "${SA_FOUND}" = false ]; then
             #create service account
             gcloud iam service-accounts create ${ADMIN_SVC_ACCOUNT} \
                 --display-name ${ADMIN_SVC_ACCOUNT}
-            break                                                                            
             ;;
         [nN]) echo "**ERROR: Terraform Service account is required. Exiting. "
             exit
@@ -90,15 +84,14 @@ fi
 echo "**INFO: Enabling Service Account roles"
 #SA_REQUIRED_ROLES defined in env.sh as array
 for role in ${SA_REQUIRED_ROLES[@]}; do
-    echo "**INFO: enabling role "$role
+    echo "**INFO: Enabling role "$role
     gcloud projects add-iam-policy-binding ${TF_VAR_project} \
         --member serviceAccount:${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com \
-        --role $role \
-        > /dev/null 2>&1
+        --role $role #> /dev/null 2>&1
 done
 
 #download the service account credentials to the right location
-echo "**INFO: creating Service Account keys"
+echo "**INFO: Creating Service Account keys"
 if [ -f ${TF_VAR_CREDS} ]; then
     echo "**INFO: Service Account keys found at "${TF_VAR_CREDS}
 else
@@ -110,7 +103,7 @@ fi
 export GOOGLE_DEFAULT_CREDENTIALS=${TF_VAR_CREDS}
 
 #make bucket - catch if it already exists so we don't exit but ask
-echo "**INFO: creating bucket for Terraform state"
+echo "**INFO: Creating bucket for Terraform state"
 if `gsutil ls gs://${TF_VAR_bucket_name}` ; then 
     echo "**INFO: Terraform state bucket "${TF_VAR_bucket_name} "found."
 else 
@@ -128,7 +121,7 @@ else
 fi
 
 #update backend template file
-echo "**INFO: updating backend from template"
+echo "**INFO: Updating backend from template"
 rm -f backend.tf
 cp backend.tf.template backend.tf
 sed -i `` "s,__BUCKET__,$TF_VAR_bucket_name,g" backend.tf
@@ -148,9 +141,10 @@ echo "****** now running: "
 echo "terraform init"
 echo "****** then will run:"
 echo "terraform apply"
+export GOOGLE_DEFAULT_CREDENTIALS=${TF_VAR_CREDS} && \
 terraform init && terraform apply && \
 echo "**INFO: ******* FINISHED *******" && \
 echo "**INFO: Drupal will be available at the lb_ip address above" && \
 exit
 
-echo "**ERROR: please run 'terraform apply' again"
+echo "**ERROR: Please run 'terraform apply' again"
