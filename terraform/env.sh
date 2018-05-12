@@ -4,13 +4,13 @@
 ####################################################
 
 #GCP account info
-export ACCOUNT_ID=fer@groundcontrol.me					#your GCP account ID
+export ACCOUNT_ID=fersanchez@google.com					#your GCP account ID
 #
-export TF_VAR_org_id=805845699844						#your GCP org ID
+export TF_VAR_org_id=433637338589						#your GCP org ID
 export TF_VAR_billing_account=00183D-07EE2D-3060A0		#billing account for your project
 
 #project info
-export TF_VAR_project=groundcontrol-www #***PRE_CREATED*** project where the resources will be placed
+export TF_VAR_project=fersanchez-0-6 #***PRE_CREATED*** project where the resources will be placed
 export TF_VAR_region=us-east4
 export TF_VAR_zone=us-east4-c
 

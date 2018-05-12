@@ -100,7 +100,7 @@ else
         ${TF_VAR_CREDS} \
         --iam-account ${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com 
 fi
-export GOOGLE_DEFAULT_CREDENTIALS=${TF_VAR_CREDS}
+#export GOOGLE_APPLICATION_CREDENTIALS=${TF_VAR_CREDS}
 
 #make bucket - catch if it already exists so we don't exit but ask
 echo "**INFO: Creating bucket for Terraform state"
@@ -141,7 +141,7 @@ echo "****** now running: "
 echo "terraform init"
 echo "****** then will run:"
 echo "terraform apply"
-export GOOGLE_DEFAULT_CREDENTIALS=${TF_VAR_CREDS} && \
+export GOOGLE_APPLICATION_CREDENTIALS=${TF_VAR_CREDS} && \
 terraform init && terraform apply && \
 echo "**INFO: ******* FINISHED *******" && \
 echo "**INFO: Drupal will be available at the lb_ip address above" && \
