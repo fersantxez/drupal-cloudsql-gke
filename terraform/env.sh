@@ -19,8 +19,7 @@ export TF_VAR_master_password="12345678901234567890"  #default
 
 ############ NO NEED TO CONFIGURE THESE ###############
 #######################################################
-#export ADMIN_SVC_ACCOUNT=terraform-admin-svc-acct		#service account used by Terraform - NO SPACES
-export ADMIN_SVC_ACCOUNT=groundcontrol-terraform-admin  #FIXME: fixed for elastifile permissions
+export ADMIN_SVC_ACCOUNT=terraform-admin-svc-acct		#service account used by Terraform - NO SPACES
 
 export TF_VAR_CREDS=~/.ssh/${ADMIN_SVC_ACCOUNT}.json	#location of the credentials file
 declare -a SA_REQUIRED_ROLES=(\
