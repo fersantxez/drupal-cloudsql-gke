@@ -27,8 +27,6 @@ command -v gcloud >/dev/null 2>&1 || { echo "I require gcloud but it's not insta
 #login to gcloud and set project params
 echo "**INFO: logging into gcloud and setting up the project"
 export LOGGED_ACCOUNT=$(gcloud config list account | awk '{print $3}' | sed -n 2,3p)
-echo "**DEBUG: logged account is ["${LOGGED_ACCOUNT}"]"
-echo "**DEBUG: account ID is ["${ACCOUNT_ID}"]"
 if [[ "$LOGGED_ACCOUNT" == "$ACCOUNT_ID" ]]; then
     echo "**INFO: Logged in as "$LOGGED_ACCOUNT
 else
@@ -44,13 +42,6 @@ fi
 
 # make sure that the relevant APIs are enabled
 echo "**INFO: enabling APIs on project"
-
-export ENABLED_APIS=$(gcloud services list --enabled | awk '{print $1}' | tail -n +1)
-
-for ea in $ENABLED_APIS; do
-    echo "**DEBUG: ENABLED API ["$ea"]"
-done
-
 declare -a REQUIRED_APIS=(\
     "container.googleapis.com" \
     "compute.googleapis.com" \
@@ -65,10 +56,9 @@ declare -a REQUIRED_APIS=(\
     'storage-component.googleapis.com' \
     'cloudresourcemanager.googleapis.com' \
  )
-for ra in "${REQUIRED_APIS[@]}"; do
-    echo "**DEBUG: REQUIRED API ["$ra"]"
-done
+export ENABLED_APIS=$(gcloud services list --enabled | awk '{print $1}' | tail -n +1)
 
+ << -COMMENT-
 function contains() {
     local n=$#
     local value=${!n}
@@ -81,6 +71,7 @@ function contains() {
     echo "n"
     return 1
 }
+-COMMENT-
 
 for api in "${REQUIRED_APIS[@]}"; do
     echo "**DEBUG: API "$api" is required"
@@ -206,8 +197,6 @@ echo "****** now running: "
 echo "terraform init"
 echo "****** then will run:"
 echo "terraform apply"
-
-echo "**INFO: Initializing and running Terraform:"
 terraform init && terraform apply && \
 echo "**INFO: ******* FINISHED *******" && \
 echo "**INFO: Drupal will be available at the lb_ip address above" && \
