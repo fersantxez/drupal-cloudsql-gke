@@ -91,3 +91,39 @@ variable "dns_name" {}
 
 //data
 data "google_compute_zones" "available" {}
+
+//Elastifile
+#ECFS - Elastifile
+
+variable "ZONE" {}
+variable "PROJECT" {}
+variable "CREDENTIALS" {}
+variable "SERVICE_EMAIL" {}
+
+variable "DISKTYPE" {
+  default = "local"
+}
+
+variable "NUM_OF_VMS" {
+  default = "3"
+}
+
+variable "NUM_OF_DISKS" {
+  default = "1"
+}
+
+variable "CLUSTER_NAME" {}
+
+variable "IMAGE" {}
+
+variable "SETUP_COMPLETE" {
+  default = "false"
+}
+
+variable "PASSWORD_IS_CHANGED" {
+  default = "false"
+}
+
+variable "PASSWORD" {
+  default = "changeme"
+}

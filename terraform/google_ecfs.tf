@@ -1,0 +1,56 @@
+resource "google_compute_instance" "Elastifile-ECFS" {
+  project      = "${var.project}"
+  name         = "${var.CLUSTER_NAME}"
+  machine_type = "n1-standard-4"
+  zone         = "${var.ZONE}"
+
+  tags = ["https-server", "${var.tag}"]
+
+  boot_disk {
+    initialize_params {
+      image = "projects/elastifile-ci/global/images/${var.IMAGE}"
+    }
+  }
+
+  network_interface {
+    //network = "default"
+    subnetwork = "${var.subnetwork}"
+
+    access_config {
+      // Ephemeral IP
+    }
+  }
+
+  metadata {
+    ecfs_ems            = "true"
+    reference_name      = "${var.CLUSTER_NAME}"
+    version             = "${var.IMAGE}"
+    disk_type           = "${var.DISKTYPE}"
+    num_disks           = "${var.NUM_OF_DISKS}"
+    password_is_changed = "${var.PASSWORD_IS_CHANGED}"
+    setup_complete      = "${var.SETUP_COMPLETE}"
+  }
+
+  metadata_startup_script = "echo ${var.IMAGE} > /ecfs_image.txt"
+
+  # specify the GCP project service account to use
+  service_account {
+    email  = "${var.SERVICE_EMAIL}"
+    scopes = ["cloud-platform"]
+  }
+}
+
+resource "null_resource" "create_cluster" {
+  provisioner "local-exec" {
+    command     = "./create_vheads.sh -t ${var.DISKTYPE} -n ${var.NUM_OF_VMS} -m ${var.NUM_OF_DISKS}"
+    interpreter = ["/bin/bash", "-c"]
+  }
+
+  depends_on = ["google_compute_instance.Elastifile-ECFS"]
+
+  provisioner "local-exec" {
+    when        = "destroy"
+    command     = "./destroy_vheads.sh ${var.CLUSTER_NAME} ${var.ZONE}"
+    interpreter = ["/bin/bash", "-c"]
+  }
+}

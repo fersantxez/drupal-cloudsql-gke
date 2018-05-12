@@ -6,11 +6,11 @@
 #GCP account info
 export ACCOUNT_ID=fersanchez@google.com					#your GCP account ID
 #
-export TF_VAR_org_id=433637338589						#your GCP org ID
+export TF_VAR_org_id=590652955230						#your GCP org ID
 export TF_VAR_billing_account=00183D-07EE2D-3060A0		#billing account for your project
 
 #project info
-export TF_VAR_project=fersanchez-0-3 #***PRE_CREATED*** project where the resources will be placed
+export TF_VAR_project=bbby-host #***PRE_CREATED*** project where the resources will be placed
 export TF_VAR_region=us-east4
 export TF_VAR_zone=us-east4-c
 
@@ -21,7 +21,36 @@ export TF_VAR_zone=us-east4-c
 #######################################################
 export ADMIN_SVC_ACCOUNT=terraform-admin-svc-acct		#service account used by Terraform - NO SPACES
 export TF_VAR_CREDS=~/.ssh/${ADMIN_SVC_ACCOUNT}.json	#location of the credentials file
-
+declare -a SA_REQUIRED_ROLES=(\
+    "roles/iam.roleAdmin" \
+    "roles/iam.serviceAccountAdmin" \
+    "roles/iam.serviceAccountActor" \
+    "roles/iam.serviceAccountKeyAdmin" \
+    "roles/resourcemanager.projectIamAdmin" \
+    "roles/compute.storageAdmin" \
+    "roles/storage.admin" \
+    "roles/storage.objectAdmin" \
+    "roles/compute.securityAdmin" \
+    "roles/compute.networkAdmin" \
+    "roles/compute.instanceAdmin.v1" \
+    "roles/cloudsql.admin" \
+    "roles/container.admin" \
+    "roles/dns.admin" \
+    )
+declare -a REQUIRED_APIS=(\
+    "container.googleapis.com" \
+    "compute.googleapis.com" \
+    "dns.googleapis.com" \
+    'iam.googleapis.com' \
+    'replicapool.googleapis.com' \
+    'replicapoolupdater.googleapis.com' \
+    'resourceviews.googleapis.com' \
+    'sql-component.googleapis.com' \
+    'sqladmin.googleapis.com' \
+    'storage-api.googleapis.com' \
+    'storage-component.googleapis.com' \
+    'cloudresourcemanager.googleapis.com' \
+ )
 export TF_VAR_bucket_name=${TF_VAR_project}"-terraform"
 export GOOGLE_APPLICATION_CREDENTIALS=${TF_VAR_CREDS}
 export GOOGLE_PROJECT=${TF_VAR_project}
@@ -94,6 +123,6 @@ export TF_VAR_NUM_OF_DISKS="1"
 export TF_VAR_CLUSTER_NAME=${TF_VAR_project}"-ecfs"
 export TF_VAR_ZONE=${TF_VAR_zone}
 export TF_VAR_PROJECT=${TF_VAR_project}
-export TF_VAR_IMAGE="emanage-2-5-1-10-142ee106f93b"
+export TF_VAR_IMAGE="emanage-2-5-2-2-279bd59528e3"
 export TF_VAR_CREDENTIALS=${TF_VAR_CREDS} 
 export TF_VAR_SERVICE_EMAIL=${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}".iam.gserviceaccount.com"
