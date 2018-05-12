@@ -21,7 +21,36 @@ export TF_VAR_zone=us-east4-c
 #######################################################
 export ADMIN_SVC_ACCOUNT=terraform-admin-svc-acct		#service account used by Terraform - NO SPACES
 export TF_VAR_CREDS=~/.ssh/${ADMIN_SVC_ACCOUNT}.json	#location of the credentials file
-
+declare -a SA_REQUIRED_ROLES=(\
+    "roles/iam.roleAdmin" \
+    "roles/iam.serviceAccountAdmin" \
+    "roles/iam.serviceAccountActor" \
+    "roles/iam.serviceAccountKeyAdmin" \
+    "roles/resourcemanager.projectIamAdmin" \
+    "roles/compute.storageAdmin" \
+    "roles/storage.admin" \
+    "roles/storage.objectAdmin" \
+    "roles/compute.securityAdmin" \
+    "roles/compute.networkAdmin" \
+    "roles/compute.instanceAdmin.v1" \
+    "roles/cloudsql.admin" \
+    "roles/container.admin" \
+    "roles/dns.admin" \
+    )
+declare -a REQUIRED_APIS=(\
+    "container.googleapis.com" \
+    "compute.googleapis.com" \
+    "dns.googleapis.com" \
+    'iam.googleapis.com' \
+    'replicapool.googleapis.com' \
+    'replicapoolupdater.googleapis.com' \
+    'resourceviews.googleapis.com' \
+    'sql-component.googleapis.com' \
+    'sqladmin.googleapis.com' \
+    'storage-api.googleapis.com' \
+    'storage-component.googleapis.com' \
+    'cloudresourcemanager.googleapis.com' \
+ )
 export TF_VAR_bucket_name=${TF_VAR_project}"-terraform"
 export GOOGLE_APPLICATION_CREDENTIALS=${TF_VAR_CREDS}
 export GOOGLE_PROJECT=${TF_VAR_project}

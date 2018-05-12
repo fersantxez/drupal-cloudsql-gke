@@ -32,9 +32,6 @@ if [[ "$LOGGED_ACCOUNT" == "$ACCOUNT_ID" ]]; then
 else
     echo "**INFO: Not logged in. Logging in as "${ACCOUNT_ID}
     gcloud auth login --brief --no-launch-browser && \
-    #gcloud projects create \
-    #  ${TF_VAR_project} --name=${TF_VAR_project} --organization=${TF_VAR_org_id} \
-    #  --enable-cloud-apis --set-as-default && \
     gcloud config set account ${ACCOUNT_ID} && \
     gcloud config set project ${TF_VAR_project} && \
     gcloud config set compute/zone ${TF_VAR_zone}
@@ -42,22 +39,8 @@ fi
 
 # make sure that the relevant APIs are enabled
 echo "**INFO: enabling APIs on project"
-declare -a REQUIRED_APIS=(\
-    "container.googleapis.com" \
-    "compute.googleapis.com" \
-    "dns.googleapis.com" \
-    'iam.googleapis.com' \
-    'replicapool.googleapis.com' \
-    'replicapoolupdater.googleapis.com' \
-    'resourceviews.googleapis.com' \
-    'sql-component.googleapis.com' \
-    'sqladmin.googleapis.com' \
-    'storage-api.googleapis.com' \
-    'storage-component.googleapis.com' \
-    'cloudresourcemanager.googleapis.com' \
- )
 export ENABLED_APIS=$(gcloud services list --enabled | awk '{print $1}' | tail -n +1)
-
+#REQUIRED_APIS defined in env.sh as array
 for api in "${REQUIRED_APIS[@]}"; do
     echo "**DEBUG: API "$api" is required"
     if [[ " ${ENABLED_APIS[@]} " =~ "${api}" ]]; then
@@ -83,6 +66,7 @@ for i in ${SERVICE_ACCOUNT_LIST};do
     fi
 done
 
+#if it doesnt exist, create it
 if [ "${SA_FOUND}" = false ]; then
     echo "**ERROR: Service account "${ADMIN_SVC_ACCOUNT}" not found in project "${TF_VAR_project}
     echo "**ERROR: Do you want me to create it?"
@@ -102,26 +86,9 @@ if [ "${SA_FOUND}" = false ]; then
     esac
 fi
 
-#Ensure Service Account has required permissions
+#ensure Service Account has required permissions
 echo "**INFO: Enabling Service Account roles"
-
-declare -a SA_REQUIRED_ROLES=(\
-    "roles/iam.roleAdmin" \
-    "roles/iam.serviceAccountAdmin" \
-    "roles/iam.serviceAccountActor" \
-    "roles/iam.serviceAccountKeyAdmin" \
-    "roles/resourcemanager.projectIamAdmin" \
-    "roles/compute.storageAdmin" \
-    "roles/storage.admin" \
-    "roles/storage.objectAdmin" \
-    "roles/compute.securityAdmin" \
-    "roles/compute.networkAdmin" \
-    "roles/compute.instanceAdmin.v1" \
-    "roles/cloudsql.admin" \
-    "roles/container.admin" \
-    "roles/dns.admin" \
-    )
-
+#SA_REQUIRED_ROLES defined in env.sh as array
 for role in ${SA_REQUIRED_ROLES[@]}; do
     echo "**INFO: enabling role "$role
     gcloud projects add-iam-policy-binding ${TF_VAR_project} \
@@ -173,7 +140,6 @@ rm -Rf .terraform/
 #create master password
 echo "**INFO: PLEASE ENTER ***MASTER PASSWORD*** (needs to be AT LEAST 20 chars LONG)" 
 read -s TF_VAR_master_password
-#echo "export TF_VAR_master_password=${TF_VAR_master_password}" >> ./env.sh
 
 echo "**INFO: Initialization finished. Ready to run with the following backend information (backend.tf):"
 cat backend.tf
