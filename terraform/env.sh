@@ -16,7 +16,7 @@ export TF_VAR_master_password="12345678901234567890"  #default
 
 ############ NO NEED TO CONFIGURE THESE ###############
 #######################################################
-export ADMIN_SVC_ACCOUNT=tf-admin-sa-${TF_VAR_project}		#service account used by Terraform - NO SPACES
+export ADMIN_SVC_ACCOUNT=$(echo tf-admin-sa-${TF_VAR_project} | cut -c1-30)		#service account used by Terraform - NO SPACES
 export TF_VAR_CREDS=~/.ssh/${ADMIN_SVC_ACCOUNT}.json	#location of the credentials file
 declare -a SA_REQUIRED_ROLES=(\
     "roles/iam.roleAdmin" \
