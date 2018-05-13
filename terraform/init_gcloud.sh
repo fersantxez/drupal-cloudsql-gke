@@ -61,14 +61,12 @@ export SERVICE_ACCOUNT_LIST=($(gcloud iam service-accounts list  \
 if [[ " ${SERVICE_ACCOUNT_LIST[@]} " =~ "${ADMIN_SVC_ACCOUNT}" ]]; then
     echo "Service Account "${ADMIN_SVC_ACCOUNT}" found"
 else
-#if it doesnt exist, create it
-#if [ "${SA_FOUND}" = false ]; then
+    #if it doesnt exist, create it
     echo "**ERROR: Service account "${ADMIN_SVC_ACCOUNT}" not found in project "${TF_VAR_project}
     echo "**ERROR: Do you want me to create it?"
     read -p "** (y/n): " RESPONSE
     case $RESPONSE in
         [yY]) echo "**INFO: Creating service account "${ADMIN_SVC_ACCOUNT}" on project "${TF_VAR_project}
-            #create service account
             gcloud iam service-accounts create ${ADMIN_SVC_ACCOUNT} \
                 --display-name ${ADMIN_SVC_ACCOUNT}
             ;;
@@ -100,18 +98,17 @@ else
         ${TF_VAR_CREDS} \
         --iam-account ${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com 
 fi
-#export GOOGLE_APPLICATION_CREDENTIALS=${TF_VAR_CREDS}
 
 #make bucket - catch if it already exists so we don't exit but ask
 echo "**INFO: Creating bucket for Terraform state"
-if gsutil ls gs://${TF_VAR_bucket_name}; then 
+if gsutil ls gs://${TF_VAR_bucket_name}; then
     echo "**INFO: Terraform state bucket "${TF_VAR_bucket_name} "found."
-else 
+else
     echo "**INFO: Terraform state bucket "${TF_VAR_bucket_name} "does not exist."
     read -r -p "Do you want to create it? [y/N] " response
     case "$response" in
         [yY][eE][sS]|[yY])
-            gsutil mb -l ${TF_VAR_region} "gs://"${TF_VAR_bucket_name}  
+            gsutil mb -l ${TF_VAR_region} "gs://"${TF_VAR_bucket_name}
             ;;
         *)
             echo "Terraform state bucket is needed. Exiting."
