@@ -104,7 +104,7 @@ fi
 
 #make bucket - catch if it already exists so we don't exit but ask
 echo "**INFO: Creating bucket for Terraform state"
-if `gsutil ls gs://${TF_VAR_bucket_name}` ; then 
+if gsutil ls gs://${TF_VAR_bucket_name}; then 
     echo "**INFO: Terraform state bucket "${TF_VAR_bucket_name} "found."
 else 
     echo "**INFO: Terraform state bucket "${TF_VAR_bucket_name} "does not exist."
@@ -131,8 +131,17 @@ sed -i `` "s,__PROJECT__,$TF_VAR_project,g" backend.tf
 rm -Rf .terraform/
 
 #create master password
-echo "**INFO: PLEASE ENTER ***MASTER PASSWORD*** (needs to be AT LEAST 20 chars LONG)" 
-read -s TF_VAR_master_password
+while true; do
+    echo "**INFO: PLEASE ENTER ***MASTER PASSWORD*** (needs to be AT LEAST 20 characters long)" 
+    read -s TF_VAR_master_password
+    if [[ ${#TF_VAR_master_password} -le 19 ]]; then
+        echo "**ERROR: MASTER PASSWORD must be AT LEAST 20 characters long"
+    else
+        echo "**INFO: MASTER PASSWORD saved, "${#TF_VAR_master_password}" characters long."
+        break
+    fi
+done
+
 
 echo "**INFO: Initialization finished. Ready to run with the following backend information (backend.tf):"
 cat backend.tf
