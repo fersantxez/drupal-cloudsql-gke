@@ -10,7 +10,7 @@ export TF_VAR_org_id=433637338589						#your GCP org ID
 export TF_VAR_billing_account=00183D-07EE2D-3060A0		#billing account for your project
 
 #project info
-export TF_VAR_project=fersanchez-0-6 #***PRE_CREATED*** project where the resources will be placed
+export TF_VAR_project=fersanchez-cloudlamp-1 #***PRE_CREATED*** project where the resources will be placed
 export TF_VAR_region=us-east4
 export TF_VAR_zone=us-east4-c
 
@@ -19,7 +19,7 @@ export TF_VAR_master_password="12345678901234567890"  #default
 
 ############ NO NEED TO CONFIGURE THESE ###############
 #######################################################
-export ADMIN_SVC_ACCOUNT=terraform-admin-svc-acct		#service account used by Terraform - NO SPACES
+export ADMIN_SVC_ACCOUNT=terraform-admin-svc-acct-${TF_VAR_project}		#service account used by Terraform - NO SPACES
 
 export TF_VAR_CREDS=~/.ssh/${ADMIN_SVC_ACCOUNT}.json	#location of the credentials file
 declare -a SA_REQUIRED_ROLES=(\
