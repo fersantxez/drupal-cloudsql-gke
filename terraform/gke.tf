@@ -1,22 +1,36 @@
 //GKE cluster
 
 resource "google_container_cluster" "primary" {
-  name               = "${var.gke_cluster_name}"
-  zone               = "${var.zone}"
-  network            = "${var.network}"
-  subnetwork         = "${var.subnetwork}"
-  initial_node_count = "${var.gke_cluster_size}"
+  name       = "${var.gke_cluster_name}"
+  zone       = "${var.zone}"
+  network    = "${var.network}"
+  subnetwork = "${var.subnetwork}"
 
+  //remove_default_node_pool = true
+
+  node_pool {
+    name               = "${var.gke_cluster_name}-pool"
+    initial_node_count = "${var.gke_cluster_size}"
+
+    node_config {
+      machine_type = "${var.gke_machine_type}"
+      tags         = ["${var.tag}"]
+    }
+
+    autoscaling {
+      min_node_count = "${var.gke_cluster_size}"
+      max_node_count = "${var.gke_max_cluster_size}"
+    }
+  }
+  addons_config {
+    horizontal_pod_autoscaling {
+      disabled = false
+    }
+  }
   master_auth {
     username = "${var.gke_username}"
     password = "${var.master_password}"
   }
-
-  node_config {
-    tags         = ["${var.tag}"]
-    machine_type = "${var.gke_machine_type}"
-  }
-
   enable_legacy_abac = true
 }
 
