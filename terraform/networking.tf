@@ -21,6 +21,14 @@ output "subnetwork" {
   value = "${google_compute_subnetwork.mysubnetwork.self_link}"
 }
 
+resource "google_compute_route" "mynetwork-default-route" {
+  name             = "default-route"
+  dest_range       = "0.0.0.0/24"
+  network          = "${google_compute_network.mynetwork.name}"
+  next_hop_gateway = "default-internet-gateway"
+  priority         = 100
+}
+
 //external IP that should be used in the external load balancer
 resource "google_compute_address" "frontend" {
   project = "${var.project}"

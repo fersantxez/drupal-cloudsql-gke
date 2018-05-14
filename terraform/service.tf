@@ -47,12 +47,14 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
         image = "${var.gke_drupal_image}"
         name  = "drupal"
 
+        /*
         resources {
           requests {
             cpu    = "1"
             memory = "512Mi"
           }
         }
+        */
 
         liveness_probe {
           http_get {
@@ -63,22 +65,18 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
           initial_delay_seconds = 480
           timeout_seconds       = 3
         }
-
         volume_mount {
           name       = "${kubernetes_persistent_volume.vol_1.metadata.0.name}"
           mount_path = "${var.gke_vol_1_mount_path}"
         }
-
         volume_mount {
           name       = "${kubernetes_persistent_volume.vol_2.metadata.0.name}"
           mount_path = "${var.gke_vol_2_mount_path}"
         }
-
         volume_mount {
           name       = "${kubernetes_secret.cloudsql-db-credentials.metadata.0.name}"
           mount_path = "/secrets/${kubernetes_secret.cloudsql-db-credentials.metadata.0.name}"
         }
-
         env = [
           {
             name  = "MARIADB_HOST"
