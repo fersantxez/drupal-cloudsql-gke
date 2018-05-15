@@ -55,7 +55,7 @@ variable "gke_cluster_name" {}
 variable "gke_cluster_version" {}
 variable "gke_machine_type" {}
 variable "gke_cluster_size" {}
-vairable "gke_max_cluster_size" {}
+variable "gke_max_cluster_size" {}
 variable "gke_username" {}
 
 //GKE service
