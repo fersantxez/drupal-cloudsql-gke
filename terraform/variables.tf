@@ -22,17 +22,11 @@ variable "ports" {
   default     = [80, 443, 3306, 8080, 8081, 111, 2049, 1110, 4045]
 }
 
-//Storage - NFS or other shared filesystems
+//Storage - Shared filesystem
+variable "fs_name" {}
 
-variable "export_path" {}
-variable "disk" {}
-variable "raw_disk_type" {}
-variable "nfs_machine_type" {}
-variable "vol_1" {}
-variable "vol_1_size" {}
-variable "vol_2" {}
-variable "vol_2_size" {}
-variable "device_name" {}
+variable "fs_size" {}
+variable "fs_mount_path" {}
 
 //cloudsql service account
 
@@ -68,20 +62,6 @@ variable "drupal_password" {}
 variable "drupal_email" {}
 variable "gke_cloudsql_image" {}
 
-//variable "gke_cloudsql_command" {
-//  description = "command to run on the cloudsql container"
-//  type        = "list"
-//  default     = ["/cloud_sql_proxy", "--dir=/cloudsql", "-instances=MYINSTANCENAME=tcp:3306", "-credential_file=/secrets/cloudsql/credentials.json"]
-//}
-
-//
-//    "-instances=${google_sql_database_instance.master.self_link}=tcp:3306",
-
-variable "gke_vol_1_name" {}
-variable "gke_vol_1_mount_path" {}
-variable "gke_vol_2_name" {}
-variable "gke_vol_2_mount_path" {}
-
 //networking
 
 variable "subnetcidr" {}
@@ -92,39 +72,3 @@ variable "dns_name" {}
 
 //data
 data "google_compute_zones" "available" {}
-
-//Elastifile
-#ECFS - Elastifile
-
-variable "ZONE" {}
-variable "PROJECT" {}
-variable "CREDENTIALS" {}
-variable "SERVICE_EMAIL" {}
-
-variable "DISKTYPE" {
-  default = "local"
-}
-
-variable "NUM_OF_VMS" {
-  default = "3"
-}
-
-variable "NUM_OF_DISKS" {
-  default = "1"
-}
-
-variable "CLUSTER_NAME" {}
-
-variable "IMAGE" {}
-
-variable "SETUP_COMPLETE" {
-  default = "false"
-}
-
-variable "PASSWORD_IS_CHANGED" {
-  default = "false"
-}
-
-variable "PASSWORD" {
-  default = "changeme"
-}

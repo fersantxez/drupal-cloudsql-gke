@@ -12,16 +12,18 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
 
     template {
       volume {
-        name = "${var.fs_name}-vol"
+        name = "${kubernetes_persistent_volume.vol_1.metadata.0.name}"
 
-        flex_volume {
-          driver  = "rook.io/rook"
-          fs_type = "ceph"
+        persistent_volume_claim {
+          claim_name = "${kubernetes_persistent_volume_claim.pvc_1.metadata.0.name}"
+        }
+      }
 
-          options {
-            fsName      = "${var.fs_name}"
-            clusterName = "rook"
-          }
+      volume {
+        name = "${kubernetes_persistent_volume.vol_2.metadata.0.name}"
+
+        persistent_volume_claim {
+          claim_name = "${kubernetes_persistent_volume_claim.pvc_2.metadata.0.name}"
         }
       }
 
@@ -45,12 +47,14 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
         image = "${var.gke_drupal_image}"
         name  = "drupal"
 
+        /*
         resources {
           requests {
-            cpu    = "0.5"
-            memory = "256Mi"
+            cpu    = "1"
+            memory = "512Mi"
           }
         }
+        */
 
         liveness_probe {
           http_get {
@@ -61,17 +65,18 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
           initial_delay_seconds = 480
           timeout_seconds       = 3
         }
-
         volume_mount {
-          name       = "${var.fs_name}-vol"
-          mount_path = "${var.fs_mount_path}"
+          name       = "${kubernetes_persistent_volume.vol_1.metadata.0.name}"
+          mount_path = "${var.gke_vol_1_mount_path}"
         }
-
+        volume_mount {
+          name       = "${kubernetes_persistent_volume.vol_2.metadata.0.name}"
+          mount_path = "${var.gke_vol_2_mount_path}"
+        }
         volume_mount {
           name       = "${kubernetes_secret.cloudsql-db-credentials.metadata.0.name}"
           mount_path = "/secrets/${kubernetes_secret.cloudsql-db-credentials.metadata.0.name}"
         }
-
         env = [
           {
             name  = "MARIADB_HOST"
@@ -84,11 +89,15 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
           {
             name = "MARIADB_USER"
 
+            //value = "${var.cloudsql_username}"
+            //value = ${file("/secrets/${kubernetes_secret.cloudsql-db-credentials.metadata0.name}/username)} 
             value = "${kubernetes_secret.cloudsql-db-credentials.data.username}"
           },
           {
             name = "MARIADB_PASSWORD"
 
+            //value = "${var.master_password}"
+            //value = ${file("/secrets/${kubernetes_secret.cloudsql-db-credentials.metadata0.name}/password)} 
             value = "${kubernetes_secret.cloudsql-db-credentials.data.password}"
           },
           {
@@ -104,12 +113,19 @@ resource "kubernetes_replication_controller" "cloud-drupal" {
             value = "${var.drupal_email}"
           },
         ]
+
+        //{
+        //  name  = "GOOGLE_APPLICATION_CREDENTIALS"
+        //  value = "/secrets/cloudsql/credentials.json"
+        //},
       }
 
       container {
         image = "${var.gke_cloudsql_image}"
         name  = "cloudsql-proxy"
 
+        //**DEBUG: CloudSQL Instance name detected as: groundcontrol-www:us-east4:groundcontrol-sql-3
+        //"-instances=${var.project}:${var.region}:${var.cloudsql_instance}=tcp:3306", 
         command = [
           "/cloud_sql_proxy",
           "--dir=/cloudsql",

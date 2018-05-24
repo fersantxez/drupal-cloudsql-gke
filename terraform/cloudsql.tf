@@ -59,7 +59,5 @@ resource "kubernetes_config_map" "dbconfig" {
 
   data = {
     dbconnection = "${google_sql_database_instance.master.connection_name}"
-
-    //"${var.project}:${var.region}:${google_sql_database_instance.master.name}"
   }
 }
