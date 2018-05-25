@@ -41,3 +41,17 @@ resource "google_compute_firewall" "external" {
 
   target_tags = ["${var.tag}"]
 }
+
+resource "google_compute_firewall" "gke" {
+  name        = "gke"
+  project     = "${var.project}"
+  network     = "${var.network}"
+  description = "allow SSH to GKE instances from Cloud Shell"
+
+  allow {
+    protocol = "tcp"
+    ports    = [22]
+  }
+
+  target_tags = ["gke"]
+}

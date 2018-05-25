@@ -13,7 +13,7 @@ kubectl create clusterrolebinding my-cluster-admin-binding --clusterrole=cluster
 #deploy rook
 kubectl create -f ./rook-operator.yaml && \
 kubectl create -f ./rook-cluster.yaml && \
-kubectl create -f ./rook-filesystem-bitnami.yaml && \
+kubectl create -f ./rook-filesystem.yaml && \
 kubectl create -f ./rook-tools.yaml 
 #install ceph on all nodes
 export GKE_NODES=$(kubectl get node | tail -n +2 | awk '{print $1}') 
