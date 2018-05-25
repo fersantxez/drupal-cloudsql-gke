@@ -1,7 +1,7 @@
 apiVersion: rook.io/v1alpha1
 kind: Filesystem
 metadata:
-  name: "${TF_VAR_fs_name}"
+  name: "bitnami-fs" #FIXME: find a way to extrapolate the env var "${TF_VAR_fs_name}"
   namespace: rook
 spec:
   # The metadata pool spec
