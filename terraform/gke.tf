@@ -15,6 +15,7 @@ resource "google_container_cluster" "primary" {
     node_config {
       machine_type = "${var.gke_machine_type}"
       tags         = ["${var.tag}", "gke"]
+      image_type   = "ubuntu"
     }
 
     autoscaling {
