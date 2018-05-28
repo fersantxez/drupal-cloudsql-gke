@@ -1,6 +1,6 @@
 #!/bin/bash
 export VERSION="v0.3-nfs"
-export IMAGE="fernandosanchez/cloudrupal:"${VERSION}
+export IMAGE="fernandosanchez/clouddrupal:"${VERSION}
 
 #validate or force setting env vars, then run from docker 
 #otherwise prompt for interactive input
@@ -19,6 +19,10 @@ for var in "${VARS[@]}"; do
         echo "**ERROR: "$var" is unset or empty."
         read -r -p "**INFO: Please enter a value for "$var" : " $var
     done
+    echo "**DEBUG: "$var" is set to "${!var}
+done
+
+for var in "${VARS[@]}"; do
     echo "**DEBUG: "$var" is set to "${!var}
 done
 
