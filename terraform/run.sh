@@ -85,9 +85,8 @@ if [[ " ${SERVICE_ACCOUNT_LIST[@]} " =~ "${ADMIN_SVC_ACCOUNT}" ]]; then
 else
     #if it doesnt exist, create it
     echo "**ERROR: Service account "${ADMIN_SVC_ACCOUNT}" not found in project "${TF_VAR_project}
-    echo "**ERROR: Do you want me to create it?"
     while true; do
-      read -p "** (y/n): " RESPONSE
+      read -r -p "Do you want to create it? [y/n] " RESPONSE
       case $RESPONSE in
         [yY]) echo "**INFO: Creating service account "${ADMIN_SVC_ACCOUNT}" on project "${TF_VAR_project}
             gcloud iam service-accounts create ${ADMIN_SVC_ACCOUNT} \
