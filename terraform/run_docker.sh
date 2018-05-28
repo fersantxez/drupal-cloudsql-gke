@@ -13,7 +13,8 @@ declare -a VARS=( \
     "ZONE" \
     "MASTER_PASSWORD" \
 )
-for var in "${VARS[@]"; do
+
+for var in "${VARS[@]}"; do
     while [ -z "$var" ]; do 
         echo "**ERROR: "$var" is unset or empty."
         read -r -p "**INFO: Please enter a value for "$var var
