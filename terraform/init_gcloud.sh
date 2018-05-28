@@ -161,6 +161,7 @@ echo "****** then will run:"
 echo "terraform apply"
 export GOOGLE_APPLICATION_CREDENTIALS=${TF_VAR_CREDS} && \
 terraform init && terraform apply && \
+exec ./post-install-rook-ceph.sh && \
 echo "**INFO: ******* FINISHED *******" && \
 echo "**INFO: Drupal will be available at the lb_ip address above" && \
 exit
