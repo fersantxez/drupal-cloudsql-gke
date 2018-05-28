@@ -43,4 +43,5 @@ sudo docker run \
     -e PROJECT=${PROJECT} \
     -e REGION=${REGION} \
     -e ZONE=${ZONE} \
+    -e MASTER_PASSWORD=${MASTER_PASSWORD} \
     ${IMAGE}

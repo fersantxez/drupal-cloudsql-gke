@@ -44,18 +44,6 @@ fi
 
 #create master password
 #not required as MASTER_PASSWORD now needs to be passed as var from Dockerfile
-'
-while true; do
-    echo "**INFO: PLEASE ENTER ***MASTER PASSWORD*** (needs to be AT LEAST 20 characters long)" 
-    read -s TF_VAR_master_password
-    if [[ ${#TF_VAR_master_password} -le 19 ]]; then
-        echo "**ERROR: MASTER PASSWORD must be AT LEAST 20 characters long"
-    else
-        echo "**INFO: MASTER PASSWORD saved, "${#TF_VAR_master_password}" characters long."
-        break
-    fi
-done
-'
 
 #login to gcloud and set project params
 #######################################

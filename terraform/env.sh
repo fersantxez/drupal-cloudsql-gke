@@ -5,13 +5,13 @@
 
 #GCP account info - these come from Dockerfile as env variables
 #export ACCOUNT_ID=                 	            #from Dockerfile: GCP account ID
-export TF_VAR_org_id=${ORG_ID}						#from Dockerfile: GCP organization ID
-export TF_VAR_billing_account=${BILLING ACCOUNT}    #from Dockerfile: GCP billing account
+export TF_VAR_org_id=${ORG_ID}			#from Dockerfile: GCP organization ID
+export TF_VAR_billing_account=${BILLING_ACCOUNT}    #from Dockerfile: GCP billing account
 export TF_VAR_project=${PROJECT}                    #from Dockerfile: **EXISTING** GCP project
 export TF_VAR_region=${REGION}                      #from Dockerfile: GCP region
 export TF_VAR_zone=${ZONE}                          #from Dockerfile: GCP zone
-#default master password - unused since v0.2
-#export TF_VAR_master_password="12345678901234567890"
+#default master password
+export TF_VAR_master_password=${MASTER_PASSWORD}   #from Dockerfile and init script
 
 ######## USUALLY NO NEED TO CONFIGURE THESE ###########
 #######################################################

@@ -23,5 +23,6 @@ RUN curl -O ${TF_URL}
 RUN apt-get install -y unzip
 RUN unzip ${TF_FILENAME}
 RUN mv ${TF_BIN} /usr/bin
-
-CMD . run.sh
+RUN ["chmod", "+x", "/terraform/run.sh"]
+RUN echo "**DEBUG: contents of CWD: "$(ls -la)
+ENTRYPOINT ["/terraform/run.sh"]
