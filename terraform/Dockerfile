@@ -20,7 +20,8 @@ WORKDIR /terraform
 
 #download and install terraform
 RUN curl -O ${TF_URL}
+#RUN sudo apt-get install unzip #included by default on the cloud-sdk image
 RUN unzip ${TF_FILENAME}
-RUN mv ${TF_BIN} /usr/bin
+RUN sudo mv ${TF_BIN} /usr/bin
 
 CMD . run.sh
