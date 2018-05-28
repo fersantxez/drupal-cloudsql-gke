@@ -1,4 +1,9 @@
 ARG SDK_VERSION=latest
+ARG TF_VERSION="0.11.7"
+ARG TF_FILENAME=terraform_"${TF_VERSION}"_linux_amd64.zip
+ARG TF_URL="https://releases.hashicorp.com/terraform/"${TF_VERSION}"/"${TF_FILENAME}
+ARG TF_BIN="terraform"
+
 FROM google/cloud-sdk:${SDK_VERSION}
 
 #ENV ACCOUNT_ID
@@ -12,5 +17,10 @@ ENV ZONE "us-east4-c"
 RUN mkdir /terraform
 ADD . /terraform
 WORKDIR /terraform
+
+#download and install terraform
+RUN curl -O ${TF_URL}
+RUN unzip ${TF_FILENAME}
+RUN mv ${TF_BIN} /usr/bin
 
 CMD . run.sh
