@@ -1,6 +1,6 @@
 #!/bin/bash
 export VERSION="v0.3-nfs"
-export IMAGE="fernandosanchez/cloudrupal:"${VERSION}
+export IMAGE="fernandosanchez/clouddrupal:"${VERSION}
 
 #validate or force setting env vars, then run from docker 
 #otherwise prompt for interactive input
