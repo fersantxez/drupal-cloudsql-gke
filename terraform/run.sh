@@ -182,4 +182,4 @@ echo "**INFO: ******* FINISHED *******" && \
 echo "**INFO: Drupal will be available at the lb_ip address above" && \
 exit
 
-echo "**ERROR: Please run 'source ./env.sh && terraform apply' again"
+echo "**ERROR: Please run again."
