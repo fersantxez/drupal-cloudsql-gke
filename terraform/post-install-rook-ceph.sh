@@ -19,6 +19,6 @@ kubectl create -f ./rook-tools.yaml
 export GKE_NODES=$(kubectl get node | tail -n +2 | awk '{print $1}') 
 for node in ${GKE_NODES}; do
   echo "**INFO: installing Ceph client on node: "${node}
-  gcloud compute ssh ${node} --command "sudo apt-get update -y && sudo apt-get  install -y ceph-fs-common ceph-common" &
+  gcloud compute ssh ${node} --command "sudo apt-get update -y && sudo apt-get  install -y ceph-fs-common ceph-common"
 done
 
