@@ -4,8 +4,16 @@ export IMAGE="fernandosanchez/cloudrupal:"${VERSION}
 
 #validate or force setting env vars, then run from docker 
 #otherwise prompt for interactive input
-export VARS="ACCOUNT_ID ORG_ID BILLING_ACCOUNT PROJECT REGION ZONE MASTER_PASSWORD"
-for var in $VARS; do
+declare -a VARS=( \
+    "ACCOUNT_ID" \
+    "ORG_ID" \
+    "BILLING_ACCOUNT" \
+    "PROJECT" \
+    "REGION" \ 
+    "ZONE" \
+    "MASTER_PASSWORD" \
+)
+for var in "${VARS[@]"; do
     while [ -z "$var" ]; do 
         echo "**ERROR: "$var" is unset or empty."
         read -r -p "**INFO: Please enter a value for "$var var
