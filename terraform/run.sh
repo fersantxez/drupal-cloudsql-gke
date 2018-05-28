@@ -104,7 +104,7 @@ else
     #if it doesnt exist, create it
     echo "**ERROR: Service account "${ADMIN_SVC_ACCOUNT}" not found in project "${TF_VAR_project}
     while true; do
-      read -r -p "Do you want to create it? [y/N] " RESPONSE
+      read -r -p "Do you want to create it? [y/n] " RESPONSE
       case $RESPONSE in
         [yY]) echo "**INFO: Creating service account "${ADMIN_SVC_ACCOUNT}" on project "${TF_VAR_project}
             gcloud iam service-accounts create ${ADMIN_SVC_ACCOUNT} \
@@ -167,6 +167,7 @@ fi
 
 #update backend template file
 #############################
+
 echo "**INFO: Updating backend from template"
 rm -f backend.tf
 cp backend.tf.template backend.tf
