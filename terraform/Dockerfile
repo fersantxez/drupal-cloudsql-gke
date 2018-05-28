@@ -20,8 +20,8 @@ WORKDIR /terraform
 
 #download and install terraform
 RUN curl -O ${TF_URL}
-RUN sudo apt-get update -y && apt-get install -y unzip
+RUN apt-get install -y unzip
 RUN unzip ${TF_FILENAME}
-RUN sudo mv ${TF_BIN} /usr/bin
+RUN mv ${TF_BIN} /usr/bin
 
 CMD . run.sh
