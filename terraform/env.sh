@@ -16,12 +16,7 @@ export TF_VAR_master_password="12345678901234567890"
 
 ######## USUALLY NO NEED TO CONFIGURE THESE ###########
 #######################################################
-#Terraform version and location
-export TF_VERSION="0.11.7"
-export TF_FILENAME=terraform_"${TF_VERSION}"_linux_amd64.zip
-export TF_URL="https://releases.hashicorp.com/terraform/"${TF_VERSION}"/"${TF_FILENAME}
-export TF_BIN="terraform"
-#internal
+
 export ADMIN_SVC_ACCOUNT=$(echo tf-admin-sa-${TF_VAR_project} | cut -c1-29)"0"		#service account used by Terraform - NO SPACES
 export TF_VAR_CREDS=~/.ssh/${ADMIN_SVC_ACCOUNT}.json	#location of the credentials file
 declare -a SA_REQUIRED_ROLES=(\

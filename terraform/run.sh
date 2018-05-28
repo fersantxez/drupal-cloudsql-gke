@@ -3,6 +3,9 @@ set -o errexit -o nounset -o pipefail
 
 source ./env.sh
 
+#check environment
+##################
+
 #make sure there is an internet connection
 if ping -q -c 1 -W 1 google.com >/dev/null; then
   echo "**INFO: Internet connectivity is working."
@@ -24,32 +27,22 @@ fi
 echo "**INFO: Validating environment"
 command -v gcloud >/dev/null 2>&1 || { echo "I require gcloud but it's not installed.  Aborting." >&2; exit 1; }
 
-#ensure terraform is installed
-if command -v ${TF_BIN}; then
-    echo "**INFO: Terraform found"
-else
-    echo "**ERROR: Terraform not found. Downloading..."
-    curl -O ${TF_URL} && \
-    unzip ${TF_FILENAME} && \
-    sudo mv ${TF_BIN} /usr/bin
-fi
-
 #remove previous state
 rm -Rf .terraform/
 
-#create master password
-while true; do
-    echo "**INFO: PLEASE ENTER ***MASTER PASSWORD*** (needs to be AT LEAST 20 characters long)" 
-    read -s TF_VAR_master_password
-    if [[ ${#TF_VAR_master_password} -le 19 ]]; then
-        echo "**ERROR: MASTER PASSWORD must be AT LEAST 20 characters long"
-    else
-        echo "**INFO: MASTER PASSWORD saved, "${#TF_VAR_master_password}" characters long."
-        break
-    fi
+#check required variables are defined - need to be passed on from Dockerfile
+#if [ -z "$var" ]; then echo "var is unset"; else echo "var is set to '$var'"; fi
+export VARS="ACCOUNT_ID ORG_ID BILLING_ACCOUNT PROJECT REGION ZONE"
+for var in $VARS; do
+  if [ -z "$var" ]; then echo $var" is unset, exiting" && exit; else echo $var" is set to '${!var}'"; fi
 done
 
+#create master password
+#not required as MASTER_PASSWORD now needs to be passed as var from Dockerfile
+
 #login to gcloud and set project params
+#######################################
+
 echo "**INFO: Logging into gcloud and setting up the project"
 export LOGGED_ACCOUNT=$(gcloud config list account | awk '{print $3}' | sed -n 2,3p)
 export LOGGED_PROJECT=$(gcloud config list|grep project|awk '{print $3}')
@@ -65,6 +58,8 @@ echo "**INFO: Logged in as "$LOGGED_ACCOUNT
 echo "**INFO: Logged onto project "${TF_VAR_project}
 
 # make sure that the relevant APIs are enabled
+##############################################
+
 echo "**INFO: Enabling APIs on project"
 export ENABLED_APIS=$(gcloud services list --enabled | awk '{print $1}' | tail -n +1)
 #REQUIRED_APIS defined in env.sh as array
@@ -78,7 +73,9 @@ for api in "${REQUIRED_APIS[@]}"; do
     fi
 done
 
-#make sure Service Account exists
+# create and enable Terraform Service Account
+#############################################
+
 echo "**INFO: Validating Service Accounts"
 export SERVICE_ACCOUNT_LIST=($(gcloud iam service-accounts list  \
     | tail -n +2 | awk '{print $1}')) #double parenthesis for array
@@ -127,6 +124,9 @@ else
         --iam-account ${ADMIN_SVC_ACCOUNT}@${TF_VAR_project}.iam.gserviceaccount.com 
 fi
 
+# create bucket for Terraform state
+###################################
+
 #make bucket - catch if it already exists so we don't exit but ask
 echo "**INFO: Creating bucket for Terraform state"
 if gsutil ls gs://${TF_VAR_bucket_name}; then
@@ -146,11 +146,16 @@ else
 fi
 
 #update backend template file
+#############################
+
 echo "**INFO: Updating backend from template"
 rm -f backend.tf
 cp backend.tf.template backend.tf
 sed -i `` "s,__BUCKET__,$TF_VAR_bucket_name,g" backend.tf
 sed -i `` "s,__PROJECT__,$TF_VAR_project,g" backend.tf
+
+#finish and run Terraform
+#########################
 
 echo "**INFO: Initialization finished. Ready to run with the following backend information (backend.tf):"
 cat backend.tf
@@ -161,9 +166,9 @@ echo "****** then will run:"
 echo "terraform apply"
 export GOOGLE_APPLICATION_CREDENTIALS=${TF_VAR_CREDS} && \
 terraform init && terraform apply && \
-exec ./post-install-rook-ceph.sh && \
+source ./post-install-rook-ceph.sh && \
 echo "**INFO: ******* FINISHED *******" && \
 echo "**INFO: Drupal will be available at the lb_ip address above" && \
 exit
 
-echo "**ERROR: Please run 'source ./env.sh && terraform apply' again"
+echo "**ERROR: Please run again"
