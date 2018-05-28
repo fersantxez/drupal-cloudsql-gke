@@ -1,11 +1,11 @@
 ARG SDK_VERSION=latest
-ARG TF_VERSION="0.11.7"
-ARG TF_FILENAME=terraform_"${TF_VERSION}"_linux_amd64.zip
-ARG TF_URL="https://releases.hashicorp.com/terraform/"${TF_VERSION}"/"${TF_FILENAME}
-ARG TF_BIN="terraform"
 
 FROM google/cloud-sdk:${SDK_VERSION}
 
+ENV TF_VERSION "0.11.7"
+ENV TF_FILENAME terraform_"${TF_VERSION}"_linux_amd64.zip
+ENV TF_URL "https://releases.hashicorp.com/terraform/"${TF_VERSION}"/"${TF_FILENAME}
+ENV TF_BIN "terraform"
 #ENV ACCOUNT_ID
 #ENV ORG_ID
 #ENV BILLING_ACCOUNT
