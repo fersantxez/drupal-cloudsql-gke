@@ -2,6 +2,10 @@
 export VERSION="v0.3-nfs"
 export IMAGE="fernandosanchez/clouddrupal:"${VERSION}
 
+#validate docker works
+command -v docker >/dev/null 2>&1 || { echo "I require docker but it's not installed.  Aborting." >&2; exit 1; }
+
+
 #validate or force setting env vars, then run from docker 
 #otherwise prompt for interactive input
 declare -a VARS=( \
