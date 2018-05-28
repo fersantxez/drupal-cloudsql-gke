@@ -9,8 +9,8 @@ ENV REGION "us-east4"
 ENV ZONE "us-east4-c"
 #ENV MASTER_PASSWORD
 
-COPY *.sh .
-COPY *.tf .
-COPY *.yaml .
+RUN mkdir /terraform
+ADD . /terraform
+WORKDIR /terraform
 
 CMD . run.sh
