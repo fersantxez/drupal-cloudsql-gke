@@ -22,6 +22,10 @@ for var in "${VARS[@]}"; do
     echo "**DEBUG: "$var" is set to "${!var}
 done
 
+for var in "${VARS[@]}"; do
+    echo "**DEBUG: "$var" is set to "${!var}
+done
+
 #any validation
 #check MASTER_PASSWORD is at least 20 chars long
 if [[ ${#MASTER_PASSWORD} -le 19 ]]; then
