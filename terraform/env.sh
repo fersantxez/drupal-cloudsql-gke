@@ -3,16 +3,14 @@
 ##### CONFIGURE THESE ACCORDING TO YOUR SETUP ######
 ####################################################
 
-#GCP account info
-export ACCOUNT_ID=fersanchez@google.com					#your GCP account ID
-export TF_VAR_org_id=433637338589						#your GCP org ID
-export TF_VAR_billing_account=00183D-07EE2D-3060A0		#billing account for your project
-#project info
-export TF_VAR_project=fersanchez-2-1-2 #***PRE_CREATED*** project where the resources will be placed
-export TF_VAR_region=us-east4
-export TF_VAR_zone=us-east4-c
-#default master password: DELETE or COMMENT for production use
-export TF_VAR_master_password="12345678901234567890"
+#GCP account info - these come from Dockerfile as env variables
+export ACCOUNT_ID=${ACCOUNT_ID}               	    #from Dockerfile: GCP account ID
+export TF_VAR_org_id=${ORG_ID}			            #from Dockerfile: GCP organization ID
+export TF_VAR_billing_account=${BILLING_ACCOUNT}    #from Dockerfile: GCP billing account
+export TF_VAR_project=${PROJECT}                    #from Dockerfile: **EXISTING** GCP project
+export TF_VAR_region=${REGION}                      #from Dockerfile: GCP region
+export TF_VAR_zone=${ZONE}                          #from Dockerfile: GCP zone
+export TF_VAR_master_password=${MASTER_PASSWORD}   #from Dockerfile and init script
 
 ######## USUALLY NO NEED TO CONFIGURE THESE ###########
 #######################################################

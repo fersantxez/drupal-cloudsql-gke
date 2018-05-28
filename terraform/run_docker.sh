@@ -31,12 +31,12 @@ done
 #any validation
 #check MASTER_PASSWORD is at least 20 chars long
 while true; do
-    if [[ ${#TF_VAR_master_password} -le 19 ]]; then
+    if [[ ${#MASTER_PASSWORD} -le 19 ]]; then
         echo "**ERROR: MASTER PASSWORD must be set and AT LEAST 20 characters long"
         echo "**INFO: PLEASE ENTER ***MASTER PASSWORD*** (needs to be AT LEAST 20 characters long)" 
-        read -s TF_VAR_master_password
+        read -s MASTER_PASSWORD
     else
-        echo "**INFO: MASTER PASSWORD saved, "${#TF_VAR_master_password}" characters long."
+        echo "**INFO: MASTER PASSWORD saved, "${#MASTER_PASSWORD}" characters long."
         break
     fi
 done
