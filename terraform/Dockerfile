@@ -28,4 +28,5 @@ RUN mv ${TF_BIN} /usr/bin
 
 #run init script
 RUN ["chmod", "+x", "/terraform/run.sh"]
+RUN ["chmod", "+x", "/terraform/post-install-rook-ceph.sh"]
 ENTRYPOINT ["/terraform/run.sh"]
