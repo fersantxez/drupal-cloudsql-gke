@@ -24,6 +24,31 @@ fi
 echo "**INFO: Validating environment"
 command -v gcloud >/dev/null 2>&1 || { echo "I require gcloud but it's not installed.  Aborting." >&2; exit 1; }
 
+#ensure terraform is installed
+if command -v ${TF_BIN}; then
+    echo "**INFO: Terraform found"
+else
+    echo "**ERROR: Terraform not found. Downloading..."
+    curl -O ${TF_URL} && \
+    unzip ${TF_FILENAME} && \
+    sudo mv ${TF_BIN} /usr/bin
+fi
+
+#remove previous state
+rm -Rf .terraform/
+
+#create master password
+while true; do
+    echo "**INFO: PLEASE ENTER ***MASTER PASSWORD*** (needs to be AT LEAST 20 characters long)" 
+    read -s TF_VAR_master_password
+    if [[ ${#TF_VAR_master_password} -le 19 ]]; then
+        echo "**ERROR: MASTER PASSWORD must be AT LEAST 20 characters long"
+    else
+        echo "**INFO: MASTER PASSWORD saved, "${#TF_VAR_master_password}" characters long."
+        break
+    fi
+done
+
 #login to gcloud and set project params
 echo "**INFO: Logging into gcloud and setting up the project"
 export LOGGED_ACCOUNT=$(gcloud config list account | awk '{print $3}' | sed -n 2,3p)
@@ -126,22 +151,6 @@ rm -f backend.tf
 cp backend.tf.template backend.tf
 sed -i `` "s,__BUCKET__,$TF_VAR_bucket_name,g" backend.tf
 sed -i `` "s,__PROJECT__,$TF_VAR_project,g" backend.tf
-
-#remove previous state
-rm -Rf .terraform/
-
-#create master password
-while true; do
-    echo "**INFO: PLEASE ENTER ***MASTER PASSWORD*** (needs to be AT LEAST 20 characters long)" 
-    read -s TF_VAR_master_password
-    if [[ ${#TF_VAR_master_password} -le 19 ]]; then
-        echo "**ERROR: MASTER PASSWORD must be AT LEAST 20 characters long"
-    else
-        echo "**INFO: MASTER PASSWORD saved, "${#TF_VAR_master_password}" characters long."
-        break
-    fi
-done
-
 
 echo "**INFO: Initialization finished. Ready to run with the following backend information (backend.tf):"
 cat backend.tf
