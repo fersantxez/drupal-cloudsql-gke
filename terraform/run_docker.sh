@@ -9,17 +9,17 @@ declare -a VARS=( \
     "ORG_ID" \
     "BILLING_ACCOUNT" \
     "PROJECT" \
-    "REGION" \ 
+    "REGION" \
     "ZONE" \
     "MASTER_PASSWORD" \
 )
 
 for var in "${VARS[@]}"; do
-    while [ -z "$var" ]; do 
+    while [ -z "${!var}" ]; do 
         echo "**ERROR: "$var" is unset or empty."
-        read -r -p "**INFO: Please enter a value for "$var var
+        read -r -p "**INFO: Please enter a value for "$var" : " $var
     done
-    echo "**DEBUG: "$var" is set to '$var'"
+    echo "**DEBUG: "$var" is set to "${!var}
 done
 
 #any validation
