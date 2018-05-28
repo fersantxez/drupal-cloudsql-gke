@@ -29,18 +29,22 @@ command -v gcloud >/dev/null 2>&1 || { echo "I require gcloud but it's not insta
 
 #check required variables are defined - need to be passed on from Dockerfile
 #if [ -z "$var" ]; then echo "var is unset"; else echo "var is set to '$var'"; fi
-export VARS="ACCOUNT_ID ORG_ID BILLING_ACCOUNT PROJECT REGION ZONE MASTER_PASSWORD"
+export VARS="ACCOUNT_ID ORG_ID BILLING_ACCOUNT PROJECT REGION ZONE"
 for var in $VARS; do
-  if [ -z "$var" ]; then echo $var" is unset, exiting" && exit; else echo $var" is set to '$var'"; fi
+  if [ -z "$var" ]; then echo $var" is unset, exiting" && exit; else echo $var" is set to '${!var}'"; fi
 done
 
 #check MASTER_PASSWORD is at least 20 chars long
-if [[ ${#MASTER_PASSWORD} -le 19 ]]; then
-    echo "**ERROR: MASTER PASSWORD must be AT LEAST 20 characters long"
-    exit
-else
-    echo "**INFO: MASTER PASSWORD saved, "${#MASTER_PASSWORD}" characters long."
-fi
+while true; do
+    if [[ ${#TF_VAR_master_password} -le 19 ]]; then
+        echo "**ERROR: MASTER PASSWORD must be set and AT LEAST 20 characters long"
+        echo "**INFO: PLEASE ENTER ***MASTER PASSWORD*** (needs to be AT LEAST 20 characters long)" 
+        read -s TF_VAR_master_password
+    else
+        echo "**INFO: MASTER PASSWORD saved, "${#TF_VAR_master_password}" characters long."
+        break
+    fi
+done
 
 #create master password
 #not required as MASTER_PASSWORD now needs to be passed as var from Dockerfile

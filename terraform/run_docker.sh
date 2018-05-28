@@ -11,7 +11,6 @@ declare -a VARS=( \
     "PROJECT" \
     "REGION" \
     "ZONE" \
-    "MASTER_PASSWORD" \
 )
 
 for var in "${VARS[@]}"; do
@@ -28,12 +27,16 @@ done
 
 #any validation
 #check MASTER_PASSWORD is at least 20 chars long
-if [[ ${#MASTER_PASSWORD} -le 19 ]]; then
-    echo "**ERROR: MASTER PASSWORD must be AT LEAST 20 characters long"
-    exit
-else
-    echo "**INFO: MASTER PASSWORD saved, "${#MASTER_PASSWORD}" characters long."
-fi
+while true; do
+    if [[ ${#TF_VAR_master_password} -le 19 ]]; then
+        echo "**ERROR: MASTER PASSWORD must be set and AT LEAST 20 characters long"
+        echo "**INFO: PLEASE ENTER ***MASTER PASSWORD*** (needs to be AT LEAST 20 characters long)" 
+        read -s TF_VAR_master_password
+    else
+        echo "**INFO: MASTER PASSWORD saved, "${#TF_VAR_master_password}" characters long."
+        break
+    fi
+done
 
 sudo docker run \
     -it \
